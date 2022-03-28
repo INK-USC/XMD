@@ -55,7 +55,7 @@
               <el-button
                 size="small"
                 @click="handleEdit(scope.$index, scope.row)"
-                ><i class="el-icon-edit" />
+                ><el-icon><Edit /></el-icon>
                 Edit
               </el-button>
               <el-popconfirm
@@ -65,7 +65,7 @@
               >
                 <template #reference>
                   <el-button size="small" type="danger"
-                    ><i class="el-icon-delete" />Delete</el-button
+                    ><el-icon><Delete /></el-icon>Delete</el-button
                   >
                 </template>
               </el-popconfirm>
@@ -83,9 +83,10 @@
 
 <script>
 import { DateTime } from "luxon";
+import { Edit, Delete } from "@element-plus/icons-vue";
 
 import CreateProjectModal from "@/components/project/CreateProjectModal.vue";
-import { ProjectTypes } from "@/utilities/constants";
+import { TaskTypes } from "@/utilities/constants";
 import { useUserStore } from "@/stores/user";
 import { useProjectStore } from "@/stores/project";
 import ProjectsApi from "@/utilities/network/project";
@@ -93,13 +94,17 @@ import ProjectsApi from "@/utilities/network/project";
 // show all the project user create
 export default {
   name: "ProjectsPage",
-  components: { CreateProjectModal },
+  components: {
+    CreateProjectModal,
+    Edit,
+    Delete,
+  },
   setup() {
     const userStore = useUserStore();
     const projectStore = useProjectStore();
     const filters = [];
-    for (let item in ProjectTypes) {
-      filters.push({ text: ProjectTypes[item], value: ProjectTypes[item] });
+    for (let item in TaskTypes) {
+      filters.push({ text: TaskTypes[item], value: TaskTypes[item] });
     }
     return {
       userStore,
@@ -119,13 +124,8 @@ export default {
   },
   methods: {
     handleProjectSelected(index, row) {
-      //   this.$router.push({ name: "DocumentList" });
+      this.$router.push({ name: "DocumentUpload" });
       this.projectStore.setProject(row);
-      //   this.$store.dispatch(
-      //     "document/updateCurPage",
-      //     { newPage: 1 },
-      //     { root: true }
-      //   );
     },
     handleEdit(index, row) {
       this.selectedProject = row;
@@ -158,11 +158,11 @@ export default {
       if (!taskId) {
         return "";
       }
-      return ProjectTypes[taskId];
+      return TaskTypes[taskId];
     },
     filterTask(value, row, column) {
       let taskId = row[column.property];
-      let taskName = ProjectTypes[taskId];
+      let taskName = TaskTypes[taskId];
       return value === taskName;
     },
   },

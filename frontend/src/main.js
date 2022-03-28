@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import VueSnip from "vue-snip";
 
 // ElementPlus library
 import ElementPlus from "element-plus";
@@ -13,6 +14,9 @@ import router from "@/router";
 import api from "@/utilities/network";
 
 const app = createApp(App);
+
+// general importing, vue settings
+app.use(VueSnip);
 
 // attach api for easy access
 app.provide("$api", api);

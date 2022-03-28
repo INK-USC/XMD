@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { ProjectTypes } from "@/utilities/constants";
+import { TaskTypes } from "@/utilities/constants";
 import { useProjectStore } from "@/stores/project";
 import ProjectsApi from "@/utilities/network/project";
 
@@ -52,10 +52,10 @@ export default {
   setup() {
     const projectStore = useProjectStore();
     const taskOptions = [];
-    for (let item in ProjectTypes) {
+    for (let item in TaskTypes) {
       taskOptions.push({
         id: item,
-        name: ProjectTypes[item],
+        name: TaskTypes[item],
       });
     }
     return {
@@ -122,7 +122,7 @@ export default {
           httpRequest.then((res) => {
             this.projectStore.setProject(res);
             this.$emit("update:dialogVisible", false);
-            // this.$router.push({ name: "UploadFile" });
+            this.$router.push({ name: "DocumentUpload" });
           });
         }
       });

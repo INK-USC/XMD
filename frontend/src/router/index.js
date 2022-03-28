@@ -3,8 +3,15 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import Home from "@/views/Home.vue";
 import Projects from "@/views/Projects.vue";
-import Login from "@/components/Login.vue";
-import Logout from "@/components/Logout.vue";
+// Setup
+import ProjectSetup from "@/views/ProjectSetup.vue";
+import Document from "@/components/project/setup/Document.vue";
+import DocumentList from "@/components/project/setup/DocumentList.vue";
+import DocumentUpload from "@/components/project/setup/DocumentUpload.vue";
+
+// Login & Logout
+import Login from "@/views/Login.vue";
+import Logout from "@/views/Logout.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +34,28 @@ const router = createRouter({
     {
       path: "/logout",
       component: Logout,
+    },
+    {
+      path: "/project/",
+      component: ProjectSetup,
+      children: [
+        {
+          path: "doc/",
+          component: Document,
+          children: [
+            {
+              path: "upload",
+              name: "DocumentUpload",
+              component: DocumentUpload,
+            },
+            {
+              path: "list",
+              name: "DocumentList",
+              component: DocumentList,
+            },
+          ],
+        },
+      ],
     },
   ],
 });

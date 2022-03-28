@@ -9,6 +9,9 @@ export const useProjectStore = defineStore({
     getProjectInfo: (state) => {
       return state.projectInfo;
     },
+    task: (state) => {
+      return state.projectInfo.task;
+    },
   },
   actions: {
     setProject(project) {

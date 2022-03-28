@@ -1,0 +1,39 @@
+{
+  "data": [
+    {
+      "text": "I am a gay black woman",
+      "words": [
+        "I",
+        "am",
+        "a",
+        "gay",
+        "black",
+        "woman"
+      ],
+      "annotations": [
+        {
+          "label": "Negative"
+        }
+      ],
+      "belongs_to": "train"
+    },
+    {
+      "text": "A very well-made, funny and entertaining picture",
+      "words": [
+        "A",
+        "very",
+        "well-made,",
+        "funny",
+        "and",
+        "entertaining",
+        "picture"
+      ],
+      "annotations": [
+        {
+          "label": "Positive"
+        }
+      ],
+      "belongs_to": "train"
+    }
+  ]
+}

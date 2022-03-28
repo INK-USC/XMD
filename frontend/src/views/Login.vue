@@ -9,14 +9,18 @@
       ></el-alert>
       <el-form :model="loginForm" :rules="rules" ref="loginForm">
         <el-form-item label="Username" prop="username" class="bold-label">
-          <el-input prefix-icon="el-icon-user" v-model="loginForm.username" />
+          <el-input v-model="loginForm.username">
+            <template #prefix>
+              <el-icon><UserFilled /></el-icon>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="Password" prop="password" class="bold-label">
-          <el-input
-            type="password"
-            prefix-icon="el-icon-lock"
-            v-model="loginForm.password"
-          />
+          <el-input type="password" v-model="loginForm.password">
+            <template #prefix>
+              <el-icon><Lock /></el-icon>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-checkbox label="Remember me" v-model="loginForm.rememberMe" />
@@ -37,10 +41,16 @@
 </template>
 
 <script>
+import { UserFilled, Lock } from "@element-plus/icons-vue";
 import UserApi from "@/utilities/network/user";
+
 // user login page
 export default {
   name: "LoginPage",
+  components: {
+    UserFilled,
+    Lock,
+  },
   data() {
     return {
       loginForm: {
