@@ -68,7 +68,7 @@ def create_annotations(annotations, all_annotation_labels, max_color_set, projec
 def create_docs_from_json(project, data_file):
     # load previous
     all_annotation_labels = {}
-    max_color_set = 0
+    max_color_set = -1
     for label in Label.objects.filter(project=project):
         all_annotation_labels[label.text] = label
         max_color_set = max(max_color_set, label.color_set)

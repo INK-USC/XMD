@@ -115,7 +115,7 @@ export default {
       )
         .then((res) => {
           console.log("upload succeed", res);
-          this.$router.push({ name: "DocumentList" });
+          this.$router.push({ name: "Labels" });
         })
         .catch((err) => {
           console.log(err);

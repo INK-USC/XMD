@@ -8,6 +8,15 @@ import ProjectSetup from "@/views/ProjectSetup.vue";
 import Document from "@/components/project/setup/Document.vue";
 import DocumentList from "@/components/project/setup/DocumentList.vue";
 import DocumentUpload from "@/components/project/setup/DocumentUpload.vue";
+import LabelModification from "@/components/project/setup/LabelModification.vue";
+import GenerateExplanations from "@/components/project/setup/GenerateExplanations.vue";
+import ExportData from "@/components/project/setup/ExportData.vue";
+
+// Debug
+import Debug from "@/views/Debug.vue";
+import DebugOverview from "@/components/debug/Overview.vue";
+import DebugLocal from "@/components/debug/local/LocalExplanation.vue";
+import DebugGlobal from "@/components/debug/global/GlobalExplanation.vue";
 
 // Login & Logout
 import Login from "@/views/Login.vue";
@@ -54,6 +63,42 @@ const router = createRouter({
               component: DocumentList,
             },
           ],
+        },
+        {
+          path: "labels",
+          name: "Labels",
+          component: LabelModification,
+        },
+        {
+          path: "generate-explanations",
+          name: "GenerateExplanations",
+          component: GenerateExplanations,
+        },
+        {
+          path: "export",
+          name: "ExportData",
+          component: ExportData,
+        },
+      ],
+    },
+    {
+      path: "/debug/",
+      component: Debug,
+      children: [
+        {
+          path: "overview",
+          name: "DebugOverview",
+          component: DebugOverview,
+        },
+        {
+          path: "local",
+          name: "DebugLocal",
+          component: DebugLocal,
+        },
+        {
+          path: "global",
+          name: "DebugGlobal",
+          component: DebugGlobal,
         },
       ],
     },

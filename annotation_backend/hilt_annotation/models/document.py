@@ -36,7 +36,6 @@ class Label(models.Model):
     class Meta:
         unique_together = (
             ('project', 'text'),
-            ('project', 'color_set')
         )
 
 

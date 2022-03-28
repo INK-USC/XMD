@@ -24,13 +24,19 @@
         <el-icon><StarFilled /></el-icon>
         <span>Labels</span>
       </el-menu-item>
-      <el-menu-item index="/project/annotate">
-        <el-icon><Edit /></el-icon>
-        <span>Continue annotating</span>
+      <el-menu-item index="/project/generate-explanations">
+        <el-icon><DataAnalysis /></el-icon>
+        <span>Generate Explanations</span>
       </el-menu-item>
-      <el-menu-item index="/project/export-annotations">
+      <el-menu-item index="/project/export">
         <el-icon><Download /></el-icon>
-        <span>Export annotation</span>
+        <span>Export Data</span>
+      </el-menu-item>
+    </el-menu>
+    <el-menu>
+      <el-menu-item @click="() => this.$router.push({ name: 'DebugOverview' })">
+        <el-icon><Edit /></el-icon>
+        <span>Continue debugging</span>
       </el-menu-item>
     </el-menu>
   </el-col>
@@ -44,6 +50,7 @@ import {
   StarFilled,
   Edit,
   Download,
+  DataAnalysis,
 } from "@element-plus/icons-vue";
 
 // side navigation bar in the project over view page
@@ -56,6 +63,7 @@ export default {
     StarFilled,
     Edit,
     Download,
+    DataAnalysis,
   },
 };
 </script>
