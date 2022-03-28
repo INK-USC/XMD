@@ -1,0 +1,10 @@
+REVOKE ALL ON DATABASE hilt FROM hilt_user;
+DROP DATABASE hilt;
+DROP ROLE hilt_user;
+CREATE DATABASE hilt;
+CREATE USER hilt_user SUPERUSER;
+ALTER ROLE hilt_user PASSWORD '123';
+ALTER ROLE hilt_user SET client_encoding TO 'utf8';
+ALTER ROLE hilt_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE hilt_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE hilt TO hilt_user;
