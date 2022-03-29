@@ -12,7 +12,15 @@
       ],
       "annotations": [
         {
-          "label": "Negative"
+          "label": "Negative",
+          "scores": [
+            0.0,
+            0.0,
+            0.0,
+            0.3,
+            0.5,
+            0.2
+          ]
         }
       ],
       "belongs_to": "train"
@@ -30,7 +38,16 @@
       ],
       "annotations": [
         {
-          "label": "Positive"
+          "label": "Positive",
+          "scores": [
+            0.0,
+            0.0,
+            0.15,
+            0.45,
+            0.0,
+            0.3,
+            0.1
+          ]
         }
       ],
       "belongs_to": "train"

@@ -22,6 +22,14 @@ class WordAnnotationScore(models.Model):
 class Dictionary(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     annotation = models.ForeignKey(Annotation, null=True, on_delete=models.SET_NULL, related_name='project_dictionary')
-    word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='project_dictionary')
+    word = models.CharField(max_length=256)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='project_dictionary')
     explanation_type = models.IntegerField(default=ExplanationTypes.LOCAL, choices=ExplanationTypes.choices)
+
+    class Meta:
+        unique_together = (
+            ('project', 'word'),
+        )
+        indexes = [
+            models.Index(fields=["project"], name="dictionary_project_index")
+        ]

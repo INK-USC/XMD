@@ -45,5 +45,9 @@ export const useDocumentStore = defineStore({
       this.curDocIndex = 0;
       this.fetchDocuments();
     },
+    deleteDocument(document) {
+      const projectStore = useProjectStore();
+      return DocumentsApi.delete(projectStore.getProjectInfo.id, document.id);
+    },
   },
 });

@@ -24,4 +24,12 @@ export default {
       },
     });
   },
+  delete(projectID, docID) {
+    return api.delete(`hilt/projects/${projectID}/docs/${docID}/`);
+  },
+  detailedDocument(projectID, docID) {
+    return api.get(
+      `hilt/projects/${projectID}/docs/${docID}/words-annotations/`
+    );
+  },
 };

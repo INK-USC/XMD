@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView, Response, status
 
 from ..models import Project, Document, Label, Word, BelongsToLabel, Annotation, SentimentAnalysisAnnotation, \
-    RelationExtractionAnnotation, TaskTypes
+    RelationExtractionAnnotation, TaskTypes, WordAnnotationScore
 
 
 class ImportFileError(Exception):
@@ -19,7 +19,7 @@ def extract_metadata_json(entry):
         return json.dumps(entry["metadata"])
     else:
         temp = {}
-        ignore_keys = {"id", "project", "text", "annotated", "metadata", "annotations", "belongs_to"}
+        ignore_keys = {"id", "project", "text", "annotated", "metadata", "annotations", "belongs_to", "words"}
         for key in entry:
             if key not in ignore_keys:
                 temp[key] = entry[key]
@@ -35,7 +35,7 @@ def map_dataset_label(belongs_to: str) -> BelongsToLabel:
     return BelongsToLabel.TRAIN
 
 
-def create_annotations(annotations, all_annotation_labels, max_color_set, project, current_doc):
+def create_annotations(annotations, all_annotation_labels, max_color_set, project, current_doc, word_docs):
     for annotation in annotations:
         # check label
         if annotation['label'] not in all_annotation_labels:
@@ -62,6 +62,17 @@ def create_annotations(annotations, all_annotation_labels, max_color_set, projec
                                                          obj_start_offset=annotation["obj_start_offset"],
                                                          obj_end_offset=annotation["obj_end_offset"])
             ex_annotation.save()
+
+        if 'scores' in annotation:
+            scores = annotation["scores"]
+            print(scores)
+            if len(scores) != len(word_docs):
+                raise ImportFileError("Length of words and scores don't match")
+
+            for word, score in zip(word_docs, scores):
+                word_ann = WordAnnotationScore(annotation=cur_annotation, word=word, score=score)
+                word_ann.save()
+
     return max_color_set
 
 
@@ -95,16 +106,19 @@ def create_docs_from_json(project, data_file):
             belongs_to = map_dataset_label(entry.get("belongs_to", ""))
             cur_doc = Document(text=text, metadata=metadata, project=project, belongs_to=belongs_to)
             cur_doc.save()
+            word_docs = list()
             for index, word in enumerate(words):
                 cur_word = Word(document=cur_doc, text=word, order=index)
                 cur_word.save()
+                word_docs.append(cur_word)
 
             max_color_set = create_annotations(
                 annotations,
                 all_annotation_labels,
                 max_color_set,
                 project,
-                cur_doc
+                cur_doc,
+                word_docs
             )
 
 

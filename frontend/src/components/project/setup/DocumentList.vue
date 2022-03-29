@@ -37,6 +37,21 @@
           <p v-snip="{ lines: 3 }">{{ scope.row.text }}</p>
         </template>
       </el-table-column>
+      <el-table-column label="Operations">
+        <template #default="scope">
+          <el-popconfirm
+            title="Are you sure?"
+            @confirm="handleDelete(scope.$index, scope.row)"
+            style="margin-left: 10px"
+          >
+            <template #reference>
+              <el-button size="small" type="danger"
+                ><el-icon><Delete /></el-icon>Delete</el-button
+              >
+            </template>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       background
@@ -51,7 +66,7 @@
 </template>
 
 <script>
-import { Search } from "@element-plus/icons-vue";
+import { Search, Delete } from "@element-plus/icons-vue";
 import { useDocumentStore } from "@/stores/document";
 
 // show all the document for this project
@@ -59,6 +74,7 @@ export default {
   name: "DocumentList",
   components: {
     Search,
+    Delete,
   },
   setup() {
     const documentStore = useDocumentStore();
@@ -83,6 +99,11 @@ export default {
     // show the percentage of annotated document
     percentageText(percentage) {
       return `${percentage} % annotated`;
+    },
+    handleDelete(index, row) {
+      this.documentStore.deleteDocument(row).then(() => {
+        this.documentStore.fetchDocuments();
+      });
     },
   },
   created() {
