@@ -17,6 +17,7 @@ import Debug from "@/views/Debug.vue";
 import DebugOverview from "@/components/debug/Overview.vue";
 import DebugLocal from "@/components/debug/local/LocalExplanation.vue";
 import DebugGlobal from "@/components/debug/global/GlobalExplanation.vue";
+import DebugDictionary from "@/components/debug/Dictionary.vue";
 
 // Login & Logout
 import Login from "@/views/Login.vue";
@@ -89,6 +90,11 @@ const router = createRouter({
           path: "overview",
           name: "DebugOverview",
           component: DebugOverview,
+        },
+        {
+          path: "dictionary",
+          name: "DebugDictionary",
+          component: DebugDictionary,
         },
         {
           path: "local",

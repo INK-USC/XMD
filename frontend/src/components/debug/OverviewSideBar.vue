@@ -1,15 +1,31 @@
 <template>
   <el-col>
-    <el-menu>
-      <el-menu-item @click="() => this.$router.push({ name: 'DocumentList' })">
+    <el-menu :default-active="$route.path">
+      <el-menu-item
+        index="1"
+        @click="() => this.$router.push({ name: 'DocumentList' })"
+      >
         <el-icon><Back /></el-icon>
         <span>Back</span>
       </el-menu-item>
-      <el-menu-item @click="() => this.$router.push({ name: 'DebugLocal' })">
+      <el-menu-item
+        index="/debug/dictionary"
+        @click="() => this.$router.push({ name: 'DebugDictionary' })"
+      >
+        <el-icon><List /></el-icon>
+        <span>Dictionary</span>
+      </el-menu-item>
+      <el-menu-item
+        index="2"
+        @click="() => this.$router.push({ name: 'DebugLocal' })"
+      >
         <el-icon><Document /></el-icon>
         <span>Local Explanations</span>
       </el-menu-item>
-      <el-menu-item @click="() => this.$router.push({ name: 'DebugGlobal' })">
+      <el-menu-item
+        index="3"
+        @click="() => this.$router.push({ name: 'DebugGlobal' })"
+      >
         <el-icon><DocumentCopy /></el-icon>
         <span>Global Explanations</span>
       </el-menu-item>
@@ -18,7 +34,7 @@
 </template>
 
 <script>
-import { Back, Document, DocumentCopy } from "@element-plus/icons-vue";
+import { Back, Document, DocumentCopy, List } from "@element-plus/icons-vue";
 
 // side navigation bar in the debug overview page
 export default {
@@ -27,6 +43,7 @@ export default {
     Back,
     Document,
     DocumentCopy,
+    List,
   },
 };
 </script>

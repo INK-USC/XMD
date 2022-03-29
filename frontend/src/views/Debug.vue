@@ -2,7 +2,12 @@
   <div>
     <el-container>
       <el-aside style="border-right: solid 1px #e6e6e6">
-        <OverviewSideBar v-if="this.$route.path.endsWith('/overview')" />
+        <OverviewSideBar
+          v-if="
+            this.$route.path.endsWith('/overview') ||
+            this.$route.path.endsWith('/dictionary')
+          "
+        />
         <LocalSideBar v-if="this.$route.path.endsWith('/local')" />
         <GlobalSideBar v-if="this.$route.path.endsWith('/global')" />
       </el-aside>
