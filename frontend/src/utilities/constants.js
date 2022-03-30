@@ -25,17 +25,17 @@ export const ColorSets = {
     colors: [
       { "background-color": "#F08080", color: "#000000" },
       { "background-color": "#CD5C5C", color: "#000000" },
-      { "background-color": "#DC143C", color: "#000000" },
+      // { "background-color": "#DC143C", color: "#000000" },
       { "background-color": "#B22222", color: "#000000" },
-      { "background-color": "#800000", color: "#FFFFFF" },
+      // { "background-color": "#800000", color: "#FFFFFF" },
     ],
   },
   2: {
     name: "Blue",
     colors: [
-      { "background-color": "#E7FEFF", color: "#000000" },
+      // { "background-color": "#E7FEFF", color: "#000000" },
       { "background-color": "#ADD8E6", color: "#000000" },
-      { "background-color": "#00BFFF", color: "#000000" },
+      // { "background-color": "#00BFFF", color: "#000000" },
       { "background-color": "#4682B4", color: "#000000" },
       { "background-color": "#00008B", color: "#FFFFFF" },
     ],
@@ -43,9 +43,9 @@ export const ColorSets = {
   3: {
     name: "Green",
     colors: [
-      { "background-color": "#E6FFE6", color: "#000000" },
+      // { "background-color": "#E6FFE6", color: "#000000" },
       { "background-color": "#8AFF8A", color: "#000000" },
-      { "background-color": "#2EFF2E", color: "#000000" },
+      // { "background-color": "#2EFF2E", color: "#000000" },
       { "background-color": "#00D100", color: "#FFFFFF" },
       { "background-color": "#007500", color: "#FFFFFF" },
     ],
@@ -53,9 +53,9 @@ export const ColorSets = {
   4: {
     name: "Purple",
     colors: [
-      { "background-color": "#F2E0FF", color: "#000000" },
+      // { "background-color": "#F2E0FF", color: "#000000" },
       { "background-color": "#CC85FF", color: "#000000" },
-      { "background-color": "#A424FF", color: "#FFFFFF" },
+      // { "background-color": "#A424FF", color: "#FFFFFF" },
       { "background-color": "#7700CC", color: "#FFFFFF" },
       { "background-color": "#3E006B", color: "#FFFFFF" },
     ],
@@ -63,11 +63,11 @@ export const ColorSets = {
   5: {
     name: "Orange",
     colors: [
-      { "background-color": "#FFF4E6", color: "#000000" },
+      // { "background-color": "#FFF4E6", color: "#000000" },
       { "background-color": "#FFCA8A", color: "#000000" },
       { "background-color": "#FFA12E", color: "#000000" },
       { "background-color": "#D67600", color: "#000000" },
-      { "background-color": "#995400", color: "#FFFFFF" },
+      // { "background-color": "#995400", color: "#FFFFFF" },
     ],
   },
 };

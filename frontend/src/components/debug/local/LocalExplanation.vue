@@ -232,16 +232,14 @@ export default {
       const score = scoreAnn.score;
       const colors = this.getColors(labelID);
       let index = -1;
-      if (score < 0.2) {
+      if (score <= 0) {
+        return style;
+      } else if (score <= 0.33) {
         index = 0;
-      } else if (score < 0.4) {
+      } else if (score <= 0.66) {
         index = 1;
-      } else if (score < 0.6) {
-        index = 2;
-      } else if (score < 0.8) {
-        index = 3;
       } else if (score <= 1.0) {
-        index = 4;
+        index = 2;
       }
       return {
         ...style,
