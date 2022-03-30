@@ -66,13 +66,14 @@
         :key="annotation.id"
       >
         <el-row style="width: 100%">
+          <!-- TODO: Task based -->
           <el-tag>Label: {{ getLabelByID(annotation.label).text }}</el-tag>
-          <div style="margin-left: 5px">
+          <div style="margin-left: 5px; padding: 5px; border: 2px solid black">
             <span
               v-for="(color, color_index) in this.getColors(annotation.label)"
               :key="color_index"
               :style="color"
-              style="margin-left: 5px; padding: 5px"
+              style="margin-left: 5px; padding: 5px; font-size: 13px"
             >
               Word
             </span>
@@ -81,11 +82,13 @@
         <el-row style="line-height: 2; margin-top: 10px">
           <div>
             <span
-              v-for="wordData in this.detailedDocumentStore.getDocument.words"
+              v-for="(wordData, wordIndex) in this.detailedDocumentStore
+                .getDocument.words"
               :key="wordData.id"
               :style="
                 getWordStyle(wordData.scores[annotation.id], annotation.label)
               "
+              @click="wordClick(wordIndex)"
             >
               <el-popover
                 :content="

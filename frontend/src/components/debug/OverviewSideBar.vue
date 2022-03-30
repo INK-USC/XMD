@@ -9,6 +9,13 @@
         <span>Back</span>
       </el-menu-item>
       <el-menu-item
+        index="/debug/overview"
+        @click="() => this.$router.push({ name: 'DebugOverview' })"
+      >
+        <el-icon><Management /></el-icon>
+        <span>Overview</span>
+      </el-menu-item>
+      <el-menu-item
         index="/debug/dictionary"
         @click="() => this.$router.push({ name: 'DebugDictionary' })"
       >
@@ -34,7 +41,13 @@
 </template>
 
 <script>
-import { Back, Document, DocumentCopy, List } from "@element-plus/icons-vue";
+import {
+  Back,
+  Document,
+  DocumentCopy,
+  List,
+  Management,
+} from "@element-plus/icons-vue";
 
 // side navigation bar in the debug overview page
 export default {
@@ -44,6 +57,7 @@ export default {
     Document,
     DocumentCopy,
     List,
+    Management,
   },
 };
 </script>

@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     handleProjectSelected(index, row) {
-      this.$router.push({ name: "DocumentUpload" });
+      this.$router.push({ name: "DocumentList" });
       this.projectStore.setProject(row);
     },
     handleEdit(index, row) {
