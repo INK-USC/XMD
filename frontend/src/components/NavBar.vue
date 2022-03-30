@@ -14,7 +14,7 @@
 
     <el-menu-item
       :index="!userStore.isLoggedIn ? '/login' : '/logout'"
-      :style="{ float: 'right' }"
+      class="dock-right"
     >
       <el-button @click="loginClicked($event)" jest="logBtn">
         {{ !this.userStore.isLoggedIn ? "Login" : "Logout" }}
@@ -49,3 +49,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.el-menu {
+  display: block;
+}
+
+.el-menu > .el-menu-item.dock-right {
+  float: right;
+}
+</style>

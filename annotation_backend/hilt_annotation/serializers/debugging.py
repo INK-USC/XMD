@@ -5,4 +5,4 @@ from ..models.debugging import Dictionary
 class DictionarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Dictionary
-        fields = ['id', 'annotation', 'word', 'project', 'explanation_type']
+        fields = ['id', 'annotation', 'word', 'explanation_type']

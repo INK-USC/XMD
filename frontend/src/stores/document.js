@@ -23,6 +23,11 @@ export const useDocumentStore = defineStore({
     },
   },
   actions: {
+    resetState() {
+      this.curPage = 1;
+      this.pageSize = 10;
+      return this.fetchDocuments();
+    },
     setCurDocIndex(curDocIndex) {
       this.curDocIndex = curDocIndex;
     },
@@ -43,11 +48,19 @@ export const useDocumentStore = defineStore({
     updateCurPage(newPageNum) {
       this.curPage = newPageNum;
       this.curDocIndex = 0;
-      this.fetchDocuments();
+      return this.fetchDocuments();
     },
     deleteDocument(document) {
       const projectStore = useProjectStore();
       return DocumentsApi.delete(projectStore.getProjectInfo.id, document.id);
+    },
+    markAnnotated() {
+      if (!this.documents[this.curDocIndex].id) return null;
+      return DocumentsApi.markAnnotated(
+        this.documents[this.curDocIndex].id
+      ).then(() => {
+        this.document[this.curDocIndex].annotated = true;
+      });
     },
   },
 });

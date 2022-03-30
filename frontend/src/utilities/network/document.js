@@ -24,6 +24,11 @@ export default {
       },
     });
   },
+  markAnnotated(projectID, docID) {
+    return api.put(`hilt/projects/${projectID}/docs/${docID}/`, {
+      annotated: true,
+    });
+  },
   delete(projectID, docID) {
     return api.delete(`hilt/projects/${projectID}/docs/${docID}/`);
   },

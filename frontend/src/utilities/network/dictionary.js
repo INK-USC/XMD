@@ -8,9 +8,9 @@ export default {
     return api.post(`hilt/projects/${projectID}/dict/`, data);
   },
   update(projectID, data) {
-    return api.put(`hilt/projects/${projectID}/dict/${data.id}`, data);
+    return api.put(`hilt/projects/${projectID}/dict/${data.id}/`, data);
   },
   delete(projectID, dictID) {
-    return api.delete(`hilt/projects/${projectID}/dict/${dictID}`);
+    return api.delete(`hilt/projects/${projectID}/dict/${dictID}/`);
   },
 };

@@ -24,7 +24,7 @@ class DocumentList(generics.ListAPIView):
         return self.queryset.filter(project=self.kwargs['project_id'])
 
 
-class DocumentDetail(generics.RetrieveDestroyAPIView):
+class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = DocumentSerializer

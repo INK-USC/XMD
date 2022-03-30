@@ -24,9 +24,9 @@ export const useDictionaryStore = defineStore({
         const results = res.results;
         const words = {};
         const wordRows = [];
-        for (let item in results) {
-          words[results[item].word] = wordRows.length;
-          wordRows.push(results[item]);
+        for (let item of results) {
+          words[item.word] = wordRows.length;
+          wordRows.push(item);
         }
         this.words = words;
         this.wordRows = wordRows;
@@ -34,20 +34,20 @@ export const useDictionaryStore = defineStore({
     },
     createWord(data) {
       const projectStore = useProjectStore();
-      return DictonaryApi.update(projectStore.getProjectInfo.id, data).then(
+      return DictonaryApi.create(projectStore.getProjectInfo.id, data).then(
         (res) => {
           this.words[data.word] = this.wordRows.length;
           this.wordRows.push(res);
         }
       );
     },
-    deleteWord(data) {
+    deleteWord(word) {
       const projectStore = useProjectStore();
       return DictonaryApi.delete(
         projectStore.getProjectInfo.id,
-        this.wordRows[this.words[data.word]].id
+        this.wordRows[this.words[word]].id
       ).then(() => {
-        this.fetchDictionary();
+        return this.fetchDictionary();
       });
     },
     updateWord(data) {

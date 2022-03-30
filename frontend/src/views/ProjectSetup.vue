@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-aside style="border-right: solid 1px #e6e6e6">
-        <SetupSideBar />
+        <SetupSideBar style="width: 100%" />
       </el-aside>
       <el-main>
         <router-view></router-view>

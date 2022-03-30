@@ -1,9 +1,10 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
 from rest_framework.pagination import PageNumberPagination
 
 from ..serializers.debugging import DictionarySerializer
-from ..models import Dictionary
+from ..models import Dictionary, Project
 
 
 class LargeResultsSetPagination(PageNumberPagination):
@@ -22,6 +23,10 @@ class DictionaryList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(project=self.kwargs['project_id'])
+
+    def perform_create(self, serializer):
+        project = get_object_or_404(Project, pk=self.kwargs.get('project_id'))
+        serializer.save(project=project)
 
 
 class DictionaryDetail(generics.RetrieveUpdateDestroyAPIView):

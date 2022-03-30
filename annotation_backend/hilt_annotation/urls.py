@@ -9,7 +9,7 @@ urlpatterns = [
     # Documents
     path('projects/<int:project_id>/docs/', views.DocumentList.as_view(), name="docs-list"),
     path('projects/<int:project_id>/docs/upload/', views.DocumentUpload.as_view(), name="docs-upload"),
-    path('projects/<int:project_id>/docs/<str:pk>/', views.DocumentDetail.as_view(), name="docs-rd"),
+    path('projects/<int:project_id>/docs/<str:pk>/', views.DocumentDetail.as_view(), name="docs-rud"),
     # 1-Document - words, annotations, scores
     path('projects/<int:project_id>/docs/<str:pk>/words-annotations/', views.DocWordAnnDetail.as_view(),
          name="doc-words-ann-r"),
@@ -18,5 +18,5 @@ urlpatterns = [
     path('projects/<int:project_id>/labels/<str:pk>/', views.LabelDetail.as_view(), name="labels-rud"),
     # dictionary
     path('projects/<int:project_id>/dict/', views.DictionaryList.as_view(), name="dict-list-c"),
-    path('projects/<int:project_id>/dict/<int:pk>/', views.DictionaryDetail.as_view(), name="dict-rud"),
+    path('projects/<int:project_id>/dict/<str:pk>/', views.DictionaryDetail.as_view(), name="dict-rud"),
 ]

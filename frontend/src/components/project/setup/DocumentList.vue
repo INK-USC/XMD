@@ -107,7 +107,7 @@ export default {
     },
   },
   created() {
-    this.documentStore.fetchDocuments();
+    this.documentStore.resetState();
   },
   computed: {
     percentageCompleted() {
