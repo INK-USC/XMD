@@ -25,6 +25,13 @@
         :stroke-width="30"
         text-inside
       />
+      <div style="width: 100%">
+        <span class="demonstration">Top K words</span>
+        <el-slider
+          v-model="topK"
+          :max="this.detailedDocumentStore.getMaxWords"
+        />
+      </div>
     </el-row>
     <el-card
       style="width: 100%; margin-top: 10px"
@@ -77,10 +84,7 @@
               v-for="wordData in this.detailedDocumentStore.getDocument.words"
               :key="wordData.id"
               :style="
-                getWordStyle(
-                  wordData.scores[annotation.id].score,
-                  annotation.label
-                )
+                getWordStyle(wordData.scores[annotation.id], annotation.label)
               "
             >
               <el-popover
@@ -174,6 +178,11 @@ export default {
       getLabelByID: labelStore.getLabelByID,
     };
   },
+  data() {
+    return {
+      topK: 3,
+    };
+  },
   methods: {
     wordClick(wordIndex) {
       const wordData = this.detailedDocumentStore.getDocument.words[wordIndex];
@@ -208,7 +217,16 @@ export default {
       const label = this.getLabelByID(labelID);
       return ColorSets[label.color_set].colors;
     },
-    getWordStyle(score, labelID) {
+    getWordStyle(scoreAnn, labelID) {
+      const style = {
+        padding: "3px 3px 3px 3px",
+        margin: "3px 3px 3px 3px",
+        fontSize: "18px",
+      };
+      if (scoreAnn.order >= this.topK) {
+        return style;
+      }
+      const score = scoreAnn.score;
       const colors = this.getColors(labelID);
       let index = -1;
       if (score < 0.2) {
@@ -222,13 +240,10 @@ export default {
       } else if (score <= 1.0) {
         index = 4;
       }
-      const style = {
-        padding: "3px 3px 3px 3px",
-        margin: "3px 3px 3px 3px",
-        fontSize: "18px",
+      return {
+        ...style,
         ...colors[index],
       };
-      return style;
     },
     // get the string for progress bar
     getProgressBarLabel() {
