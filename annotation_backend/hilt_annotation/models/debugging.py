@@ -1,15 +1,9 @@
 import uuid
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 from .document import Word
 from .project import Project
 from .annotation import Annotation
-
-
-class ExplanationTypes(models.IntegerChoices):
-    LOCAL = 1, _("Local Explanation")
-    GLOBAL = 2, _("Global Explanation")
 
 
 class WordAnnotationScore(models.Model):
@@ -19,12 +13,10 @@ class WordAnnotationScore(models.Model):
     score = models.FloatField(default=0.0)
 
 
-class Dictionary(models.Model):
+class GlobalExplanationDictionary(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    annotation = models.ForeignKey(Annotation, null=True, on_delete=models.SET_NULL, related_name='project_dictionary')
     word = models.CharField(max_length=256)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='project_dictionary')
-    explanation_type = models.IntegerField(default=ExplanationTypes.LOCAL, choices=ExplanationTypes.choices)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='dict_global_explanation')
 
     class Meta:
         unique_together = (
@@ -33,3 +25,15 @@ class Dictionary(models.Model):
         indexes = [
             models.Index(fields=["project"], name="dictionary_project_index")
         ]
+
+
+class LocalExplanationDictionary(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='dict_local_explanation')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='dict_local_explanation')
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE, related_name='dict_local_explanation')
+
+    class Meta:
+        unique_together = (
+            ('project', 'word', 'annotation'),
+        )

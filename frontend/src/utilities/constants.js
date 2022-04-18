@@ -3,11 +3,6 @@ export const TaskTypes = {
   2: "Relation Extraction",
 };
 
-export const ExplanationTypes = {
-  1: "Local Explanation",
-  2: "Global Explanation",
-};
-
 // source: https://html-color.codes/
 export const ColorSets = {
   0: {

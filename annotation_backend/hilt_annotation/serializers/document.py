@@ -18,3 +18,7 @@ class WordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
         fields = ['id', 'document', 'text', 'order']
+
+
+class WordWithDocSerializer(WordSerializer):
+    document = DocumentSerializer(read_only=True)

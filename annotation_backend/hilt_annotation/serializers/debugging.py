@@ -1,8 +1,24 @@
 from rest_framework import serializers
-from ..models.debugging import Dictionary
+
+from ..models.debugging import GlobalExplanationDictionary, LocalExplanationDictionary
+from .document import WordSerializer
 
 
-class DictionarySerializer(serializers.ModelSerializer):
+class GlobalExplanationDictionarySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Dictionary
-        fields = ['id', 'annotation', 'word', 'explanation_type']
+        model = GlobalExplanationDictionary
+        fields = ['id', 'word']
+
+
+class LocalExplanationDictionaryListSerializer(serializers.ModelSerializer):
+    word = WordSerializer()
+
+    class Meta:
+        model = LocalExplanationDictionary
+        fields = ['id', 'word', 'annotation']
+
+
+class LocalExplanationDictionarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalExplanationDictionary
+        fields = ['id', 'word', 'annotation']

@@ -100,7 +100,6 @@ export default {
   methods: {
     goNextStep() {
       this.saving = true;
-      console.log(this.colors_sets);
       const promises = [];
       for (let index = 0; index < this.existingLabels.length; index++) {
         const label = this.existingLabels[index];

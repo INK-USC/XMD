@@ -16,7 +16,13 @@ urlpatterns = [
     # Labels
     path('projects/<int:project_id>/labels/', views.LabelList.as_view(), name="labels-list"),
     path('projects/<int:project_id>/labels/<str:pk>/', views.LabelDetail.as_view(), name="labels-rud"),
-    # dictionary
-    path('projects/<int:project_id>/dict/', views.DictionaryList.as_view(), name="dict-list-c"),
-    path('projects/<int:project_id>/dict/<str:pk>/', views.DictionaryDetail.as_view(), name="dict-rud"),
+    # dict global explanation
+    path('projects/<int:project_id>/dict/global/', views.GlobalExplanationDictionaryList.as_view(), name="dict-list-c"),
+    path('projects/<int:project_id>/dict/global/<str:pk>/', views.GlobalExplanationDictionaryDetail.as_view(),
+         name="dict-rud"),
+    # dict local explanation
+    path('projects/<int:project_id>/dict/local/', views.LocalExplanationDictionaryList.as_view(),
+         name="dict-local-list-c"),
+    path('projects/<int:project_id>/dict/local/<str:pk>/', views.LocalExplanationDictionaryDetail.as_view(),
+         name="dict-local-rud"),
 ]

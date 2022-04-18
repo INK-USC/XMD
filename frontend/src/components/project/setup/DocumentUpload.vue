@@ -113,8 +113,7 @@ export default {
         param.file,
         this.fileForm.fileType
       )
-        .then((res) => {
-          console.log("upload succeed", res);
+        .then(() => {
           this.$router.push({ name: "Labels" });
         })
         .catch((err) => {

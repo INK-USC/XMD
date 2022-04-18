@@ -44,7 +44,7 @@ import { Back, Check } from "@element-plus/icons-vue";
 import { useDocumentStore } from "@/stores/document";
 import { useLabelStore } from "@/stores/label";
 import { useDetailedDocumentStore } from "@/stores/detailedDocument";
-import { useDictionaryStore } from "@/stores/dictionary";
+import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 
 export default {
   name: "LocalSideBar",
@@ -56,19 +56,26 @@ export default {
     const documentStore = useDocumentStore();
     const detailedDocumentStore = useDetailedDocumentStore();
     const labelStore = useLabelStore();
-    const dictionaryStore = useDictionaryStore();
+    const localDictionaryStore = useLocalDictionaryStore();
     return {
       documentStore,
       detailedDocumentStore,
       labelStore,
-      dictionaryStore,
+      localDictionaryStore,
     };
   },
   created() {
     const promises = [];
     promises.push(this.labelStore.fetchLabels());
-    promises.push(this.documentStore.resetState());
-    promises.push(this.dictionaryStore.fetchDictionary());
+    promises.push(
+      this.documentStore.resetState().then(() => {
+        return this.localDictionaryStore.fetchDictionary(
+          this.documentStore.getDocuments[
+            this.documentStore.getdocumentInfo.curDocIndex
+          ].id
+        );
+      })
+    );
     Promise.all(promises).then(() => {
       this.detailedDocumentStore.fetchDocument(
         this.documentStore.getDocuments[
@@ -90,6 +97,7 @@ export default {
     goToDocument(index, docInfo) {
       this.documentStore.setCurDocIndex(index);
       this.detailedDocumentStore.fetchDocument(docInfo.id);
+      this.localDictionaryStore.fetchDictionary(docInfo.id);
     },
   },
 };

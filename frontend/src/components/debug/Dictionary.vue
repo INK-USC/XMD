@@ -63,8 +63,7 @@
 
 <script>
 import { Search, Delete } from "@element-plus/icons-vue";
-import { useDictionaryStore } from "@/stores/dictionary";
-import { ExplanationTypes } from "@/utilities/constants";
+import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 
 // show all the document for this project
 export default {
@@ -74,17 +73,10 @@ export default {
     Delete,
   },
   setup() {
-    const dictionaryStore = useDictionaryStore();
+    const dictionaryStore = useLocalDictionaryStore();
     const filters = [];
-    for (let item in ExplanationTypes) {
-      filters.push({
-        text: ExplanationTypes[item],
-        value: ExplanationTypes[item],
-      });
-    }
     return {
       dictionaryStore,
-      ExplanationTypes,
       filters,
     };
   },

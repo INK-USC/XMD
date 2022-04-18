@@ -94,7 +94,6 @@ export default {
   methods: {
     dialogIsOpen() {
       if (this.existingInfo) {
-        console.log(this.existingInfo);
         for (let key in this.existingInfo) {
           this.projectInfo[key] = this.existingInfo[key];
         }
@@ -111,7 +110,6 @@ export default {
       this.$refs["projectInfoForm"].validate((isValid) => {
         if (isValid) {
           let httpRequest;
-          console.log(this.projectInfo);
           if (this.existingInfo) {
             //edit
             httpRequest = ProjectsApi.update(this.projectInfo);
