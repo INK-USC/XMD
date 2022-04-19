@@ -16,7 +16,7 @@
           <div v-else>{{ scope.$index + 1 }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="text" :label="tableTitle">
+      <el-table-column prop="text">
         <template #default="scope">
           <el-link
             v-snip="{ lines: 3 }"

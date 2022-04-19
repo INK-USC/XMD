@@ -1,17 +1,11 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
-from rest_framework.pagination import PageNumberPagination
 
 from ..serializers.debugging import GlobalExplanationDictionarySerializer, LocalExplanationDictionarySerializer, \
     LocalExplanationDictionaryListSerializer
 from ..models import GlobalExplanationDictionary, Project, LocalExplanationDictionary
-
-
-class LargeResultsSetPagination(PageNumberPagination):
-    page_size = 10000
-    page_size_query_param = 'page_size'
-    max_page_size = 1000000
+from .util import LargeResultsSetPagination
 
 
 class GlobalExplanationDictionaryList(generics.ListCreateAPIView):

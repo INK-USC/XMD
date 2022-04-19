@@ -10,7 +10,7 @@ export default {
       queryData["page_size"] = pageSize;
     }
     return api.get(`hilt/projects/${projectID}/docs/`, {
-      data: queryData,
+      params: queryData,
     });
   },
   uploadFile(projectID, file, format) {

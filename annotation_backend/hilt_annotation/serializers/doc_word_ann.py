@@ -53,9 +53,14 @@ class WordSerializer(serializers.ModelSerializer):
 
 
 class DocumentWordSerializer(serializers.ModelSerializer):
-    words = WordSerializer(many=True, read_only=True)
+    # words = WordSerializer(many=True, read_only=True)
+    words = serializers.SerializerMethodField()
     annotations = AnnotationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Document
         fields = ['id', 'project', 'text', 'annotated', 'metadata', 'words', 'annotations']
+
+    def get_words(self, instance):
+        words = instance.words.all().order_by('order')
+        return WordSerializer(words, many=True).data

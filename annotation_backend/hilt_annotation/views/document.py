@@ -1,8 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
 
-from ..serializers.document import DocumentSerializer, LabelSerializer
-from ..models import Document, Label
+from ..serializers import DocumentSerializer, LabelSerializer, WordGroupedSerializer, DocumentWordSerializer
+from ..models import Document, Label, Word
+from .util import LargeResultsSetPagination
 
 
 class DocumentList(generics.ListAPIView):
@@ -49,3 +50,26 @@ class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(project=self.kwargs['project_id'])
+
+
+class WordList(generics.ListAPIView):
+    queryset = Word.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = WordGroupedSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ('text',)
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        return self.queryset.filter(document__project=self.kwargs['project_id']).distinct('text').order_by('text')
+
+
+class WordDetails(generics.ListAPIView):
+    queryset = Document.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = DocumentWordSerializer
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        return self.queryset.filter(project=self.kwargs['project_id'], words__text=self.kwargs['word']).order_by(
+            'pk')  # '-words__word_annotation_score__score')

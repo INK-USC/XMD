@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 
 import { useProjectStore } from "@/stores/project";
-import DictonaryApi from "@/utilities/network/dictionary";
+import DictonaryApi from "@/utilities/network/dictionaryGlobal";
 
-export const useDictionaryStore = defineStore({
-  id: "dictionary",
+export const useGlobalDictionaryStore = defineStore({
+  id: "dictionary_global",
   state: () => ({
     words: {},
     wordRows: [],
@@ -15,6 +15,11 @@ export const useDictionaryStore = defineStore({
     },
     getRows: (state) => {
       return state.wordRows;
+    },
+    containsWord: (state) => {
+      return (word) => {
+        return word in state.words;
+      };
     },
   },
   actions: {
@@ -32,11 +37,12 @@ export const useDictionaryStore = defineStore({
         this.wordRows = wordRows;
       });
     },
-    createWord(data) {
+    addWord(word) {
+      console.log(word);
       const projectStore = useProjectStore();
-      return DictonaryApi.create(projectStore.getProjectInfo.id, data).then(
+      return DictonaryApi.create(projectStore.getProjectInfo.id, { word }).then(
         (res) => {
-          this.words[data.word] = this.wordRows.length;
+          this.words[word] = this.wordRows.length;
           this.wordRows.push(res);
         }
       );
@@ -49,14 +55,6 @@ export const useDictionaryStore = defineStore({
       ).then(() => {
         return this.fetchDictionary();
       });
-    },
-    updateWord(data) {
-      const projectStore = useProjectStore();
-      return DictonaryApi.update(projectStore.getProjectInfo.id, data).then(
-        () => {
-          this.wordRows[this.words[data.word]] = data;
-        }
-      );
     },
   },
 });

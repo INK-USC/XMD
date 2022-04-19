@@ -47,6 +47,6 @@ class Word(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["document"], name="word_document_index")
+            models.Index(fields=["document"], name="word_document_index"),
+            models.Index(fields=["text"], name="word_text_index")
         ]
-        ordering = ('order',)

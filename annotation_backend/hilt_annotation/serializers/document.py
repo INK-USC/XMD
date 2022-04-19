@@ -22,3 +22,9 @@ class WordSerializer(serializers.ModelSerializer):
 
 class WordWithDocSerializer(WordSerializer):
     document = DocumentSerializer(read_only=True)
+
+
+class WordGroupedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = ['text']

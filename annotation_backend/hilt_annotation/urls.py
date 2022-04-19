@@ -16,6 +16,9 @@ urlpatterns = [
     # Labels
     path('projects/<int:project_id>/labels/', views.LabelList.as_view(), name="labels-list"),
     path('projects/<int:project_id>/labels/<str:pk>/', views.LabelDetail.as_view(), name="labels-rud"),
+    # words
+    path('projects/<int:project_id>/words/', views.WordList.as_view(), name="words-list"),
+    path('projects/<int:project_id>/words/<str:word>/', views.WordDetails.as_view(), name="words-documents-list"),
     # dict global explanation
     path('projects/<int:project_id>/dict/global/', views.GlobalExplanationDictionaryList.as_view(), name="dict-list-c"),
     path('projects/<int:project_id>/dict/global/<str:pk>/', views.GlobalExplanationDictionaryDetail.as_view(),
