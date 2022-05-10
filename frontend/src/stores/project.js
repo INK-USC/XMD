@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 
+import ProjectsApi from "@/utilities/network/project";
+
 export const useProjectStore = defineStore({
   id: "project",
   state: () => ({
@@ -16,6 +18,9 @@ export const useProjectStore = defineStore({
   actions: {
     setProject(project) {
       this.projectInfo = project;
+    },
+    exportJSON() {
+      return ProjectsApi.exportJSON(this.projectInfo.id);
     },
   },
 });

@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Avg
 from rest_framework import generics, permissions, filters
 
 from ..serializers import DocumentSerializer, LabelSerializer, WordGroupedSerializer, DocumentWordSerializer
@@ -61,7 +62,8 @@ class WordList(generics.ListAPIView):
     pagination_class = LargeResultsSetPagination
 
     def get_queryset(self):
-        return self.queryset.filter(document__project=self.kwargs['project_id']).distinct('text').order_by('text')
+        return self.queryset.filter(document__project=self.kwargs['project_id']).values('text').annotate(
+            score=Avg('word_annotation_score__score')).order_by('-score')
 
 
 class WordDetails(generics.ListAPIView):

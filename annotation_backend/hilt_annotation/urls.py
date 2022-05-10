@@ -28,4 +28,6 @@ urlpatterns = [
          name="dict-local-list-c"),
     path('projects/<int:project_id>/dict/local/<str:pk>/', views.LocalExplanationDictionaryDetail.as_view(),
          name="dict-local-rud"),
+    # Export data
+    path('export/json/<int:project_id>/', views.DownloadData.as_view(), name="docs-export-json"),
 ]

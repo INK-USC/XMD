@@ -4,3 +4,4 @@ from .document_upload import DocumentUpload
 from .doc_word_ann import DocWordAnnDetail
 from .debugging import GlobalExplanationDictionaryDetail, GlobalExplanationDictionaryList, \
     LocalExplanationDictionaryDetail, LocalExplanationDictionaryList
+from .export_data import DownloadData

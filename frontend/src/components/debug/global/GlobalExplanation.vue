@@ -66,7 +66,9 @@
 
     <el-card style="width: 100%; margin-top: 10px">
       <template #header>
-        <div>Documents</div>
+        <div>
+          Current Word: <b>{{ this.wordStore.getCurrWord() }} </b>
+        </div>
       </template>
       <el-row
         style="width: 100%"
@@ -113,7 +115,13 @@
                   trigger="hover"
                 >
                   <template #reference>
-                    <span>
+                    <span
+                      :style="
+                        wordData.text === this.wordStore.getCurrWord()
+                          ? { border: '2px solid black' }
+                          : {}
+                      "
+                    >
                       {{ wordData.text }}
                     </span>
                   </template>

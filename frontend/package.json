@@ -11,6 +11,7 @@
     "@element-plus/icons-vue": "^1.1.4",
     "axios": "^0.26.1",
     "element-plus": "^2.1.5",
+    "js-file-download": "^0.4.12",
     "jwt-decode": "^3.1.2",
     "luxon": "^2.3.1",
     "pinia": "^2.0.11",

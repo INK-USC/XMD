@@ -11,6 +11,9 @@ export default {
     return api.put(`hilt/projects/${project.id}/`, project);
   },
   delete(projectID) {
-    return api.delete(`hilt/projects/${projectID}`);
+    return api.delete(`hilt/projects/${projectID}/`);
+  },
+  exportJSON(projectID) {
+    return api.get(`hilt/export/json/${projectID}/`);
   },
 };
