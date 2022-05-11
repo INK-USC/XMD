@@ -13,9 +13,10 @@ class DocumentList(generics.ListAPIView):
     serializer_class = DocumentSerializer
     search_fields = ('text',)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filterset_fields = ['annotated']
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         annotated_count = queryset.filter(annotated=True).count()
 
         page = self.paginate_queryset(queryset)

@@ -1,8 +1,11 @@
 import api from "./index";
 
 export default {
-  list(projectID) {
-    return api.get(`hilt/projects/${projectID}/dict/global/?page_size=10000`);
+  list(projectID, query) {
+    const queryQP = query !== undefined ? `&q=${query}` : "";
+    return api.get(
+      `hilt/projects/${projectID}/dict/global/?page_size=10000` + queryQP
+    );
   },
   create(projectID, data) {
     return api.post(`hilt/projects/${projectID}/dict/global/`, data);

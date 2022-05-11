@@ -16,7 +16,9 @@
         clearable
       >
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <div style="align-content: center">
+            <el-icon><Search /></el-icon>
+          </div>
         </template>
       </el-input>
     </div>

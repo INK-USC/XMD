@@ -13,6 +13,7 @@ export const useWordStore = defineStore({
     curWordIndex: 0,
     pageSize: 10,
     currDocuments: [],
+    searchQuery: undefined,
   }),
   getters: {
     getWords: (state) => {
@@ -33,10 +34,11 @@ export const useWordStore = defineStore({
     },
   },
   actions: {
-    resetState() {
+    resetState(q = undefined) {
       this.curPage = 1;
       this.pageSize = 10;
       this.currDocuments = [];
+      this.searchQuery = q;
       return this.fetchWords();
     },
     setCurWordIndex(curWordIndex) {
@@ -47,7 +49,8 @@ export const useWordStore = defineStore({
       return WordsApi.list(
         projectStore.getProjectInfo.id,
         this.curPage,
-        this.pageSize
+        this.pageSize,
+        this.searchQuery
       ).then((res) => {
         this.words = res.results;
         this.totalWordCount = res.count;

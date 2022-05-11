@@ -23,19 +23,21 @@ export const useGlobalDictionaryStore = defineStore({
     },
   },
   actions: {
-    fetchDictionary() {
+    fetchDictionary(q = undefined) {
       const projectStore = useProjectStore();
-      return DictonaryApi.list(projectStore.getProjectInfo.id).then((res) => {
-        const results = res.results;
-        const words = {};
-        const wordRows = [];
-        for (let item of results) {
-          words[item.word] = wordRows.length;
-          wordRows.push(item);
+      return DictonaryApi.list(projectStore.getProjectInfo.id, q).then(
+        (res) => {
+          const results = res.results;
+          const words = {};
+          const wordRows = [];
+          for (let item of results) {
+            words[item.word] = wordRows.length;
+            wordRows.push(item);
+          }
+          this.words = words;
+          this.wordRows = wordRows;
         }
-        this.words = words;
-        this.wordRows = wordRows;
-      });
+      );
     },
     addWord(word) {
       console.log(word);

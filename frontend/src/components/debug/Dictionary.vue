@@ -2,44 +2,29 @@
   <div>
     <div style="text-align: center">
       <div>
-        <h1>All Words in Dictionary</h1>
+        <h1>All Words in Global Dictionary</h1>
       </div>
       <el-input
-        v-model="searchQuery"
+        v-model.lazy.trim="searchQuery"
         placeholder="Type to search for words"
         style="width: 50%"
         clearable
       >
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <div style="align-content: center">
+            <el-icon><Search /></el-icon>
+          </div>
         </template>
       </el-input>
     </div>
 
-    <el-table
-      :data="
-        dictionaryStore.getRows.filter(
-          (row) =>
-            !searchQuery ||
-            row.word.toLowerCase().includes(searchQuery.toLowerCase().trim())
-        )
-      "
-      stripe
-    >
+    <el-table :data="Array.from(dictionaryStore.getRows)" stripe>
       <el-table-column type="index" :index="indexMethod" />
       <el-table-column label="Text" sortable>
         <template #default="scope">
-          <p>{{ scope.row.word }}</p>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="Explanation Type"
-        sortable
-        :filters="this.filters"
-        :filter-method="filterTask"
-      >
-        <template #default="scope">
-          <p>{{ ExplanationTypes[scope.row.explanation_type] }}</p>
+          <p @click="onClick(scope.$index, scope.row)" style="cursor: pointer">
+            {{ scope.row.word }}
+          </p>
         </template>
       </el-table-column>
       <el-table-column label="Operations">
@@ -63,21 +48,18 @@
 
 <script>
 import { Search, Delete } from "@element-plus/icons-vue";
-import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
+import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
 
-// show all the document for this project
 export default {
-  name: "DocumentList",
+  name: "DictionaryOverview",
   components: {
     Search,
     Delete,
   },
   setup() {
-    const dictionaryStore = useLocalDictionaryStore();
-    const filters = [];
+    const dictionaryStore = useGlobalDictionaryStore();
     return {
       dictionaryStore,
-      filters,
     };
   },
   data() {
@@ -85,20 +67,23 @@ export default {
       searchQuery: "",
     };
   },
+  watch: {
+    searchQuery: function (newSearchQuery, oldSearchQuery) {
+      this.dictionaryStore.fetchDictionary(newSearchQuery);
+    },
+  },
   methods: {
     // show the index of the document
     indexMethod(index) {
       return index + 1;
     },
+    onClick(index, row) {
+      this.$router.push({ name: "DebugGlobal", query: { q: row.word } });
+    },
     handleDelete(index, row) {
-      this.dictionaryStore.deleteWord(row).then(() => {
+      this.dictionaryStore.deleteWord(row.word).then(() => {
         this.dictionaryStore.fetchDictionary();
       });
-    },
-    filterTask(value, row, column) {
-      let taskId = row[column.property];
-      let taskName = ExplanationTypes[taskId];
-      return value === taskName;
     },
   },
   created() {

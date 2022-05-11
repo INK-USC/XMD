@@ -15,13 +15,13 @@
         <el-icon><Management /></el-icon>
         <span>Overview</span>
       </el-menu-item>
-      <!-- <el-menu-item
+      <el-menu-item
         index="/debug/dictionary"
         @click="() => this.$router.push({ name: 'DebugDictionary' })"
       >
         <el-icon><List /></el-icon>
         <span>Dictionary</span>
-      </el-menu-item> -->
+      </el-menu-item>
       <el-menu-item
         index="2"
         @click="() => this.$router.push({ name: 'DebugLocal' })"
@@ -45,7 +45,7 @@ import {
   Back,
   Document,
   DocumentCopy,
-  // List,
+  List,
   Management,
 } from "@element-plus/icons-vue";
 
@@ -56,7 +56,7 @@ export default {
     Back,
     Document,
     DocumentCopy,
-    // List,
+    List,
     Management,
   },
 };

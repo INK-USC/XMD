@@ -7,7 +7,19 @@
       </el-menu-item>
     </el-menu>
 
-    <el-table :data="words">
+    <el-input
+      v-model="searchQuery"
+      placeholder="Type to search for words"
+      style="margin-top: 20px; width: 90%"
+      clearable
+    >
+      <template #prefix>
+        <div style="align-content: center">
+          <el-icon><Search /></el-icon>
+        </div>
+      </template>
+    </el-input>
+    <el-table :data="Array.from(wordStore.getWords)">
       <el-table-column width="40">
         <template #default="scope">
           <span v-if="globalDictionaryStore.containsWord(scope.row.text)">
@@ -48,7 +60,7 @@
 </template>
 
 <script>
-import { Back, Check } from "@element-plus/icons-vue";
+import { Back, Check, Search } from "@element-plus/icons-vue";
 import { useWordStore } from "@/stores/word";
 import { useLabelStore } from "@/stores/label";
 import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
@@ -58,6 +70,7 @@ export default {
   components: {
     Back,
     Check,
+    Search,
   },
   setup() {
     const labelStore = useLabelStore();
@@ -69,11 +82,35 @@ export default {
       globalDictionaryStore,
     };
   },
+  data() {
+    return {
+      searchQuery: "",
+    };
+  },
+  watch: {
+    searchQuery: function (newSearchQuery, oldSearchQuery) {
+      console.log(newSearchQuery);
+      if (newSearchQuery === "")
+        this.wordStore.resetState().then(() => {
+          this.wordStore.fetchDocuments();
+        });
+      else
+        this.wordStore.resetState(newSearchQuery).then(() => {
+          this.wordStore.fetchDocuments();
+        });
+    },
+  },
   created() {
+    if (this.$route.query.q !== undefined) {
+      this.searchQuery = this.$route.query.q;
+    }
     const promises = [];
     promises.push(this.labelStore.fetchLabels());
     promises.push(this.globalDictionaryStore.fetchDictionary());
-    promises.push(this.wordStore.resetState());
+
+    if (this.searchQuery === "") promises.push(this.wordStore.resetState());
+    else promises.push(this.wordStore.resetState(this.searchQuery));
+
     Promise.all(promises).then(() => {
       this.wordStore.fetchDocuments();
     });
@@ -87,11 +124,6 @@ export default {
     goToDocument(index) {
       this.wordStore.setCurWordIndex(index);
       this.wordStore.fetchDocuments();
-    },
-  },
-  computed: {
-    words: function () {
-      return this.wordStore.getWords;
     },
   },
 };
