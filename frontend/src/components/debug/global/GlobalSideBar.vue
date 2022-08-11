@@ -19,7 +19,7 @@
         </div>
       </template>
     </el-input>
-    <el-table :data="Array.from(wordStore.getWords)">
+    <el-table :data="Array.from(wordStore.getWords)" :row-style="tableRowStyle">
       <el-table-column width="40">
         <template #default="scope">
           <span v-if="globalDictionaryStore.containsWord(scope.row.text)">
@@ -116,6 +116,24 @@ export default {
     });
   },
   methods: {
+    tableRowStyle({ row }) {
+      if (this.globalDictionaryStore.containsWord(row.text)) {
+        if (
+          this.globalDictionaryStore.getRows[
+            this.globalDictionaryStore.getWords[row.text]
+          ].modification_type == 0
+        )
+          return {
+            color: "white",
+            backgroundColor: "#67C23A",
+          };
+        return {
+          color: "white",
+          backgroundColor: "#F56C6C",
+        };
+      }
+      return {};
+    },
     pageChanged(pageNum) {
       this.wordStore.updateCurPage(pageNum).then(() => {
         this.wordStore.fetchDocuments();

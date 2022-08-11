@@ -59,7 +59,7 @@ class DocumentWordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fields = ['id', 'project', 'text', 'annotated', 'metadata', 'words', 'annotations']
+        fields = ['id', 'project', 'text', 'annotated', 'metadata', 'words', 'ground_truth', 'annotations']
 
     def get_words(self, instance):
         words = instance.words.all().order_by('order')

@@ -42,6 +42,17 @@
         <el-col :span="16">
           <el-row>
             <el-tag>Words</el-tag>
+            <el-tag
+              v-if="'ground_truth' in this.detailedDocumentStore.getDocument"
+              style="margin-left: 10px"
+            >
+              Ground truth:
+              {{
+                getLabelByID(
+                  this.detailedDocumentStore.getDocument.ground_truth
+                ).text
+              }}
+            </el-tag>
           </el-row>
           <el-row style="line-height: 2; margin-top: 10px">
             <div>
@@ -56,7 +67,7 @@
           </el-row>
           <el-divider />
           <el-row>
-            <el-tag>Annotations</el-tag>
+            <el-tag>Model Output</el-tag>
           </el-row>
           <el-row
             style="margin-top: 10px"
@@ -94,16 +105,38 @@
                       annotation.label
                     )
                   "
-                  @click="wordClick(annotation.id, wordData.id)"
                 >
-                  <el-popover
-                    :content="
-                      wordData.text +
-                      ': ' +
-                      wordData.scores[annotation.id].score
-                    "
-                    trigger="hover"
-                  >
+                  <el-popover trigger="hover" width="200px">
+                    <p>
+                      {{
+                        wordData.text +
+                        ": " +
+                        wordData.scores[annotation.id].score
+                      }}
+                    </p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button
+                        size="small"
+                        type="success"
+                        @click="wordClick(annotation.id, wordData.id, 0)"
+                      >
+                        add
+                      </el-button>
+                      <el-button
+                        size="small"
+                        type="primary"
+                        @click="wordClick(annotation.id, wordData.id, 1)"
+                      >
+                        remove
+                      </el-button>
+                      <el-button
+                        size="small"
+                        type="info"
+                        @click="wordClick(annotation.id, wordData.id, -1)"
+                      >
+                        reset
+                      </el-button>
+                    </div>
                     <template #reference>
                       <span>
                         {{ wordData.text }}
@@ -123,6 +156,12 @@
                 <span :style="getWordStyle(scope.row.score, scope.row.label)">
                   {{ scope.row.word }}
                 </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Type">
+              <template #default="scope">
+                <el-tag v-if="scope.row.type == 0" type="success">Add</el-tag>
+                <el-tag v-if="scope.row.type == 1" type="danger">Remove</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="Operations">
@@ -227,7 +266,7 @@ export default {
     wordDelete(dictID) {
       this.localDictionaryStore.deleteWord(dictID);
     },
-    wordClick(annID, wordID) {
+    wordClick(annID, wordID, type) {
       const docID = this.detailedDocumentStore.getDocument.id;
       const dictID = this.localDictionaryStore.fetchIfExists(
         docID,
@@ -235,14 +274,18 @@ export default {
         annID
       );
       if (dictID === null) {
-        this.localDictionaryStore.addWord(docID, {
-          word: wordID,
-          annotation: annID,
-        });
+        if (type >= 0) {
+          this.localDictionaryStore.addWord(docID, {
+            word: wordID,
+            annotation: annID,
+            modification_type: type,
+          });
+        }
+      } else {
+        if (type == -1) {
+          this.wordDelete(dictID["id"]);
+        }
       }
-      //  else {
-      //   this.localDictionaryStore.deleteWord(dictID);
-      // }
     },
     getColors(labelID) {
       const label = this.getLabelByID(labelID);
@@ -364,7 +407,7 @@ export default {
         }
         const annotations = words[wordID];
         for (const annID in annotations) {
-          const dictID = annotations[annID];
+          const dictID = annotations[annID]["id"];
           const annScore = wordData.scores[annID].score;
           let label;
           for (const annData of this.detailedDocumentStore.getDocument
@@ -382,6 +425,7 @@ export default {
               order: 0, // to override and display
             },
             label,
+            type: annotations[annID]["modification_type"],
           });
         }
       }

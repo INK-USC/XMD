@@ -5,7 +5,7 @@ from ..models.document import Document, Label, Word
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ['id', 'project', 'text', 'annotated', 'metadata']
+        fields = ['id', 'project', 'text', 'annotated', 'ground_truth', 'metadata']
 
 
 class LabelSerializer(serializers.ModelSerializer):

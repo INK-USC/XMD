@@ -1,0 +1,76 @@
+{
+  "dictionary": {
+    "global": [
+      "gay",
+      "black"
+    ]
+  },
+  "data": [
+    {
+      "text": "I am a gay black woman",
+      "words": [
+        "I",
+        "am",
+        "a",
+        "gay",
+        "black",
+        "woman"
+      ],
+      "annotations": [
+        {
+          "label": "Negative",
+          "scores": [
+            0.0,
+            0.0,
+            0.0,
+            0.3,
+            0.5,
+            0.2
+          ]
+        }
+      ],
+      "explanations": [
+        {
+          "type": "local",
+          "word": "woman"
+        },
+        {
+          "type": "global",
+          "word": "black"
+        },
+        {
+          "type": "global",
+          "word": "gay"
+        }
+      ],
+      "belongs_to": "train"
+    },
+    {
+      "text": "A very well-made, funny and entertaining picture",
+      "words": [
+        "A",
+        "very",
+        "well-made,",
+        "funny",
+        "and",
+        "entertaining",
+        "picture"
+      ],
+      "annotations": [
+        {
+          "label": "Positive",
+          "scores": [
+            0.0,
+            0.0,
+            0.15,
+            0.45,
+            0.0,
+            0.3,
+            0.1
+          ]
+        }
+      ],
+      "belongs_to": "train"
+    }
+  ]
+}

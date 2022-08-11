@@ -14,6 +14,7 @@ export const useWordStore = defineStore({
     pageSize: 10,
     currDocuments: [],
     searchQuery: undefined,
+    wordLoaded: false,
   }),
   getters: {
     getWords: (state) => {
@@ -65,6 +66,7 @@ export const useWordStore = defineStore({
       return this.fetchWords();
     },
     fetchDocuments() {
+      this.wordLoaded = false;
       const projectStore = useProjectStore();
       return WordsApi.documents(
         projectStore.getProjectInfo.id,
@@ -100,6 +102,7 @@ export const useWordStore = defineStore({
           // }
         }
         this.currDocuments = res.results;
+        this.wordLoaded = true;
       });
     },
   },

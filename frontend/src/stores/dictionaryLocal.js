@@ -45,7 +45,7 @@ export const useLocalDictionaryStore = defineStore({
               docs[docID][wordID] = {};
             }
             const annID = item["annotation"];
-            docs[docID][wordID][annID] = item["id"];
+            docs[docID][wordID][annID] = item;
             // docs[item.word] = docsRow.length;
             // docsRow.push(item);
           }

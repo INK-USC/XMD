@@ -39,15 +39,16 @@ export const useGlobalDictionaryStore = defineStore({
         }
       );
     },
-    addWord(word) {
-      console.log(word);
+    addWord(word, modification_type, ground_truth_label) {
       const projectStore = useProjectStore();
-      return DictonaryApi.create(projectStore.getProjectInfo.id, { word }).then(
-        (res) => {
-          this.words[word] = this.wordRows.length;
-          this.wordRows.push(res);
-        }
-      );
+      return DictonaryApi.create(projectStore.getProjectInfo.id, {
+        word,
+        modification_type,
+        ground_truth_label,
+      }).then((res) => {
+        this.words[word] = this.wordRows.length;
+        this.wordRows.push(res);
+      });
     },
     deleteWord(word) {
       const projectStore = useProjectStore();

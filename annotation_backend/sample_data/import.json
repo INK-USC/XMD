@@ -1,56 +1,74 @@
 {
   "data": [
     {
-      "text": "I am a gay black woman",
+      "text": "There is a big difference between muslims and terrorists",
       "words": [
-        "I",
-        "am",
+        "There",
+        "is",
         "a",
-        "gay",
-        "black",
-        "woman"
+        "big",
+        "difference",
+        "between",
+        "muslims",
+        "and",
+        "terrorists"
       ],
       "annotations": [
         {
-          "label": "Negative",
+          "label": "Hate",
           "scores": [
-            0.0,
-            0.0,
-            0.0,
-            0.3,
-            0.5,
-            0.2
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.7,
+            0,
+            0.3
           ]
         }
       ],
-      "belongs_to": "train"
+      "belongs_to": "train",
+      "label": "Not Hate"
     },
     {
-      "text": "A very well-made, funny and entertaining picture",
+      "text": "All muslims are terrorists and need to be deported from this country",
       "words": [
-        "A",
-        "very",
-        "well-made,",
-        "funny",
+        "All",
+        "muslims",
+        "are",
+        "terrorists",
         "and",
-        "entertaining",
-        "picture"
+        "need",
+        "to",
+        "be",
+        "deported",
+        "from",
+        "this",
+        "country"
       ],
       "annotations": [
         {
-          "label": "Positive",
+          "label": "Hate",
           "scores": [
-            0.0,
-            0.0,
-            0.15,
-            0.45,
-            0.0,
+            0,
+            0.7,
+            0,
             0.3,
-            0.1
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
           ]
         }
       ],
-      "belongs_to": "train"
+      "belongs_to": "train",
+      "label": "Hate"
     }
   ]
 }

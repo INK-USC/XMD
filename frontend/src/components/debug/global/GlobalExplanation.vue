@@ -34,22 +34,6 @@
           Prev
         </el-button>
         <el-button
-          type="success"
-          @click="globalDictionaryStore.addWord(wordStore.getCurrWord())"
-          v-if="!globalDictionaryStore.containsWord(wordStore.getCurrWord())"
-        >
-          <el-icon><Plus /></el-icon>
-          Add to Dictionary
-        </el-button>
-        <el-button
-          type="danger"
-          @click="globalDictionaryStore.deleteWord(wordStore.getCurrWord())"
-          v-if="globalDictionaryStore.containsWord(wordStore.getCurrWord())"
-        >
-          <el-icon><Delete /></el-icon>
-          Delete from Dictionary
-        </el-button>
-        <el-button
           type="primary"
           @click="goToNextWord()"
           :disabled="
@@ -64,10 +48,41 @@
       </el-col>
     </el-row>
 
-    <el-card style="width: 100%; margin-top: 10px">
+    <el-card style="width: 100%; margin-top: 10px" v-if="wordStore.wordLoaded">
       <template #header>
         <div>
           Current Word: <b>{{ this.wordStore.getCurrWord() }} </b>
+
+          <div style="margin-left: 10px; display: inline-block">
+            <el-button
+              size="small"
+              type="success"
+              @click="addWord(0)"
+              v-if="
+                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
+              "
+            >
+              add
+            </el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="addWord(1)"
+              v-if="
+                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
+              "
+            >
+              remove
+            </el-button>
+            <el-button
+              size="small"
+              type="info"
+              @click="globalDictionaryStore.deleteWord(wordStore.getCurrWord())"
+              v-if="globalDictionaryStore.containsWord(wordStore.getCurrWord())"
+            >
+              reset
+            </el-button>
+          </div>
         </div>
       </template>
       <el-row
@@ -77,6 +92,9 @@
       >
         <el-row style="width: 100%; margin-bottom: 5px">
           <el-tag>Document #{{ docIndex + 1 }}</el-tag>
+          <el-tag style="margin-left: 10px" v-if="'ground_truth' in document">
+            Ground truth: {{ getLabelByID(document.ground_truth).text }}
+          </el-tag>
         </el-row>
         <el-row
           style="width: 100%"
@@ -85,7 +103,9 @@
         >
           <el-row style="width: 100%">
             <!-- TODO: Task based -->
-            <el-tag>Label: {{ getLabelByID(annotation.label).text }}</el-tag>
+            <el-tag>
+              Prediction: {{ getLabelByID(annotation.label).text }}
+            </el-tag>
             <div
               style="margin-left: 5px; padding: 5px; border: 2px solid black"
             >
@@ -137,7 +157,7 @@
 </template>
 
 <script>
-import { ArrowLeft, ArrowRight, Plus, Delete } from "@element-plus/icons-vue";
+import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 
 import { useWordStore } from "@/stores/word";
 import { useProjectStore } from "@/stores/project";
@@ -150,8 +170,6 @@ export default {
   components: {
     ArrowLeft,
     ArrowRight,
-    Delete,
-    Plus,
   },
   setup() {
     const labelStore = useLabelStore();
@@ -173,6 +191,13 @@ export default {
     },
   },
   methods: {
+    addWord(type) {
+      this.globalDictionaryStore.addWord(
+        this.wordStore.getCurrWord(),
+        type,
+        this.getLabelByID(this.documents[0].ground_truth).id
+      );
+    },
     getColors(labelID) {
       const label = this.getLabelByID(labelID);
       return ColorSets[label.color_set].colors;

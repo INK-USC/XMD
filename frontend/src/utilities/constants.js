@@ -18,10 +18,10 @@ export const ColorSets = {
   1: {
     name: "Red",
     colors: [
-      { "background-color": "#F08080", color: "#000000" },
-      { "background-color": "#CD5C5C", color: "#000000" },
+      { "background-color": "#EA9999", color: "#000000" },
+      { "background-color": "#E06666", color: "#FFFFFF" },
       // { "background-color": "#DC143C", color: "#000000" },
-      { "background-color": "#B22222", color: "#000000" },
+      { "background-color": "#CC0000", color: "#FFFFFF" },
       // { "background-color": "#800000", color: "#FFFFFF" },
     ],
   },

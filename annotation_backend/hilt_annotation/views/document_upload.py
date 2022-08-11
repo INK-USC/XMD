@@ -105,6 +105,14 @@ def create_docs_from_json(project, data_file):
             annotations = entry.get("annotations", [])
             belongs_to = map_dataset_label(entry.get("belongs_to", ""))
             cur_doc = Document(text=text, metadata=metadata, project=project, belongs_to=belongs_to)
+            ground_truth = entry.get("label", None)
+            if ground_truth is not None:
+                if ground_truth not in all_annotation_labels:
+                    max_color_set += 1
+                    new_label = Label(text=ground_truth, project=project, color_set=max_color_set)
+                    new_label.save()
+                    all_annotation_labels[ground_truth] = new_label
+                cur_doc.ground_truth = all_annotation_labels[ground_truth]
             cur_doc.save()
             word_docs = list()
             for index, word in enumerate(words):

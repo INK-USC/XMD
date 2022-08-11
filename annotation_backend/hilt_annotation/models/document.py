@@ -17,6 +17,8 @@ class Document(models.Model):
     text = models.TextField()
     annotated = models.BooleanField(default=False)
     metadata = models.TextField(default='{}')
+    ground_truth = models.ForeignKey(default=None, null=True, on_delete=models.CASCADE,
+                                     related_name='ground_truth_document', to='Label')
     belongs_to = models.IntegerField(default=BelongsToLabel.TRAIN, choices=BelongsToLabel.choices)
 
     class Meta:
