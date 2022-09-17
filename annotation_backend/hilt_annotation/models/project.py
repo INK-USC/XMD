@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class TaskTypes(models.IntegerChoices):
-    SA = 1, _("Sentiment Analysis")
+    SA = 1, _("Sequence Classification")
     RE = 2, _("Relation Extraction")
 
 

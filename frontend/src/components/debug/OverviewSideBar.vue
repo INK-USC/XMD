@@ -27,14 +27,14 @@
         @click="() => this.$router.push({ name: 'DebugLocal' })"
       >
         <el-icon><Document /></el-icon>
-        <span>Local Explanations</span>
+        <span>Instance Explanations</span>
       </el-menu-item>
       <el-menu-item
         index="3"
         @click="() => this.$router.push({ name: 'DebugGlobal' })"
       >
         <el-icon><DocumentCopy /></el-icon>
-        <span>Global Explanations</span>
+        <span>Task Explanations</span>
       </el-menu-item>
     </el-menu>
   </el-col>

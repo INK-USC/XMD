@@ -1,5 +1,5 @@
 export const TaskTypes = {
-  1: "Sentiment Analysis",
+  1: "Sequence Classification",
   2: "Relation Extraction",
 };
 

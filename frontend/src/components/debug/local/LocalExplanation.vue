@@ -66,9 +66,9 @@
             </div>
           </el-row>
           <el-divider />
-          <el-row>
+          <!-- <el-row>
             <el-tag>Model Output</el-tag>
-          </el-row>
+          </el-row> -->
           <el-row
             style="margin-top: 10px"
             v-for="annotation in this.detailedDocumentStore.getDocument
@@ -77,8 +77,9 @@
           >
             <el-row style="width: 100%">
               <!-- TODO: Task based -->
+              <el-tag style="margin-right: 10px">Model Output</el-tag>
               <el-tag>Label: {{ getLabelByID(annotation.label).text }}</el-tag>
-              <div
+              <!-- <div
                 style="margin-left: 5px; padding: 5px; border: 2px solid black"
               >
                 <span
@@ -91,7 +92,7 @@
                 >
                   Word
                 </span>
-              </div>
+              </div> -->
             </el-row>
             <el-row style="line-height: 2; margin-top: 10px">
               <div>

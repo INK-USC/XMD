@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('prob', models.FloatField(default=0.0)),
-                ('task', models.IntegerField(choices=[(1, 'Sentiment Analysis'), (2, 'Relation Extraction')], default=1)),
+                ('task', models.IntegerField(choices=[(1, 'Sequence Classification'), (2, 'Relation Extraction')], default=1)),
             ],
         ),
         migrations.CreateModel(
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('description', models.CharField(max_length=500)),
-                ('task', models.IntegerField(choices=[(1, 'Sentiment Analysis'), (2, 'Relation Extraction')], default=1)),
+                ('task', models.IntegerField(choices=[(1, 'sequence classification'), (2, 'Relation Extraction')], default=1)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_projects', to=settings.AUTH_USER_MODEL)),

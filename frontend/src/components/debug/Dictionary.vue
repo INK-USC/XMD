@@ -2,7 +2,7 @@
   <div>
     <div style="text-align: center">
       <div>
-        <h1>All Words in Global Dictionary</h1>
+        <h1>Task Dictionary</h1>
       </div>
       <el-input
         v-model.lazy.trim="searchQuery"

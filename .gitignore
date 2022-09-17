@@ -13,5 +13,8 @@ media
 .idea/
 .vscode/
 
+
 # Jupyter Notebook 
 .ipynb_checkpoints 
+
+.frontend/yarn.lock

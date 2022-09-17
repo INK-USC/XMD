@@ -90,12 +90,12 @@
         v-for="(document, docIndex) in documents"
         :key="document.id"
       >
-        <el-row style="width: 100%; margin-bottom: 5px">
+        <!-- <el-row style="width: 100%; margin-bottom: 5px">
           <el-tag>Document #{{ docIndex + 1 }}</el-tag>
           <el-tag style="margin-left: 10px" v-if="'ground_truth' in document">
             Ground truth: {{ getLabelByID(document.ground_truth).text }}
           </el-tag>
-        </el-row>
+        </el-row> -->
         <el-row
           style="width: 100%"
           v-for="annotation in document.annotations"
@@ -103,10 +103,14 @@
         >
           <el-row style="width: 100%">
             <!-- TODO: Task based -->
-            <el-tag>
+            <el-tag>Document #{{ docIndex + 1 }}</el-tag>
+            <el-tag style="margin-left: 10px" v-if="'ground_truth' in document">
+              Ground truth: {{ getLabelByID(document.ground_truth).text }}
+            </el-tag>
+            <el-tag style="margin-left: 10px">
               Prediction: {{ getLabelByID(annotation.label).text }}
             </el-tag>
-            <div
+            <!-- <div
               style="margin-left: 5px; padding: 5px; border: 2px solid black"
             >
               <span
@@ -117,7 +121,7 @@
               >
                 Word
               </span>
-            </div>
+            </div> -->
           </el-row>
           <el-row style="line-height: 2; margin-top: 10px">
             <div>
