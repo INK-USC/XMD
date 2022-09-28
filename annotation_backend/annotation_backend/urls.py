@@ -14,12 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.shortcuts import render
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+def render_vue(request):
+    return render(request, "index.html")
 
 urlpatterns = [
     # hilt-api
@@ -30,4 +34,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # admin-site
     path('admin/', admin.site.urls),
+    re_path(r"^$", render_vue),
+    re_path(r"^(?:.*)/?$", render_vue)
 ]
