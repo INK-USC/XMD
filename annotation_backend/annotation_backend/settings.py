@@ -157,16 +157,6 @@ SIMPLE_JWT = {
 
 STATIC_ROOT = os.path.join(BASE_DIR, "dist")
 
-# STATICFILES_DIRS = [
-#   # Tell Django where to look for React's static files (css, js)
-#   os.path.join(BASE_DIR, "dist"),
-# ]
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 WHITENOISE_INDEX_FILE = True
 WHITENOISE_ROOT = STATIC_ROOT
-
-
-# STATIC_URL = '/static/'
-# STATIC_ROOT = 'var/static_root'
-# STATICFILES_DIRS = ['static']
