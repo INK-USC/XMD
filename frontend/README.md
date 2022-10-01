@@ -1,6 +1,8 @@
 # HILT Demo
 
-This template should help get you started developing with Vue 3 in Vite.
+**Ensure Node.js v16 is installed.**
+
+This template should help get you started developing with Vue 3 in Vite. 
 
 ## Recommended IDE Setup
 
