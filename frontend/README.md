@@ -24,7 +24,7 @@ npm install
 npm run dev
 ```
 
-### Build Static Files and migrate to Django
+### Build Static files and Migrate to Django
 
 ```sh
 npm run buildAndRelocate
