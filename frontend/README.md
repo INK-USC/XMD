@@ -24,10 +24,10 @@ npm install
 npm run dev
 ```
 
-### Compile and Minify for Production
+### Build Static Files and migrate to Django
 
 ```sh
-npm run build
+npm run buildAndRelocate
 ```
 
 ### Lint with [ESLint](https://eslint.org/)

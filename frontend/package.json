@@ -6,7 +6,7 @@
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "relocate": "yarn build && rm -rf ../annotation_backend/dist && mv -f dist ../annotation_backend"
+    "buildAndRelocate": "vite build && rm -rf ../annotation_backend/dist && mv -f dist ../annotation_backend"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.4",
@@ -20,7 +20,8 @@
     "sass-loader": "^12.6.0",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12",
-    "vue-snip": "^2.0.0"
+    "vue-snip": "^2.0.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",

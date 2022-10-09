@@ -67,6 +67,7 @@ Note: All paths are relative to being just outside the `HILT-DEMO` directory. Pl
 
 - `annotation_backend/`
     - `annotation_backend/` - django application
+    - `dist` - vue static files
     - `hilt_annotation/` - django application
     - `sample_data/` - sample datasets for testing
 - `frontend/` - Vue.js frontend project directory
