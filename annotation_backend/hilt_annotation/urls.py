@@ -30,4 +30,8 @@ urlpatterns = [
          name="dict-local-rud"),
     # Export data
     path('export/json/<int:project_id>/', views.DownloadData.as_view(), name="docs-export-json"),
+    # Models
+    path('projects/<int:project_id>/models/', views.ModelList.as_view(), name="models-list"),
+    path('projects/<int:project_id>/models/upload/', views.ModelZipUpload.as_view(), name="models-upload"),
+    path('projects/<int:project_id>/models/<str:pk>/', views.ModelDetail.as_view(), name="models-rud")
 ]

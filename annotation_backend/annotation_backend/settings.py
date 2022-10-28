@@ -89,7 +89,7 @@ DATABASES = {
         'USER': 'hilt_user',
         'PASSWORD': '123',
         'HOST': 'localhost',
-        'PORT': '15555',
+        'PORT': '5432',
     }
 }
 
@@ -171,3 +171,7 @@ CSRF_COOKIE_SECURE              = False
 SECURE_HSTS_SECONDS             = None
 SECURE_HSTS_INCLUDE_SUBDOMAINS  = False
 SECURE_FRAME_DENY               = False
+
+# MEDIA CONFIGURATIONS TO SAVE MODEL UPLOADS
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'

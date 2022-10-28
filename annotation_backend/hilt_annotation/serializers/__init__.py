@@ -3,3 +3,4 @@ from .document import DocumentSerializer, LabelSerializer, WordSerializer, WordG
 from .debugging import LocalExplanationDictionarySerializer, GlobalExplanationDictionarySerializer, \
     LocalExplanationDictionaryListSerializer
 from .doc_word_ann import DocumentWordSerializer
+from .model import ModelListSerializer
