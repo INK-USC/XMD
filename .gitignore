@@ -5,6 +5,8 @@
 __pycache__
 db.sqlite3
 media
+annotation_backend/media/models/*
+!annotation_backend/media/models/.gitkeep
 
 # Backup files # 
 *.bak 

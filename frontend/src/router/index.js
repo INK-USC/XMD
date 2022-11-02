@@ -8,6 +8,7 @@ import ProjectSetup from "@/views/ProjectSetup.vue";
 import Document from "@/components/project/setup/Document.vue";
 import DocumentList from "@/components/project/setup/DocumentList.vue";
 import DocumentUpload from "@/components/project/setup/DocumentUpload.vue";
+import ModelUpload from "@/components/project/setup/ModelUpload.vue"
 import LabelModification from "@/components/project/setup/LabelModification.vue";
 import GenerateExplanations from "@/components/project/setup/GenerateExplanations.vue";
 import ExportData from "@/components/project/setup/ExportData.vue";
@@ -63,6 +64,11 @@ const router = createRouter({
               name: "DocumentList",
               component: DocumentList,
             },
+            {
+              path: "model",
+              name: "ModelUpload",
+              component: ModelUpload,
+            }
           ],
         },
         {

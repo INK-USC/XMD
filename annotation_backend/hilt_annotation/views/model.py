@@ -1,9 +1,9 @@
 from rest_framework import generics, permissions
-from ..models import Model
+from ..models import HiltModel
 from ..serializers import ModelListSerializer
 
 class ModelList(generics.ListAPIView):
-    queryset = Model.objects.all()
+    queryset = HiltModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ModelListSerializer
 
@@ -11,7 +11,7 @@ class ModelList(generics.ListAPIView):
         return self.queryset.filter(project=self.kwargs['project_id'])
 
 class ModelDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Model.objects.all()
+    queryset = HiltModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ModelListSerializer
 

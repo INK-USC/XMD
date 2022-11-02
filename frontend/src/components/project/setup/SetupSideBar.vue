@@ -17,6 +17,10 @@
             <el-icon><UploadFilled /></el-icon>
             Upload New Document
           </el-menu-item>
+          <el-menu-item index="/project/doc/model">
+            <el-icon><UploadFilled /></el-icon>
+            Upload Custom Model
+          </el-menu-item>
         </el-menu-item-group>
       </el-sub-menu>
 
