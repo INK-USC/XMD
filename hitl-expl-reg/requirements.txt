@@ -2,7 +2,7 @@
 # torch==1.7.1 (conda install pytorch==1.7.1 torchvision torchaudio cudatoolkit=10.1 -c pytorch)
 transformers
 datasets
-pytorch-lightning==1.4.8
+pytorch-lightning==1.8.1
 hydra-core==1.1.0
 omegaconf==2.1.1
 numpy>=1.17
