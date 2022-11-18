@@ -51,7 +51,7 @@ class GenerateExplanations(APIView):
 
             # MAKE FASTAPI CALL
             print('FastAPI call')
-            req_url = "http://localhost:9000/training/captum"
+            req_url = "http://localhost:9000/generate/expl"
             req_json = {
                 "from_local": True if use_huggingface=='false' else False ,
                 "dataset": dataset_json,
