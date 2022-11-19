@@ -22,6 +22,21 @@ from config import attr_algos, baseline_required, dataset_info
 
 app = FastAPI()
 
+baseline_required_dict = {
+	'integrated-gradients' : True,
+	'gradient-shap': True,
+    'input-x-gradient': False,
+    'saliency': False,
+    'deep-lift': True,
+}
+
+attr_algos_dict = {
+	'integrated-gradients' : IntegratedGradients,
+	'gradient-shap' : GradientShap,
+    'input-x-gradient': InputXGradient,
+    'saliency': Saliency,
+    'deep-lift': DeepLift,
+}
 
 @app.get("/test")
 async def root():
@@ -64,36 +79,37 @@ async def generate_captum_attr_background(config, dataset, arch):
     # optimizer = 
     # scheduler = 
     num_classes = config.type_vocab_size
-    attr_algo = 'integrated-gradients'
+    attr_algo = 'input-x-gradient'
     dataset_type = 'hatexplain'
-    max_length = 256
-    
 
-    # tokenize dataset
+    model = AutoModelForSequenceClassification.from_pretrained(arch)
+    config = AutoConfig.from_pretrained(arch)
+    if config.model_type == "bert":
+        task_encoder = model.bert
+    elif config.model_type == "roberta":
+        task_encoder = model.roberta
+    # TODO: need to add all the model types. (maybe in dictionary format)
+
+    task_head = model.classifier
     tokenizer = AutoTokenizer.from_pretrained(arch) # Tokenizer Initialize
+
     text, labels = dataset.text, dataset.labels
     data = tokenizer(text, padding=True)
-    input_ids, token_type_ids, attn_mask = data['input_ids'], data['token_type_ids'], data['attention_mask']
-    print(input_ids, token_type_ids, attn_mask)
+    input_ids, attention_mask = data['input_ids'], data['attention_mask']
     input_ids = torch.tensor(input_ids)
-    attn_mask = torch.tensor(attn_mask)
-    print(input_ids, attn_mask)
+    attention_mask = torch.tensor(attention_mask)
 
-
-    ### attr_forward(self, input_ids, attn_mask):
-    ###
     batch_size = input_ids.shape[0]
-    input_ids_ = input_ids.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, max_length)
-    attn_mask_ = attn_mask.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, max_length)
+    seq_length = input_ids.shape[1]
+    input_ids_ = input_ids.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, seq_length)
+    attention_mask_ = attention_mask.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, seq_length)
     all_classes = torch.arange(num_classes).to(input_ids.device).unsqueeze(0).expand(batch_size, -1).flatten()
-    input_ids, attn_mask = input_ids_, attn_mask_
+    input_ids, attention_mask = input_ids_, attention_mask_
     targets = all_classes
 
-    ### get_attr_func_inputs(self, input_ids, baseline_required)
-    ###
-    word_emb_layer = AutoModel.from_pretrained(arch).embeddings.word_embeddings
-    tokenizer = tokenizer
+    word_emb_layer = task_encoder.embeddings.word_embeddings
     input_embeds = word_emb_layer(input_ids)
+    baseline_required = baseline_required_dict[attr_algo]
     if baseline_required:
         baseline = torch.full(input_ids.shape, tokenizer.pad_token_id, device=input_ids.device).long()
         baseline[:, 0] = tokenizer.cls_token_id
@@ -104,46 +120,24 @@ async def generate_captum_attr_background(config, dataset, arch):
         baseline_embeds = None
 
 
-    ### calc_attrs(self, input_ids, attn_mask, targets=None)
-    attr_dict = {
-        'attr_algo': attr_algo,
-        'baseline_required': baseline_required[attr_algo],
-        'attr_func': attr_algos[attr_algo](self),
-        'tokenizer': tokenizer,
-    }
-    ###
-    if attr_dict['attr_algo'] == 'integrated-gradients':
-        attrs = attr_dict['attr_func'].attribute(
-            inputs=input_embeds.requires_grad_(), baselines=baseline_embeds,
-            target=targets, additional_forward_args=(attn_mask, 'captum'),
-            n_steps=attr_dict['ig_steps'], internal_batch_size=attr_dict['internal_batch_size'],
-        ).float()
-    elif attr_dict['attr_algo'] == 'gradient-shap':
-        attrs = attr_dict['attr_func'].attribute(
-            inputs=input_embeds.requires_grad_(), baselines=baseline_embeds,
-            target=targets, additional_forward_args=(attn_mask, 'captum'),
-            n_samples=attr_dict['gradshap_n_samples'], stdevs=attr_dict['gradshap_stdevs'],
-        ).float()
+    def forward_func(input_embeds, attention_mask):
+        enc = task_encoder(inputs_embeds=input_embeds, attention_mask=attention_mask).pooler_output
+        logits = task_head(enc)
+        return logits
 
-    elif attr_dict['attr_algo'] == 'deep-lift':
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            attrs = attr_dict['attr_func'].attribute(
-                inputs=input_embeds.requires_grad_(), baselines=baseline_embeds,
-                target=targets, additional_forward_args=(attn_mask, 'captum'),
-            ).float()
-    elif attr_dict['attr_algo'] in ['input-x-gradient', 'saliency']:
-        attrs = attr_dict['attr_func'].attribute(
+    attr_func = attr_algos_dict[attr_algo](forward_func)
+
+    if attr_algo in ['input-x-gradient', 'saliency']:
+        attrs = attr_func.attribute(
             inputs=input_embeds.requires_grad_(),
-            target=targets, additional_forward_args=(attn_mask, 'captum'),
+            target=targets, additional_forward_args=(attention_mask),
         ).float()
-
 
     attrs = torch.sum(attrs, dim=-1)
-    attrs = attrs * attn_mask
+    attrs = attrs * attention_mask
     assert not torch.any(torch.isnan(attrs))
 
-    attrs.reshape(batch_size, num_classes, max_length)
+    attrs.reshape(batch_size, num_classes, seq_length)
     end = time.time()
     print(end - start)
 
