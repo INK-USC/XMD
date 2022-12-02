@@ -1,5 +1,7 @@
-# Model API (development phase)
+This directory contains all the code related to model training and exposing it using [FastAPI](https://fastapi.tiangolo.com/)
 
-# Add to reqs:
-* `pip install "fastapi[all]"`
-* `pip install "uvicorn[standard]"`
+## Directory structure
+
+1. `fast_api/`
+
+   - Entrypoint for all training routes/pipelines
