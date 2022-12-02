@@ -1,5 +1,6 @@
 import os
 import shutil
+import uuid
 import zipfile
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -10,12 +11,15 @@ from rest_framework.views import APIView, Response, status
 import requests
 
 
-from ..serializers import DocumentSerializer, LabelSerializer, WordGroupedSerializer, DocumentWordSerializer
-from ..models import Project, HiltModel, Document
+from ..serializers import DocumentSerializer, LabelSerializer, WordGroupedSerializer, DocumentWordSerializer, WordAnnotationScoreSerializer
+from ..models import Project, HiltModel, Document, WordAnnotationScore, Word, Annotation
 
 
 class GenerateExplanations(APIView):
     def post(self, request, *args, **kwargs):
+        """
+        Generate Explanations from FAST API endpoint and update DBModel state.
+        """
         project = get_object_or_404(Project, pk=kwargs.get('project_id'))
         try:
             use_huggingface = request.POST['useHuggingface']
@@ -29,8 +33,6 @@ class GenerateExplanations(APIView):
                 model_path = model_obj.model.name
                 model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
 
-                # LOCAL MODEL PATH
-                # make/navigate to path
                 # filekeeping
                 unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'tmp')
                 os.makedirs(unzip_path, exist_ok=True)
@@ -47,12 +49,13 @@ class GenerateExplanations(APIView):
                 print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path_folder}')
 
 
-            dataset_json = self.generate_dataset_for_captum_call(project)
+            dataset_json = self._generate_dataset_for_captum_call(project)
 
             # MAKE FASTAPI CALL
             print('FastAPI call')
             req_url = "http://localhost:9000/generate/expl"
             req_json = {
+                "project_id": str(project.id),
                 "from_local": True if use_huggingface=='false' else False ,
                 "dataset": dataset_json,
                 "pretrained_model_name_or_path": pretrained_model_name_or_path
@@ -60,7 +63,9 @@ class GenerateExplanations(APIView):
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
-                # model -> project.selected_model
+                project.selected_model = 'running'
+                project.save()
+                print('project model changed status to running')
                 return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
             else:
                 return Response(data=res.text, status=500)
@@ -71,21 +76,77 @@ class GenerateExplanations(APIView):
 
 
 
-    def generate_dataset_for_captum_call(self, project: Project):
-        text, labels = [], []
+    def _generate_dataset_for_captum_call(self, project: Project):
+        text, labels, document_ids = [], [], []
         for data in Document.objects.filter(project=project):
             text.append(data.text)
             labels.append(data.ground_truth.id)
+            document_ids.append(str(data.id))
 
         print(text, labels)
 
         return {
             'text': text,
-            'labels': labels 
+            'labels': labels,
+            'metadata': {
+                'document_ids': document_ids
+            } 
         }
 
-# predefined = "hugging face model name"
-# custom = "model id" -> extract to media/extracted_models/<project_id>/
-# extra captum options -> do magic
-# payload for fast api { model: "hugging face model name" | "media/extracted_models/<project_id>/" }
-# model -> project.selected_model
+def add_annotation_scores(data, project):
+    '''Tables updated:
+        1. WordAnnotationScore -> score
+        2. Document -> annotated=True
+        3. Project -> model_selected='finished'
+    '''
+    # 1
+    for sentence in data:
+        document_id = uuid.UUID(sentence['document_id'])
+        document = Document.objects.filter(id=document_id)[0]
+        for idx, (word_str, score) in enumerate(zip(sentence['tokens'], sentence['before_reg_explanation'])):
+            word = Word.objects.filter(document=document, order=idx)[0]
+            wordannotationscore = WordAnnotationScore.objects.filter(word=word.id).first()
+            if not wordannotationscore: # create row if word dosent exist in WordAnnotationScore table
+                print('creating new obj')
+                wordannotationscore = WordAnnotationScore(score=score, annotation=Annotation.objects.filter(document=document).id, word=word.id) 
+            else: # else update score
+                wordannotationscore.score = score
+            print(wordannotationscore) 
+            wordannotationscore.save(())
+        # 2
+        document.annotated = True
+        document.save()
+        # 3
+        project.selected_model = 'finished'
+        project.save()
+        print('project model changed status to finished')
+
+class ExplAttrUpdate(APIView):
+    permission_classes = ()
+
+    def post(self, request, *args, **kwargs):
+        """
+        Get update after FAST API is done generating attributions
+        """
+        project = get_object_or_404(Project, pk=kwargs.get('project_id'))
+        print("Inside ExplAttrUpdate view")
+        print(request.data)
+        for sentence in request.data:
+            for word, score in zip(sentence['tokens'], sentence['before_reg_explanation']):
+                print(f'{word}: {score}')
+        add_annotation_scores(request.data, project)
+       
+        return Response({"success": "attrs received"}, status=status.HTTP_202_ACCEPTED)
+
+class ExplAttrGenerationStatus(APIView):
+    def get(self, request, *args, **kwargs):
+        """
+        Endpoint hit by Vue to check explanation generation status
+        """
+        project = get_object_or_404(Project, pk=kwargs.get('project_id'))  
+        if project.selected_model == 'running': # explanations still generating
+            return Response({"status": "running"}, status=status.HTTP_200_OK)
+        else: # explanations completed
+            return Response({"status": "finished"}, status=status.HTTP_200_OK)
+
+

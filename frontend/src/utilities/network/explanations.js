@@ -19,4 +19,7 @@ export default {
       },
     });
   },
+  didFinishGeneration(projectID) {
+    return api.get(`hilt/projects/${projectID}/update/model_status/`)
+  },
 };

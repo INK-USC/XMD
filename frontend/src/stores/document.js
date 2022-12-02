@@ -55,8 +55,11 @@ export const useDocumentStore = defineStore({
       return DocumentsApi.delete(projectStore.getProjectInfo.id, document.id);
     },
     markAnnotated() {
+      const projectStore = useProjectStore();
       if (!this.documents[this.curDocIndex].id) return null;
+      console.log(projectStore.getProjectInfo.id, this.documents[this.curDocIndex].id)
       return DocumentsApi.markAnnotated(
+        projectStore.getProjectInfo.id,
         this.documents[this.curDocIndex].id
       ).then(() => {
         this.document[this.curDocIndex].annotated = true;

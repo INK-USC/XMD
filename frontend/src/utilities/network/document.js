@@ -25,8 +25,9 @@ export default {
     });
   },
   markAnnotated(projectID, docID) {
+    console.log('documents API', projectID, ':\t', docID)
     return api.put(`hilt/projects/${projectID}/docs/${docID}/`, {
-      annotated: true,
+      annotated: true
     });
   },
   delete(projectID, docID) {

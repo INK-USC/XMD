@@ -13,11 +13,26 @@
             <el-icon><Files /></el-icon>
             Overview
           </el-menu-item>
-          <el-menu-item index="/project/doc/upload">
+          <el-menu-item index="/project/doc/upload" :disabled="disabled">
             <el-icon><UploadFilled /></el-icon>
             Upload New Document
           </el-menu-item>
-          <el-menu-item index="/project/doc/model">
+          <!-- <el-menu-item index="/project/doc/model" :disabled="disabled">
+            <el-icon><UploadFilled /></el-icon>
+            Upload Custom Model
+          </el-menu-item> -->
+        </el-menu-item-group>
+      </el-sub-menu>
+
+      <el-sub-menu index="2">
+        <template #title>
+          <el-icon>
+            <Tools />
+          </el-icon>
+          <span>Custom Model</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="/project/doc/model" :disabled="disabled">
             <el-icon><UploadFilled /></el-icon>
             Upload Custom Model
           </el-menu-item>
@@ -55,7 +70,9 @@ import {
   Edit,
   Download,
   DataAnalysis,
+  Tools,
 } from "@element-plus/icons-vue";
+import { useProjectStore } from "@/stores/project";
 
 // side navigation bar in the project over view page
 export default {
@@ -68,6 +85,21 @@ export default {
     Edit,
     Download,
     DataAnalysis,
+    Tools,
+  },
+  computed: {
+    disabled() {
+      
+      const project = this.projectStore.getProjectInfo
+      return Boolean(project.selected_model=='running')
+    }
+
+  },
+  setup() {
+    const projectStore = useProjectStore();
+    return {
+      projectStore,
+    };
   },
 };
 </script>

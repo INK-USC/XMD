@@ -7,83 +7,71 @@ import time
 import torch
 from fastapi import FastAPI, BackgroundTasks
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
 
 import fast_api_util_functions as util_f
 import json_schema as schema
 
-# sys.path.append('../../hitl-expl-reg/')
-# print(sys.path)
-# from src.model import lm as lm
 from transformers import AutoTokenizer, AutoModel
 from transformers import AutoModelForSequenceClassification, AutoConfig
 from captum.attr import IntegratedGradients, GradientShap, InputXGradient, Saliency, DeepLift
 
 from config import attr_algos, baseline_required, dataset_info
+from fast_api_util_functions import _send_update
 
 app = FastAPI()
 
 baseline_required_dict = {
-	'integrated-gradients' : True,
-	'gradient-shap': True,
+    'integrated-gradients': True,
+    'gradient-shap': True,
     'input-x-gradient': False,
     'saliency': False,
     'deep-lift': True,
 }
 
 attr_algos_dict = {
-	'integrated-gradients' : IntegratedGradients,
-	'gradient-shap' : GradientShap,
+    'integrated-gradients': IntegratedGradients,
+    'gradient-shap': GradientShap,
     'input-x-gradient': InputXGradient,
     'saliency': Saliency,
     'deep-lift': DeepLift,
 }
 
-@app.get("/test")
-async def root():
-    """
-    Endpoint for testing FastAPI
-    """
-    return {"message": "Hello World"}
-
 
 @app.post("/generate/expl", status_code=status.HTTP_201_CREATED)
-async def start_expl_generation(captum_training_payload: schema.CaptumTrainingPayload, background_tasks: BackgroundTasks):
+async def start_expl_generation(explanation_generation_payload: schema.ExplanationGenerationPayload, background_tasks: BackgroundTasks):
     """
         Endpoint hit by XMD tool's django api to initiate captum process
 
-        input params: # dataset_path, pretrained_model_name_or_path, from_local
+        input params: explanation_generation_payload
 
-        output params:
-        
+        output params: None
+
     """
-    from_local = captum_training_payload.from_local
-    dataset = captum_training_payload.dataset
-    pretrained_model_name_or_path = captum_training_payload.pretrained_model_name_or_path
-    config = AutoConfig.from_pretrained(pretrained_model_name_or_path)
-    
+    project_id = explanation_generation_payload.project_id
+    from_local = explanation_generation_payload.from_local
+    dataset = explanation_generation_payload.dataset
+    pretrained_model_name_or_path = explanation_generation_payload.pretrained_model_name_or_path
+    # config = AutoConfig.from_pretrained(pretrained_model_name_or_path)
+
     print(from_local, dataset, pretrained_model_name_or_path)
-    background_tasks.add_task(generate_captum_attr_background, config, dataset, pretrained_model_name_or_path)
+    background_tasks.add_task(
+        generate_attr_pipeline, project_id, dataset, pretrained_model_name_or_path)
 
 
-async def generate_captum_attr_background(config, dataset, arch):
+# Generate attributes for Explanation Generation task
+def generate_attr_pipeline(project_id, dataset, arch):
     """
     Captum API call to get attribution scores
     """
     start = time.time()
-
-
-    ### DEPENDENCIES
-    # params:
-    # arch = arch
-    # dataset = None
-    # optimizer = 
-    # scheduler = 
-    num_classes = config.type_vocab_size
-    attr_algo = 'input-x-gradient'
-    dataset_type = 'hatexplain'
-
     model = AutoModelForSequenceClassification.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
+
+    num_classes = config.type_vocab_size
+    attr_algo = 'input-x-gradient'
+    # dataset_type = 'hatexplain'
+
     if config.model_type == "bert":
         task_encoder = model.bert
     elif config.model_type == "roberta":
@@ -91,7 +79,7 @@ async def generate_captum_attr_background(config, dataset, arch):
     # TODO: need to add all the model types. (maybe in dictionary format)
 
     task_head = model.classifier
-    tokenizer = AutoTokenizer.from_pretrained(arch) # Tokenizer Initialize
+    tokenizer = AutoTokenizer.from_pretrained(arch)  # Tokenizer Initialize
 
     text, labels = dataset.text, dataset.labels
     data = tokenizer(text, padding=True)
@@ -101,9 +89,12 @@ async def generate_captum_attr_background(config, dataset, arch):
 
     batch_size = input_ids.shape[0]
     seq_length = input_ids.shape[1]
-    input_ids_ = input_ids.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, seq_length)
-    attention_mask_ = attention_mask.unsqueeze(1).expand(-1, num_classes, -1).reshape(-1, seq_length)
-    all_classes = torch.arange(num_classes).to(input_ids.device).unsqueeze(0).expand(batch_size, -1).flatten()
+    input_ids_ = input_ids.unsqueeze(
+        1).expand(-1, num_classes, -1).reshape(-1, seq_length)
+    attention_mask_ = attention_mask.unsqueeze(
+        1).expand(-1, num_classes, -1).reshape(-1, seq_length)
+    all_classes = torch.arange(num_classes).to(
+        input_ids.device).unsqueeze(0).expand(batch_size, -1).flatten()
     input_ids, attention_mask = input_ids_, attention_mask_
     targets = all_classes
 
@@ -111,17 +102,19 @@ async def generate_captum_attr_background(config, dataset, arch):
     input_embeds = word_emb_layer(input_ids)
     baseline_required = baseline_required_dict[attr_algo]
     if baseline_required:
-        baseline = torch.full(input_ids.shape, tokenizer.pad_token_id, device=input_ids.device).long()
+        baseline = torch.full(
+            input_ids.shape, tokenizer.pad_token_id, device=input_ids.device).long()
         baseline[:, 0] = tokenizer.cls_token_id
         sep_token_locs = torch.nonzero(input_ids == tokenizer.sep_token_id)
-        baseline[sep_token_locs[:, 0], sep_token_locs[:, 1]] = tokenizer.sep_token_id
+        baseline[sep_token_locs[:, 0],
+                 sep_token_locs[:, 1]] = tokenizer.sep_token_id
         baseline_embeds = word_emb_layer(baseline)
     else:
         baseline_embeds = None
 
-
     def forward_func(input_embeds, attention_mask):
-        enc = task_encoder(inputs_embeds=input_embeds, attention_mask=attention_mask).pooler_output
+        enc = task_encoder(inputs_embeds=input_embeds,
+                           attention_mask=attention_mask).pooler_output
         logits = task_head(enc)
         return logits
 
@@ -138,17 +131,46 @@ async def generate_captum_attr_background(config, dataset, arch):
     assert not torch.any(torch.isnan(attrs))
 
     attrs.reshape(batch_size, num_classes, seq_length)
+    attrs = attrs.detach().cpu().tolist()
+    attrs = [["{0:0.2f}".format(attr) for attr in lst] for lst in attrs]
     end = time.time()
-    print(end - start)
+    print(f'time elapsed: {end - start}')
 
     print(attrs)
-    return attrs
+
+    # format attrs
+    document_ids = dataset.metadata.document_ids
+    format_attrs = []
+
+    for i, arr in enumerate(text):
+        format_attrs.append(
+            {
+                "id": i,
+                "tokens": text[i].split(" "),
+                "label": labels[i],
+                "prediction": 1,
+                "before_reg_explanation": attrs[2*i + labels[i] - 1],
+                "document_id": document_ids[i]
+            }
+        )
+
+    return_json = jsonable_encoder(format_attrs)
+    print(return_json)
+
+    # send update back to django
+    resp = _send_update(project_id, return_json)
+    print(resp)
+
+    return resp
 
 
-    
+@app.post("/debug/training", status_code=status.HTTP_201_CREATED)
+async def start_debug_training_phase(train_debug_payload: schema.TrainDebugPayload, background_tasks: BackgroundTasks):
+    """
+        Endpoint hit by XMD tool's django api to initiate training of dubugging model
 
+        input params: train_debug_payload
 
+        output params: None
 
-    # return attrs
-
-### make periodic post requests to django to update status of captum
+    """
