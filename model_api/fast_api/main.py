@@ -165,7 +165,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
 
 
 @app.post("/debug/training", status_code=status.HTTP_201_CREATED)
-async def start_debug_training_phase(train_debug_payload: schema.TrainDebugPayload, background_tasks: BackgroundTasks):
+async def start_debug_training_phase(train_debug_payload: schema.TrainDebugModelPayload, background_tasks: BackgroundTasks):
     """
         Endpoint hit by XMD tool's django api to initiate training of dubugging model
 
@@ -174,3 +174,4 @@ async def start_debug_training_phase(train_debug_payload: schema.TrainDebugPaylo
         output params: None
 
     """
+    print(train_debug_payload)

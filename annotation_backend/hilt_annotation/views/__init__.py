@@ -8,3 +8,4 @@ from .export_data import DownloadData
 from .model_upload import ModelZipUpload
 from .model import ModelList, ModelDetail
 from .generate_explanations import GenerateExplanations, ExplAttrUpdate, ExplAttrGenerationStatus
+from .debug import TrainingDebugModel, TrainingDebugModelUpdate, TrainingDebugModelStatus

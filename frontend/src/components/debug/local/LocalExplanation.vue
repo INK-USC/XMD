@@ -223,6 +223,14 @@
       </el-col>
     </el-row>
   </el-row>
+
+  <el-row>
+    <el-button
+      type="primary"
+      @click="trainDebugModel()">
+      Submit
+    </el-button>
+  </el-row>
 </template>
 
 <script>
@@ -234,6 +242,7 @@ import { useProjectStore } from "@/stores/project";
 import { useLabelStore } from "@/stores/label";
 import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { TaskTypes, ColorSets } from "@/utilities/constants";
+import DebugTrainingAPI from "@/utilities/network/debugTraining"
 
 export default {
   name: "LocalExplanations",
@@ -381,6 +390,10 @@ export default {
           this.goToNextDoc();
         }
       });
+    },
+    trainDebugModel() {
+      DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)
+
     },
   },
   computed: {

@@ -89,9 +89,9 @@ export default {
   },
   computed: {
     disabled() {
-      
       const project = this.projectStore.getProjectInfo
-      return Boolean(project.selected_model=='running')
+      return false
+      // return Boolean(project.explanations_status=='running')
     }
 
   },

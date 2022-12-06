@@ -132,7 +132,7 @@ export default {
       this.dialogVisible = true;
     },
     handleDelete(index, row) {
-      ProjectsApi.list(row.id).then(() => {
+      ProjectsApi.delete(row.id).then(() => {
         this.fetchProjects();
       });
     },

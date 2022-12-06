@@ -14,4 +14,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='created_projects')
-    selected_model = models.CharField(max_length=512, default=None, null=True)
+    explanations_model = models.CharField(max_length=512, default=None, null=True)
+    explanations_status = models.CharField(max_length=512, default=None, null=True)
+    debugging_status = models.CharField(max_length=512, default=None, null=True)
+

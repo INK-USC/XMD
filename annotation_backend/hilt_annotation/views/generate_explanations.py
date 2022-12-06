@@ -63,7 +63,8 @@ class GenerateExplanations(APIView):
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
-                project.selected_model = 'running'
+                project.explanations_status = 'running'
+                project.explanations_model = pretrained_model_name_or_path
                 project.save()
                 print('project model changed status to running')
                 return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
@@ -93,7 +94,7 @@ class GenerateExplanations(APIView):
             } 
         }
 
-def add_annotation_scores(data, project):
+def add_annotation_scores(data, project: Project):
     '''Tables updated:
         1. WordAnnotationScore -> score
         2. Document -> annotated=True
@@ -117,7 +118,7 @@ def add_annotation_scores(data, project):
         document.annotated = True
         document.save()
         # 3
-        project.selected_model = 'finished'
+        project.explanations_status = 'finished'
         project.save()
         print('project model changed status to finished')
 
@@ -129,12 +130,10 @@ class ExplAttrUpdate(APIView):
         Get update after FAST API is done generating attributions
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id'))
-        print("Inside ExplAttrUpdate view")
-        print(request.data)
-        for sentence in request.data:
-            for word, score in zip(sentence['tokens'], sentence['before_reg_explanation']):
-                print(f'{word}: {score}')
         add_annotation_scores(request.data, project)
+        # for sentence in request.data:
+        #     for word, score in zip(sentence['tokens'], sentence['before_reg_explanation']):
+        #         print(f'{word}: {score}')
        
         return Response({"success": "attrs received"}, status=status.HTTP_202_ACCEPTED)
 
@@ -144,7 +143,7 @@ class ExplAttrGenerationStatus(APIView):
         Endpoint hit by Vue to check explanation generation status
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id'))  
-        if project.selected_model == 'running': # explanations still generating
+        if project.explanations_status == 'running': # explanations still generating
             return Response({"status": "running"}, status=status.HTTP_200_OK)
         else: # explanations completed
             return Response({"status": "finished"}, status=status.HTTP_200_OK)

@@ -2,6 +2,24 @@
   <h3>Generate Explanations Page</h3>
 
   <el-tabs type="border-card">
+    <el-tab-pane label="Custom Model">
+      <el-form :model="customModelForm" ref="customModelForm" :rules="customModelForm.rules" label-position="top">
+        <el-form-item label="Custom Model" prop="select">
+          <el-select v-model="customModelForm.select" clearable placeholder="Select Model">
+            <el-option v-for="item in customModelForm.modelList" :key="item.id" :label="item.name"
+              :value="[item.id, item.model]" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="customModelSubmit">Generate Explanations</el-button>
+        </el-form-item>
+      </el-form>
+
+      <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"
+        description="will update once the task in done" center show-icon :closable="false" />
+      <!-- generate explanations button -->
+    </el-tab-pane>
+
     <el-tab-pane label="Huggingface">
       <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
         <el-form-item label="huggingface string" prop="str">
@@ -15,28 +33,6 @@
       </el-form>
     </el-tab-pane>
 
-    <el-tab-pane label="Custom Model">
-      <el-form :model="customModelForm" ref="customModelForm" :rules="customModelForm.rules" label-position="top">
-        <el-form-item label="Custom Model" prop="select">
-          <el-select v-model="customModelForm.select" clearable placeholder="Select Model">
-            <el-option v-for="item in customModelForm.modelList" 
-              :key="item.id" :label="item.name"
-              :value="[item.id, item.model]" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="customModelSubmit">Generate Explanations</el-button>
-        </el-form-item>
-      </el-form>
-
-      <el-alert v-if="generating_explanations" 
-        title="Generating Explanations..." 
-        type="info" 
-        description="will update once the task in done"
-        center show-icon 
-        :closable="false"/>
-      <!-- generate explanations button -->
-    </el-tab-pane>
   </el-tabs>
 
 
@@ -50,7 +46,6 @@ import { useProjectStore } from "@/stores/project";
 import { ElNotification } from 'element-plus'
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
-import { max } from "lodash";
 
 export default {
   name: "GenerateExplanations",
@@ -101,7 +96,7 @@ export default {
             .then(res => {
               console.log('Here');
               console.log(res);
-              this.generating_explanations=true
+              this.generating_explanations = true
               this.waitForCompletion()
               ElNotification({
                 title: 'Explanation Generation Started',
@@ -110,7 +105,7 @@ export default {
                 duration: 0,
               });
             }).catch(err => {
-              if (err.response && err.response.data){
+              if (err.response && err.response.data) {
                 this.$notify.error({
                   title: "Model training failed",
                   message: err.response.data
@@ -135,9 +130,9 @@ export default {
             .then(res => {
               const project = this.projectStore.getProjectInfo
               this.projectStore.reset_state()
-              console.log(project.selected_model)
+              console.log(project.explanations_status)
               console.log(res);
-              this.generating_explanations=true
+              this.generating_explanations = true
               this.waitForCompletion()
               ElNotification({
                 title: 'Explanation Generation Started',
@@ -147,7 +142,7 @@ export default {
               });
             }).catch(err => {
               console.log(err)
-              if (err.response && err.response.data){
+              if (err.response && err.response.data) {
                 this.$notify.error({
                   title: "Model training failed",
                   message: err.response.data
@@ -162,13 +157,6 @@ export default {
         }
       });
     },
-    // didFinishGeneration() {
-    //   return this.$http.get(`/projects/${this.projectStore.getProjectInfo.id}/modelstatus`).then(res => {
-    //     console.log("modelstatus", res)
-
-    //     return res
-    //   })
-    // },
     waitForCompletion() {
       let max_iter = 10;
       let timer = setInterval(() => ExplanationsApi.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
@@ -176,9 +164,9 @@ export default {
         if (max_iter < 0 || res.status == 'finished') {
           console.log('finished')
           this.$notify.success({
-          title: "Success",
-          message: "Model Execution had been completed",
-          duration: 0,
+            title: "Success",
+            message: "Model Execution had been completed",
+            duration: 0,
           })
           clearInterval(timer)
           // push to next page?
@@ -190,7 +178,7 @@ export default {
         }
       }), 1000)
 
-  }
+    }
   },
   mounted() {
     this.getModelList();
