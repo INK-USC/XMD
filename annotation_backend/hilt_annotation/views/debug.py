@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
 from rest_framework.views import APIView, Response, status
-from ..models import Project, Document, Word, WordAnnotationScore, LocalExplanationDictionary
+from ..models import Project, Document, Word, WordAnnotationScore, LocalExplanationDictionary, GlobalExplanationDictionary
 import requests
 
 class TrainingDebugModel(APIView):
@@ -48,24 +48,32 @@ class TrainingDebugModel(APIView):
         instances = []
         for document in Document.objects.filter(project=project):
             score_before = []
-            score_after = []
+            local_score_after, global_score_after = [], []
             tokens = []
             for word in Word.objects.filter(document=document):
                 tokens.append(word.text)
                 word_annotation_score = WordAnnotationScore.objects.filter(word=word)[0]
                 score_before.append(word_annotation_score.score)
-                if LocalExplanationDictionary.objects.filter(word=word).exists():
-                    local_explanation_word = LocalExplanationDictionary.objects.filter(word=word)[0]
-                    score_after.append(float(local_explanation_word.modification_type))
+                if LocalExplanationDictionary.objects.filter(word=word, project=project).exists():
+                    local_explanation_word = LocalExplanationDictionary.objects.filter(word=word, project=project)[0]
+                    local_score_after.append(float(local_explanation_word.modification_type))
+                    print('local regularization')
                 else:
-                    score_after.append(word_annotation_score.score)
+                    local_score_after.append(word_annotation_score.score)
+                if GlobalExplanationDictionary.objects.filter(word=word.text, project=project).exists():
+                    global_explanation_word = GlobalExplanationDictionary.objects.filter(word=word.text, project=project)[0]
+                    global_score_after.append(float(global_explanation_word.modification_type))
+                    print('global regularization')
+                else:
+                    global_score_after.append(word_annotation_score.score)
 
             instance = {
                 'document_id': str(document.id),
                 'tokens': tokens,
                 'label': document.ground_truth.id,
                 'before_expl_reg': score_before,
-                'after_expl_reg': score_after
+                'local_after_expl_reg': local_score_after,
+                'global_after_expl_reg': global_score_after
             }
             instances.append(instance)
         

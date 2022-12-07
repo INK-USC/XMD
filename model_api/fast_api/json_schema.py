@@ -83,7 +83,8 @@ class DebugData(BaseModel):
     tokens: List[str]
     label: int
     before_expl_reg: List[str]
-    after_expl_reg: List[str]
+    local_after_expl_reg: List[str]
+    global_after_expl_reg: List[str]
 
     class Config:
         schema_extra = {
@@ -113,7 +114,7 @@ class DebugData(BaseModel):
                     "."
                 ],
                 "label": 1,
-                "before_reg_explanation": [
+                "before_expl_reg": [
                     0.046,
                     0.048,
                     0.045,
@@ -136,7 +137,30 @@ class DebugData(BaseModel):
                     0.042,
                     0.044
                 ],
-                "after_reg_explanation": [
+                "local_after_expl_reg": [
+                    0.045,
+                    0.045,
+                    0.046,
+                    0.046,
+                    0.046,
+                    0.045,
+                    0.046,
+                    0.046,
+                    0.044,
+                    0.046,
+                    0.045,
+                    0.046,
+                    0.045,
+                    0.091,
+                    0.046,
+                    0.045,
+                    0.045,
+                    0.045,
+                    0.046,
+                    0.046,
+                    0.045
+                ],
+                "global_after_expl_reg": [
                     0.045,
                     0.045,
                     0.046,
@@ -224,6 +248,29 @@ class TrainDebugModelPayload(BaseModel):
                         0.044
                     ],
                     "after_reg_explanation": [
+                        0.045,
+                        0.045,
+                        0.046,
+                        0.046,
+                        0.046,
+                        0.045,
+                        0.046,
+                        0.046,
+                        0.044,
+                        0.046,
+                        0.045,
+                        0.046,
+                        0.045,
+                        0.091,
+                        0.046,
+                        0.045,
+                        0.045,
+                        0.045,
+                        0.046,
+                        0.046,
+                        0.045
+                    ],
+                    "global_after_expl_reg": [
                         0.045,
                         0.045,
                         0.046,
