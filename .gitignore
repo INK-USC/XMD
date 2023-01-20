@@ -14,8 +14,9 @@ db.sqlite3
 .idea/
 .vscode/
 
-
 # Jupyter Notebook 
 .ipynb_checkpoints 
 
 .frontend/yarn.lock
+
+.DS_Store
