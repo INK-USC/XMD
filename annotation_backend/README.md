@@ -18,12 +18,12 @@
     - if you use the installation guide above for unix or windows you shouldn't have to do this
 2. Ensure your `hilt-demo` environment is activated
 3. We will now setup the postgres connection. So, ensure that postgres is up and running.
-   Execute `cd HILT-DEMO/annotation_backend/annotation_backend`.
+   Execute `cd HILT-demo/annotation_backend/annotation_backend`.
     - Inside the `annotation_backend` folder, navigate to [settings.py](annotation_backend/settings.py#L82)
         - Find the `DATABASES` dictionary, and replace the `PASSWORD` value with your own password
 4. Run:
     - Create superuser/admin use django's `python manage.py createsuperuser`
-5. Start the backend from `cd HILT-DEMO/annotation_backend` folder: `python manage.py runserver 0.0.0.0:8000`
+5. Start the backend from `cd HILT-demo/annotation_backend` folder: `python manage.py runserver 0.0.0.0:8000`
 
 ### Potential Errors:
 
