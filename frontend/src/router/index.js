@@ -121,6 +121,8 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   if (!userStore.isLoggedIn && to.name !== "Login" && to.name !== "Home") {
     next("/login");
+  } else if (to.name == "Login") {
+    next();
   } else {
     next();
   }
