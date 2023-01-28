@@ -24,20 +24,20 @@
         </el-menu-item-group>
       </el-sub-menu>
 
-      <el-sub-menu index="2">
-        <template #title>
-          <el-icon>
-            <Tools />
-          </el-icon>
-          <span>Custom Model</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item index="/project/doc/model" :disabled="disabled">
-            <el-icon><UploadFilled /></el-icon>
-            Upload Custom Model
-          </el-menu-item>
-        </el-menu-item-group>
-      </el-sub-menu>
+<!--      <el-sub-menu index="2">-->
+<!--        <template #title>-->
+<!--          <el-icon>-->
+<!--            <Tools />-->
+<!--          </el-icon>-->
+<!--          <span>Custom Model</span>-->
+<!--        </template>-->
+<!--        <el-menu-item-group>-->
+<!--          <el-menu-item index="/project/doc/model" :disabled="disabled">-->
+<!--            <el-icon><UploadFilled /></el-icon>-->
+<!--            Upload Custom Model-->
+<!--          </el-menu-item>-->
+<!--        </el-menu-item-group>-->
+<!--      </el-sub-menu>-->
 
       <el-menu-item index="/project/labels">
         <el-icon><StarFilled /></el-icon>

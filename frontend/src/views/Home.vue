@@ -1,5 +1,7 @@
 <template>
   <h1 style="text-align: center">Home page of HILT Demo</h1>
+
+  <p> Click Projects (Guideline will be uploaded soon) </p>
 </template>
 
 <script>
