@@ -80,6 +80,13 @@ class TrainingDebugModel(APIView):
         return instances
 
 ## Views for fastapi status update
+
+def add_debug_annotation_scores_and_model():
+    """
+    Create new model and annotation score entries in DB after training debugged model in FastAPI
+    """
+    pass
+
 class TrainingDebugModelUpdate(APIView):
     permission_classes = ()
 
@@ -88,6 +95,7 @@ class TrainingDebugModelUpdate(APIView):
         Get update after FAST API is done generating attributions
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id'))
+        add_debug_annotation_scores_and_model(request.data, project) # parse FastAPI payload and save in DB
         project.debugging_status = 'finished'
         project.save()
 

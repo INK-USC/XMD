@@ -9,6 +9,7 @@ class HiltModel(models.Model):
     description = models.CharField(max_length=255, blank=True)
     model = models.FileField(upload_to='models/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    debug = models.BooleanField(default=False)
 
     def delete(self, *args, **kwargs):
         self.model.delete()

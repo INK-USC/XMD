@@ -1,43 +1,41 @@
 <template>
-  <h3>Generate Explanations Page</h3>
-
-  <el-tabs type="border-card">
-    <el-tab-pane label="Custom Model">
-      <el-form :model="customModelForm" ref="customModelForm" :rules="customModelForm.rules" label-position="top">
-        <el-form-item label="Custom Model" prop="select">
-          <el-select v-model="customModelForm.select" clearable placeholder="Select Model">
-            <el-option v-for="item in customModelForm.modelList" :key="item.id" :label="item.name"
+  <el-card style="width: 100%;">
+    <h3>Generate Explanations Page</h3>
+    
+    <el-tabs type="border-card">
+      <el-tab-pane label="Custom Model">
+        <el-form :model="customModelForm" ref="customModelForm" :rules="customModelForm.rules" label-position="top">
+          <el-form-item label="Custom Model" prop="select">
+            <el-select v-model="customModelForm.select" clearable placeholder="Select Model">
+              <el-option v-for="item in customModelForm.modelList" :key="item.id" :label="item.name"
               :value="[item.id, item.model]" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="customModelSubmit">Generate Explanations</el-button>
-        </el-form-item>
-      </el-form>
-
-      <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="customModelSubmit">Generate Explanations</el-button>
+          </el-form-item>
+        </el-form>
+        
+        <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"
         description="will update once the task in done" center show-icon :closable="false" />
-      <!-- generate explanations button -->
-    </el-tab-pane>
-
-    <el-tab-pane label="Huggingface">
-      <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
-        <el-form-item label="huggingface string" prop="str">
-          <el-col :span="6">
-            <el-input v-model="huggingfaceForm.str" />
-          </el-col>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="huggingfaceSubmit">Generate Explanations</el-button>
-        </el-form-item>
-      </el-form>
-    </el-tab-pane>
-
-  </el-tabs>
-
-
-
-
+        <!-- generate explanations button -->
+      </el-tab-pane>
+      
+      <el-tab-pane label="Huggingface">
+        <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
+          <el-form-item label="huggingface string" prop="str">
+            <el-col :span="6">
+              <el-input v-model="huggingfaceForm.str" />
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="huggingfaceSubmit">Generate Explanations</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>   
+    </el-tabs>
+    
+  </el-card>
 </template>
 
 <script>

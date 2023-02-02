@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .document import Word, Label
 from .project import Project
 from .annotation import Annotation
+from .modelzip import HiltModel
 
 
 class ModificationType(models.IntegerChoices):
@@ -18,6 +19,12 @@ class WordAnnotationScore(models.Model):
     word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='word_annotation_score')
     score = models.FloatField(default=0.0)
 
+class WordDebugAnnotationScore(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE, related_name='word_debug_annotation_score')
+    word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='word_debug_annotation_score')
+    score = models.FloatField(default=0.0)
+    model = models.ForeignKey(HiltModel, on_delete=models.CASCADE, null=True, blank=True, related_name='word_debug_annotation_score')
 
 class GlobalExplanationDictionary(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
