@@ -24,20 +24,20 @@
         </el-menu-item-group>
       </el-sub-menu>
 
-<!--      <el-sub-menu index="2">-->
-<!--        <template #title>-->
-<!--          <el-icon>-->
-<!--            <Tools />-->
-<!--          </el-icon>-->
-<!--          <span>Custom Model</span>-->
-<!--        </template>-->
-<!--        <el-menu-item-group>-->
-<!--          <el-menu-item index="/project/doc/model" :disabled="disabled">-->
-<!--            <el-icon><UploadFilled /></el-icon>-->
-<!--            Upload Custom Model-->
-<!--          </el-menu-item>-->
-<!--        </el-menu-item-group>-->
-<!--      </el-sub-menu>-->
+      <el-sub-menu index="2">
+        <template #title>
+          <el-icon>
+            <Tools />
+          </el-icon>
+          <span>Model</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="/project/doc/model" :disabled="disabled">
+            <el-icon><UploadFilled /></el-icon>
+            Upload Custom Model
+          </el-menu-item>
+        </el-menu-item-group>
+      </el-sub-menu>
 
       <el-menu-item index="/project/labels">
         <el-icon><StarFilled /></el-icon>
@@ -47,15 +47,21 @@
         <el-icon><DataAnalysis /></el-icon>
         <span>Generate Explanations</span>
       </el-menu-item>
-      <el-menu-item index="/project/export">
+      <!-- <el-menu-item index="/project/export">
         <el-icon><Download /></el-icon>
         <span>Export Data</span>
-      </el-menu-item>
+      </el-menu-item> -->
     </el-menu>
     <el-menu>
       <el-menu-item @click="() => this.$router.push({ name: 'DebugOverview' })">
         <el-icon><Edit /></el-icon>
-        <span>Continue debugging</span>
+        <span>Debug</span>
+      </el-menu-item>
+    </el-menu>
+    <el-menu :default-active="$route.path" :router="true">
+      <el-menu-item index="/project/export">
+        <el-icon><Download /></el-icon>
+        <span>Export Data</span>
       </el-menu-item>
     </el-menu>
   </el-col>

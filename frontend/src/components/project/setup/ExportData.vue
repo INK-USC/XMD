@@ -1,4 +1,5 @@
 <template>
+  <h3>Export Explanation-Generated Data</h3>
   <el-button type="primary" @click="exportJSON()">
     <el-icon><Download /></el-icon> Download JSON data
   </el-button>
