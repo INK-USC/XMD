@@ -97,7 +97,8 @@ def create_docs_from_json(project, data_file):
         for entry in data:
             try:
                 text = entry["text"]
-                words = entry["words"]
+                # words = entry["words"]
+                words = text.split(" ")
             except:
                 raise ImportFileError("Document dictionaries do not have the 'text' or 'words' key")
 

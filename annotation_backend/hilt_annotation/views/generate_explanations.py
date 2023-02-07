@@ -41,7 +41,7 @@ class GenerateExplanations(APIView):
                         shutil.rmtree(os.path.join(unzip_path, f))
 
                 #   unzip
-                with zipfile.ZipFile(model_abs_path, 'r') as zip_ref:
+                with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
                     zip_ref.extractall(unzip_path)
                 unzip_path_folder = os.path.join(unzip_path, os.listdir(unzip_path)[0])
 
