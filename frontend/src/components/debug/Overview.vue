@@ -2,13 +2,18 @@
   <h3>Debug Overview Page</h3>
 
   <el-button
-        type="primary"
-        @click="trainDebugModel()">
-        Start Debug Training
+      type="primary"
+      @click="trainDebugModel()">
+      Start Debug Training
   </el-button> <br />
 
   <el-row style="width: 100%; margin-top: 3em;">
-    Instance Explanation
+    <span style="padding-right: 1em;">Instance Explanation</span>
+    <el-button
+      size="small"
+      @click="() => this.$router.push({ name: 'DebugLocal' })">
+      Start Annotating
+    </el-button> 
     <el-progress
         style="width: 100%; margin-top: 1em;"
         :percentage="instanceAnnotationCompletionPercentage"
@@ -17,13 +22,19 @@
         :stroke-width="30"
         text-inside
       />
+
   </el-row>
   <el-row style="width: 100%; margin-top: 3em;">
-    Task Explanation
+    <span style="padding-right: 1em;">Task Explanation</span>
+    <el-button
+      size="small"
+        @click="() => this.$router.push({ name: 'DebugGlobal' })">
+        Start Annotating
+    </el-button> 
     <el-progress
         style="width: 100%; margin-top: 1em;"
-        :percentage="instanceAnnotationCompletionPercentage"
-        :format="getInstanceProgressBarLabel"
+        :percentage="taskAnnotationCompletionPercentage"
+        :format="getTaskProgressBarLabel"
         type="line"
         :stroke-width="30"
         text-inside
@@ -54,6 +65,15 @@ export default {
       wordStore,
     };
   },
+  created() {
+    const promises = [];
+    promises.push(this.globalDictionaryStore.fetchDictionary());
+    promises.push(this.wordStore.resetState());
+
+    Promise.all(promises).then(() => {
+      this.wordStore.fetchDocuments();
+    });
+  },
   methods: {
     // get the string for progress bar
     getInstanceProgressBarLabel() {
@@ -61,7 +81,7 @@ export default {
       return `${documentInfo.annotatedDocCount} / ${documentInfo.totalDocCount} documents annotated`;
     },
     getTaskProgressBarLabel() {
-      this.globalDictionaryStore.fetchDictionary();
+      // this.globalDictionaryStore.fetchDictionary();
       // this.wordStore.fetchDocuments();
       return `${this.globalDictionaryStore.getRows.length} / ${this.wordStore.getWordInfo.totalWordCount} documents annotated`;
     },
@@ -102,13 +122,12 @@ export default {
       }
     },
     taskAnnotationCompletionPercentage() {
-      this.globalDictionaryStore.fetchDictionary();
       let wordInfo = this.wordStore.getWordInfo;
       if (wordInfo.totalWordCount == 0) {
         return 0;
       } else {
         let percentage =
-          (100 * this.globalDictionaryStore.getRows.length) / wordInfo.totalWordCount;
+          (100 * Array.from(this.globalDictionaryStore.getRows).length) / wordInfo.totalWordCount;
         return percentage;
       }
     }

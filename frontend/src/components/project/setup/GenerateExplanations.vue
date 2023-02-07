@@ -124,6 +124,12 @@ export default {
           console.log("custom model generate explanations");
           console.log("model_id:", this.customModelForm.select[0]);
           console.log("model_path", this.customModelForm.select[1]);
+          ElNotification({
+                title: 'Started',
+                message: 'Task accepted',
+                type: 'success',
+                duration: 4500,
+              });
           ExplanationsApi.generateExplanations(this.projectStore.getProjectInfo.id, false, { model_id: this.customModelForm.select[0], model_path: this.customModelForm.select[1] })
             .then(res => {
               const project = this.projectStore.getProjectInfo
@@ -156,7 +162,7 @@ export default {
       });
     },
     waitForCompletion() {
-      let max_iter = 10;
+      let max_iter = 20;
       let timer = setInterval(() => ExplanationsApi.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {
@@ -168,7 +174,7 @@ export default {
           })
           clearInterval(timer)
           // push to next page?
-          this.$router.push({ name: 'DebugLocal' });
+          this.$router.push({ name: 'DebugOverview' });
         } else {
           console.log('Waiting for model finish message.')
           max_iter -= 1

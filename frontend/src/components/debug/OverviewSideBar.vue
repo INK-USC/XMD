@@ -13,13 +13,13 @@
         </el-icon>
         <span>Overview</span>
       </el-menu-item>
-      <el-menu-item index="/debug/dictionary" @click="() => this.$router.push({ name: 'DebugDictionary' })">
+      <!-- <el-menu-item index="/debug/dictionary" @click="() => this.$router.push({ name: 'DebugDictionary' })">
         <el-icon>
           <List />
         </el-icon>
         <span>Dictionary</span>
-      </el-menu-item>
-      <el-menu-item index="2" @click="() => this.$router.push({ name: 'DebugLocal' })">
+      </el-menu-item> -->
+      <!-- <el-menu-item index="2" @click="() => this.$router.push({ name: 'DebugLocal' })">
         <el-icon>
           <Document />
         </el-icon>
@@ -30,7 +30,7 @@
           <DocumentCopy />
         </el-icon>
         <span>Task Explanations</span>
-      </el-menu-item>
+      </el-menu-item> -->
       <el-menu-item index="/debug/evaluation" @click="() => this.$router.push({ name: 'DebugEvaluation' })">
         <el-icon>
           <DataAnalysis />

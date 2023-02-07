@@ -38,6 +38,9 @@
       </el-form>
     </el-col>
   </div>
+  <div style="display: flex; justify-content: center">
+    <p>test ID: test / password: test</p>
+  </div>
 </template>
 
 <script>

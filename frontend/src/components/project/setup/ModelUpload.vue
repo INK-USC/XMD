@@ -30,7 +30,7 @@
         </el-card>
         <el-card v-if="modelRadio == 'Upload Model'">
           <template #header>
-            <h3>Upload new model</h3>
+            <h3>Upload new model <span style="color: #909399">(Optional)</span></h3>
           </template>
 
           

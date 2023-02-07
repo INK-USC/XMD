@@ -6,7 +6,8 @@
           style="width: 100%"
           v-if="
             this.$route.path.endsWith('/overview') ||
-            this.$route.path.endsWith('/dictionary')
+            this.$route.path.endsWith('/dictionary') ||
+            this.$route.path.endsWith('/evaluation')
           "
         />
         <LocalSideBar

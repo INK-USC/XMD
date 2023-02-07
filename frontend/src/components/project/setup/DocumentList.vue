@@ -3,11 +3,12 @@
     <div style="text-align: center">
       <div>
         <h1>All Uploaded Documents</h1>
-        <el-progress
+        <!-- <el-progress
           type="circle"
+          width=180 
           :percentage="percentageCompleted"
           :format="percentageText"
-        />
+        /> -->
       </div>
       <el-input
         v-model="searchQuery"
