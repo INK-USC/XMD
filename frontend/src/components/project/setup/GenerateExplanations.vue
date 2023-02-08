@@ -1,6 +1,15 @@
 <template>
   <el-card style="width: 100%;">
-    <h3>Generate Explanations Page</h3>
+    <h3>
+      Generate Explanations Page
+      <el-popover content="help text" trigger="hover" :width="400">
+        <template #reference>
+          <el-icon style="height: 100%; margin-left: 0.5rem">
+            <QuestionFilled />
+          </el-icon>
+        </template>
+      </el-popover>
+    </h3>
     
     <el-tabs type="border-card">
       <el-tab-pane label="Custom Model">
@@ -39,7 +48,7 @@
 </template>
 
 <script>
-import { Tools } from "@element-plus/icons-vue";
+import { Tools, QuestionFilled } from "@element-plus/icons-vue";
 import { useProjectStore } from "@/stores/project";
 import { ElNotification } from 'element-plus'
 import ModelsApi from "@/utilities/network/model";
@@ -49,6 +58,7 @@ export default {
   name: "GenerateExplanations",
   components: {
     Tools,
+    QuestionFilled,
   },
   setup() {
     const projectStore = useProjectStore();

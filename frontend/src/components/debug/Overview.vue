@@ -1,5 +1,14 @@
 <template>
-  <h3>Debug Overview Page</h3>
+  <h3>
+    Debug Overview Page
+    <el-popover content="Overview of Human Debugging Phase./n Perform task and instance annotation to start debugging phase" trigger="hover" :width="400">
+      <template #reference>
+        <el-icon style="height: 100%; margin-left: 0.5rem">
+          <QuestionFilled />
+        </el-icon>
+      </template>
+    </el-popover>
+  </h3>
 
   <el-button
       type="primary"
@@ -44,6 +53,7 @@
 
 
 <script>
+import { QuestionFilled} from "@element-plus/icons-vue";
 import { useProjectStore } from "@/stores/project";
 import { useDocumentStore } from "@/stores/document";
 import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
@@ -53,6 +63,9 @@ import DocumentsApi from "@/utilities/network/document";
 
 export default {
   name: "DebugOverview",
+  components: {
+    QuestionFilled,
+  },
   setup() {
     const projectStore = useProjectStore();
     const documentStore = useDocumentStore();

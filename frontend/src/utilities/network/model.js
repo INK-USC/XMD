@@ -15,5 +15,15 @@ export default {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  downloadModel(projectID, model_id) {
+    const formData = new FormData();
+    formData.append("model_id", model_id);
+    return api.post(`hilt/projects/${projectID}/model/download/`, formData, {
+      headers: {
+        ...api.defaults.headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 };

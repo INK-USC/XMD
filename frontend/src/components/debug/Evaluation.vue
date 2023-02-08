@@ -2,10 +2,27 @@
     <el-row style="width: 100%">
         <el-card style="width: 100%;">
             <template #header>
-                <h3>Evaluation Section</h3>
+                <h3>Evaluation Section
+                    <el-popover content="help text" trigger="hover" :width="400">
+                        <template #reference>
+                        <el-icon style="height: 100%; margin-left: 0.5rem">
+                            <QuestionFilled />
+                        </el-icon>
+                        </template>
+                    </el-popover>
+                </h3>
             </template>
             <el-row>
-                <span>Model Selected: <b>debugmodel_proj1.h5</b></span>
+                <span style="padding-right: 1em;">Model Selected: <b>{{model.model_name}}</b> </span>
+                <el-button
+                    type="primary"
+                    size="small"
+                    :loading="downloading"
+                    @click="this.modelDownload()">
+                    <el-icon>
+                        <Download />
+                    </el-icon>
+                </el-button> 
 
                 <el-divider />
                 <h4>Example Input</h4>
@@ -38,8 +55,9 @@
                     </div>
                 </div>
 
-                <div v-if="exampleInputsForm.sentence_id">
+                <div v-if="exampleInputsForm.sentence_id !== ''">
                     <!-- test: {{ getDocText }} -->
+                    {{ exampleInputsForm.sentence_id }}
                 </div>
                 
 
@@ -50,28 +68,33 @@
 </template>
 
 <script>
-import { Back, Check } from "@element-plus/icons-vue";
+import { Back, Check, Download } from "@element-plus/icons-vue";
 import { useDocumentStore } from "@/stores/document";
 import { useLabelStore } from "@/stores/label";
 import { useDetailedDocumentStore } from "@/stores/detailedDocument";
 import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
+import { useProjectStore } from "@/stores/project";
+import ModelsApi from "@/utilities/network/model";
 
 export default {
     name: "DebugEvaluation",
     components: {
         Back,
         Check,
+        Download
     },
     setup() {
         const documentStore = useDocumentStore();
         const detailedDocumentStore = useDetailedDocumentStore();
         const labelStore = useLabelStore();
         const localDictionaryStore = useLocalDictionaryStore();
+        const projectStore = useProjectStore();
         return {
             documentStore,
             detailedDocumentStore,
             labelStore,
             localDictionaryStore,
+            projectStore
         };
     },
     created() {
@@ -93,11 +116,17 @@ export default {
                 ].id
             );
         });
+        this.getModelDetails()
     },
     data() {
         return {
             exampleInputsForm: {
                 sentence_id: ""
+            },
+            downloading: false,
+            model: {
+                model_id: "",
+                model_name: ""
             }
         }
     },
@@ -109,6 +138,37 @@ export default {
             return this.detailedDocumentStore.getDocument
         }
     },
+    methods: {
+        getModelDetails() {
+            ModelsApi.list(
+                this.projectStore.getProjectInfo.id
+            ).then(res => {
+                console.log(res.results.at(-1));
+                // check for debug false flag and pick the latest model
+                const model_obj = res.results.at(-1)
+                this.model.model_id = model_obj['id']
+                this.model.model_name = model_obj['name']
+            })
+        },
+        modelDownload() {
+            this.downloading=true
+            ModelsApi.downloadModel(
+                this.projectStore.getProjectInfo.id,
+                this.model.model_id
+            ).then(res => {
+                const blob = new Blob([res.data], { type: 'application/zip' })
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download = 'model'
+                link.click()
+                URL.revokeObjectURL(link.href)
+                this.downloading=false
+            }).catch((err) => {
+                console.log(err);
+                this.downloading=false
+            });
+        }
+    }
 };
 
 

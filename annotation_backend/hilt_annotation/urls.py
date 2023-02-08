@@ -34,6 +34,7 @@ urlpatterns = [
     path('projects/<int:project_id>/models/', views.ModelList.as_view(), name="models-list"),
     path('projects/<int:project_id>/models/upload/', views.ModelZipUpload.as_view(), name="models-upload"),
     path('projects/<int:project_id>/models/<str:pk>/', views.ModelDetail.as_view(), name="models-rud"),
+    path('projects/<int:project_id>/model/download/', views.ModelDownload.as_view(), name="models-download"),
     # Explanations
     path('projects/<int:project_id>/explanations/', views.GenerateExplanations.as_view(), name="generate-explanations"),
     path('projects/<int:project_id>/update/generate_expl_metadata/', views.ExplAttrUpdate.as_view(), name="generate-expl-update"),

@@ -13,7 +13,15 @@
       <el-col>
         <el-card v-if="modelRadio == 'Model List'">
           <template #header>
-            <h3>Model List</h3>
+            <h3>Model List
+              <el-popover content="help text" trigger="hover" :width="400">
+                <template #reference>
+                  <el-icon style="height: 100%; margin-left: 0.5rem">
+                    <QuestionFilled />
+                  </el-icon>
+                </template>
+              </el-popover>
+            </h3>
           </template>
 
         <el-table
@@ -65,7 +73,7 @@
   </template>
   
   <script>
-  import { UploadFilled, Upload, SuccessFilled } from "@element-plus/icons-vue";
+  import { UploadFilled, Upload, SuccessFilled, QuestionFilled } from "@element-plus/icons-vue";
   import { useProjectStore } from "@/stores/project";
   import ModelsApi from "@/utilities/network/model";
   
@@ -76,6 +84,7 @@
       UploadFilled,
       Upload,
       SuccessFilled,
+      QuestionFilled
     },
     setup() {
       const projectStore = useProjectStore();
