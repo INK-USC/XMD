@@ -28,7 +28,7 @@ Note: The python virtual environment will be located at hilt-demo, which is diff
     - virtualenv: `source hilt-demo/bin/activate`
     
 5. Install prerequisites:
-    - pip install -r requirements.txt
+    - `pip install -r requirements.txt`
     - note that requirements.txt may contain package version not compatible with your installation.
         Please adjust accordingly.
     
