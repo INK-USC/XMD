@@ -6,36 +6,80 @@ TODO: Add project details
 
 # Getting Started:
 
-- Install Python 3.8. For detailed environment setup follow `Setup Environment` step.
+- This project is intended to be deployed on modern linux environments.
+- Install Python 3, verify install status by using `python3 --version` to check. python may be installed under different aliases, use the appropriate one on your system.
 
 <details>
 <summary><b>Setup Environment</b></summary>
 <p>
-Note: All paths are relative to being just outside the `HILT-DEMO` directory. Please adjust paths accordingly.
+Note: The python virtual environment will be located at hilt-demo, which is different than the 
+    Code folder of HILT-demo.
 
-1. Please install Python3.8 (if you use `conda` you can ignore this step and setup accordingly)
-2. Open a new terminal window after installing the above
-3. Clone this repo: `git clone https://github.com/danny911kr/HILT-demo.git`
-4. Create a virtual environment using:
+1. Please install Python3 (if you use `conda` you can ignore this step and setup accordingly)
+2. Clone this repo: `git clone https://github.com/danny911kr/HILT-demo.git`
+3. Create a virtual environment using:
     - anaconda: `conda create -n hilt-demo python=3.8`
     - virtualenv:
-        1. `python3.8 -m pip install virtualenv`
-        2. `python3.8 -m venv hilt-demo`
+        1. `python3 -m pip install virtualenv`
+        2. `python3 -m venv hilt-demo`
 
-5. Activate your environment:
-
+4. Activate your environment:
     - anaconda: `conda activate hilt-demo`
     - virtualenv: `source hilt-demo/bin/activate`
+    
+5. Install prerequisites:
+    - pip install -r requirements.txt
+    - note that requirements.txt may contain package version not compatible with your installation.
+        Please adjust accordingly.
+    
 
 </p>
   </details>
   <br/>
 
 <details>
+<summary><b>Setup Backend</b></summary>
+<p>
+    
+1. [Follow postgres's instruction to install postgres 12 on your local system](https://www.postgresql.org/download/)
+    
+2. Make sure postgres is started and enabled by `sudo systemctl start postgresql-12` and `sudo systemctl enable postgresql-12`
+    
+3. Verify postgres status by running `sudo systemctl status postgresql-12`
+    
+4. Create a postgrees user by running `sudo -u postgres createuser hilt-user`
+    
+5. Modify `/var/lib/pgsql/12/data/pg_hba.conf` so that the identification method use md5. [See here in detail](https://stackoverflow.com/questions/50085286/postgresql-fatal-ident-authentication-failed-for-user) You can use any text editor you want. I would recommend `micro` or `nano`. As a backup,`vi` should be installed by default on any modern linux systems.
+    
+6. Open `annotation_backend/create_empty_db.sql`, you will need to execute these sql commands as the postgres user. This can be done by:
+    
+    a. `cat annotation_backend/create_empty_db.sql` to print the command to the current console.
+    
+    b. `sudo -u postgres psql` to switch to postgres user and enter the postgres environment. If prompt for password, enter one you configured during the setup process. Try 123.
+    
+    c. Copy and paste commands in `annotation_backend/create_empty_db.sql` into the command window to execute these sql commands to initialize and configure the database.
+    
+    d. Exit postgres environment  by typing `\q`
+    
+7. Use `python3 annotation_backend/manage.py migrate` to setup postgres database for access
+    
+8. Use `python annotation_backend/manage.py createsuperuser` to setup django super user for website login
+    
+9. Start the backend by using `python annotation_backend/manage.py runserver 0.0.0.0:8000` Note 8000 here is hard coded in, you need to move other services that may be running on 8000 before hand.
+    
+10. After verifying that the backend can be access via a web browser and can be accessed normally, it is recommended to use systemd or tmux to start a headless instance to allow server to serve after logout of current instance.
+    
+11. It is recommended to use `chmod` and `chown` to set appropriate  permissions for the database and source code files. Note that postgresql db need to be accessed as the postgres user.
+    
+(Old) Follow Django annotation backend installation instructions [here](annotation_backend/README.md)
+
+</p>
+</details>
+<br/>
+<details>
 <summary><b>Setup Frontend</b></summary>
 <p>
-
-- Follow Django annotation backend installation instructions [here](annotation_backend/README.md)
+    
 - Follow Vue.js frontend installation instructions [here](frontend/README.md)
 
 </p>
