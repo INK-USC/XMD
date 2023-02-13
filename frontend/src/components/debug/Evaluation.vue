@@ -29,6 +29,7 @@
                 <el-form :model="exampleInputsForm" size="large" style="width: 100%">
                     <el-form-item>
                         <el-select v-model="exampleInputsForm.sentence_id" placeholder="Select a Sentence" size="large"
+                            @change = 'updateDetailedDoc'
                             style="width: 100%;">
                             <el-option  
                                 v-for="doc in documentStore.getDocuments"
@@ -41,7 +42,7 @@
 
                 </el-form>
 
-                <div>
+                <!-- <div>
                     <h4 style="margin-top: 4em;">Attribution scores</h4>
                     <div>
                         <span><span
@@ -53,12 +54,100 @@
                                 style="display: inline-block; width: 8rem; text-align: left; font-style: italic;">Debugged
                                 Text</span>: All muslims are terrorists and need to be deported from this country</span>
                     </div>
-                </div>
+                </div> -->
 
-                <div v-if="exampleInputsForm.sentence_id !== ''">
-                    <!-- test: {{ getDocText }} -->
-                    {{ exampleInputsForm.sentence_id }}
-                </div>
+                <!-- <div v-if="exampleInputsForm.sentence_id !== ''">
+                    test: {{ getDocText }}
+                </div> -->
+
+                
+
+                <el-row
+                    style="width: 100%"
+                    v-for="(document, docIndex) in detailedSentence"
+                    :key="document.id"
+                >
+        
+                    <el-row
+                    style="width: 100%"
+                    v-for="annotation in document.annotations"
+                    :key="annotation.id"
+                    >
+                        <el-row style="width: 100%">
+                            <el-tag>Document #{{ docIndex + 1 }}</el-tag>
+                            <el-tag style="margin-left: 10px" v-if="'ground_truth' in document">
+                            Ground truth: {{ getLabelByID(document.ground_truth).text }}
+                            </el-tag>
+                            <el-tag style="margin-left: 10px">
+                            Prediction: {{ getLabelByID(annotation.label).text }}
+                            </el-tag>
+                        </el-row>
+
+                        <el-row style="width: 100%; margin-top: 10px;">
+                            <el-tag type="warning">Before Debugging</el-tag>
+                        </el-row>
+
+                        <el-row style="line-height: 2; margin-top: 10px">
+                            <div>
+                            <span
+                                v-for="wordData in document.words"
+                                :key="wordData.id"
+                                :style="getWordStyle(wordData.scores[annotation.id], annotation.label)"
+                            >
+                                <el-popover
+                                :content=" wordData.text + ': ' + wordData.scores[annotation.id].score "
+                                trigger="hover"
+                                >
+                                    <template #reference>
+                                        <span>
+                                        {{ wordData.text }}
+                                        </span>
+                                    </template>
+                                </el-popover>
+                            </span>
+                            </div>
+                        </el-row>
+                    </el-row>
+                    <el-divider />
+                </el-row>
+                <el-row
+                    style="width: 100%"
+                    v-for="(document, docIndex) in detailedSentence"
+                    :key="document.id"
+                >
+        
+                    <el-row
+                    style="width: 100%"
+                    v-for="annotation in document.annotations"
+                    :key="annotation.id"
+                    >
+                        <el-row style="width: 100%">
+                            <el-tag type="warning">After Debug Training</el-tag>
+                        </el-row>
+
+                        <el-row style="line-height: 2; margin-top: 10px">
+                            <div>
+                            <span
+                                v-for="wordData in document.words"
+                                :key="wordData.id"
+                                :style="getWordStyle(wordData.word_debug_annotation_score?.[annotation.id], annotation.label)"
+                            >
+                                <el-popover
+                                :content=" wordData.text + ': ' + 0 "
+                                trigger="hover"
+                                >
+                                    <template #reference>
+                                        <span>
+                                        {{ wordData.text }}
+                                        </span>
+                                    </template>
+                                </el-popover>
+                            </span>
+                            </div>
+                        </el-row>
+                    </el-row>
+                    <el-divider />
+                </el-row>
                 
 
 
@@ -74,6 +163,8 @@ import { useLabelStore } from "@/stores/label";
 import { useDetailedDocumentStore } from "@/stores/detailedDocument";
 import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { useProjectStore } from "@/stores/project";
+import { useWordStore } from "@/stores/word"
+import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
 
 export default {
@@ -89,12 +180,16 @@ export default {
         const labelStore = useLabelStore();
         const localDictionaryStore = useLocalDictionaryStore();
         const projectStore = useProjectStore();
+        const wordStore = useWordStore();
         return {
             documentStore,
             detailedDocumentStore,
             labelStore,
             localDictionaryStore,
-            projectStore
+            projectStore,
+            wordStore,
+            getLabelByID: labelStore.getLabelByID,
+
         };
     },
     created() {
@@ -127,18 +222,28 @@ export default {
             model: {
                 model_id: "",
                 model_name: ""
-            }
+            },
+            detailedSentence : []
         }
     },
     computed: {
         getDocText() {
             console.log("calling getDocTest")
             console.log(this.exampleInputsForm.sentence_id)
-            this.detailedDocumentStore.fetchDocument(this.exampleInputsForm.sentence_id)
-            return this.detailedDocumentStore.getDocument
+            return this.detailedSentence;
+        },
+        documents: function() {
+            console.log('inside documents function');
+            console.log(this.detailedSentence);
+            return this.detailedSentence;
         }
     },
     methods: {
+        updateDetailedDoc(id) {
+            console.log('changed to', id)
+            this.detailedDocumentStore.fetchDocument(id)
+            this.detailedSentence = [this.detailedDocumentStore.getDocument];
+        },
         getModelDetails() {
             ModelsApi.list(
                 this.projectStore.getProjectInfo.id
@@ -156,6 +261,7 @@ export default {
                 this.projectStore.getProjectInfo.id,
                 this.model.model_id
             ).then(res => {
+                // console.log(res.data)
                 const blob = new Blob([res.data], { type: 'application/zip' })
                 const link = document.createElement('a')
                 link.href = URL.createObjectURL(blob)
@@ -167,7 +273,35 @@ export default {
                 console.log(err);
                 this.downloading=false
             });
-        }
+        },
+        getColors(labelID) {
+            console.log(labelID);
+            const label = this.getLabelByID(labelID);
+            return ColorSets[label.color_set].colors;
+        },
+        getWordStyle(scoreAnn = 0, labelID) {
+            const style = {
+                padding: "3px 3px 3px 3px",
+                margin: "3px 3px 3px 3px",
+                fontSize: "18px",
+            };
+            const score = scoreAnn.score;
+            const colors = this.getColors(labelID);
+            let index = -1;
+            if (score <= 0) {
+                return style;
+            } else if (score <= 0.33) {
+                index = 0;
+            } else if (score <= 0.66) {
+                index = 1;
+            } else if (score <= 1.0) {
+                index = 2;
+            }
+            return {
+                ...style,
+                ...colors[index],
+            };
+        },
     }
 };
 

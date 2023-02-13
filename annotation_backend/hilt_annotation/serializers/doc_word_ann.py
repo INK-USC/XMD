@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Word, Annotation, Document, WordAnnotationScore, TaskTypes, SentimentAnalysisAnnotation, \
+from ..models import Word, Annotation, Document, WordAnnotationScore, WordDebugAnnotationScore, TaskTypes, SentimentAnalysisAnnotation, \
     RelationExtractionAnnotation
 
 
@@ -8,6 +8,10 @@ class WordAnnotationScoreSerializer(serializers.ModelSerializer):
         model = WordAnnotationScore
         fields = ['annotation', 'score']  # , 'id', 'word']
 
+class WordDebugAnnotationScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WordDebugAnnotationScore
+        fields = ['annotation', 'score']  # , 'id', 'word']
 
 class SentimentAnalysisAnnotationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,10 +50,11 @@ class AnnotationSerializer(serializers.ModelSerializer):
 
 class WordSerializer(serializers.ModelSerializer):
     word_annotation_score = WordAnnotationScoreSerializer(many=True, read_only=True)
+    word_debug_annotation_score = WordDebugAnnotationScoreSerializer(many=True, read_only=True)
 
     class Meta:
         model = Word
-        fields = ['id', 'text', 'order', 'word_annotation_score']  # , 'document']
+        fields = ['id', 'text', 'order', 'word_annotation_score', 'word_debug_annotation_score']  # , 'document']
 
 
 class DocumentWordSerializer(serializers.ModelSerializer):

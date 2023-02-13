@@ -37,8 +37,8 @@
     <span style="padding-right: 1em;">Task Explanation</span>
     <el-button
       size="small"
-        @click="() => this.$router.push({ name: 'DebugGlobal' })">
-        Start Annotating
+      @click="() => this.$router.push({ name: 'DebugGlobal' })">
+      Start Annotating
     </el-button> 
     <el-progress
         style="width: 100%; margin-top: 1em;"
@@ -54,6 +54,7 @@
 
 <script>
 import { QuestionFilled} from "@element-plus/icons-vue";
+import { ElNotification } from 'element-plus'
 import { useProjectStore } from "@/stores/project";
 import { useDocumentStore } from "@/stores/document";
 import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
@@ -113,14 +114,36 @@ export default {
       })
     },
     trainDebugModel() {
-      DebugTrainingAPI.train(this.projectStore.getProjectInfo.id);
+      DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)
+        .then(res => {
+          console.log('Here');
+          console.log(res); 
+          this.waitForCompletion()
+          ElNotification({
+            title: 'Debug Training Started',
+            message: 'Page will automatically change once task is completed',
+            type: 'success',
+            duration: 0,
+          });
+        }).catch(err => {
+          // this.loadingExplanations = false
+          if (err.response && err.response.data) {
+            this.$notify.error({
+              title: "Model training failed",
+              message: err.response.data
+            })
+          } else {
+            this.$notify.error({
+              title: "Model failed to start training",
+              message: "Please try again later"
+            })
+          }
+        });
       this.fetchDebugScores(this.documentStore.getDocuments[1].id)
-
-      // waitForCompletion()
     },
-    // waitForCompletion() {
-
-    // },
+    waitForCompletion() {
+      return
+    },
   },
   computed: {
     // get the percentage of the annotation progress

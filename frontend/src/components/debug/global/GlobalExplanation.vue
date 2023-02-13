@@ -1,19 +1,13 @@
 <template>
   <el-row style="width: 100%">
     <el-row style="width: 100%">
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
+      <div style=" display: flex; align-items: center; justify-content: space-between;">
         <h1 style="text-align: center">
           Annotate page ({{ TaskTypes[this.projectStore.task] }})
         </h1>
         <!-- <div>
-        <AnnotateHelp />
-      </div> -->
+          <AnnotateHelp />
+        </div> -->
       </div>
     </el-row>
 
@@ -27,8 +21,7 @@
           @click="goToPrevWord()"
           :disabled="
             this.wordStore.getWordInfo.curWordIndex === 0 &&
-            this.wordStore.getWordInfo.curPage === 1
-          "
+            this.wordStore.getWordInfo.curPage === 1"
         >
           <el-icon><ArrowLeft /></el-icon>
           Prev
@@ -37,11 +30,8 @@
           type="primary"
           @click="goToNextWord()"
           :disabled="
-            this.wordStore.getWordInfo.curWordIndex ===
-              this.wordStore.getWordInfo.words.length - 1 &&
-            this.wordStore.getWordInfo.curPage ===
-              this.wordStore.getWordInfo.maxPage
-          "
+            this.wordStore.getWordInfo.curWordIndex === this.wordStore.getWordInfo.words.length - 1 && 
+            this.wordStore.getWordInfo.curPage === this.wordStore.getWordInfo.maxPage"
         >
           Next <el-icon><ArrowRight /></el-icon>
         </el-button>
@@ -58,19 +48,15 @@
               size="small"
               type="success"
               @click="addWord(0)"
-              v-if="
-                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
-              "
-            >
+              v-if="!globalDictionaryStore.containsWord(wordStore.getCurrWord())"
+              >
               add
             </el-button>
             <el-button
               size="small"
               type="primary"
               @click="addWord(1)"
-              v-if="
-                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
-              "
+              v-if="!globalDictionaryStore.containsWord(wordStore.getCurrWord())"
             >
               remove
             </el-button>
@@ -128,23 +114,16 @@
               <span
                 v-for="wordData in document.words"
                 :key="wordData.id"
-                :style="
-                  getWordStyle(wordData.scores[annotation.id], annotation.label)
-                "
+                :style="getWordStyle(wordData.scores[annotation.id], annotation.label)"
               >
                 <el-popover
-                  :content="
-                    wordData.text + ': ' + wordData.scores[annotation.id].score
-                  "
+                  :content=" wordData.text + ': ' + wordData.scores[annotation.id].score "
                   trigger="hover"
                 >
                   <template #reference>
                     <span
                       :style="
-                        wordData.text === this.wordStore.getCurrWord()
-                          ? { border: '2px solid black' }
-                          : {}
-                      "
+                        wordData.text === this.wordStore.getCurrWord() ? { border: '2px solid black' } : {}"
                     >
                       {{ wordData.text }}
                     </span>

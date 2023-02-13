@@ -1,7 +1,7 @@
 <template>
   <el-col>
     <el-menu :default-active="$route.path">
-      <el-menu-item index="1" @click="() => this.$router.push({ name: 'DocumentList' })">
+      <el-menu-item index="1" @click="() => this.$router.push({ name: 'GenerateExplanations' })">
         <el-icon>
           <Back />
         </el-icon>
