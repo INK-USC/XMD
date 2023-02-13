@@ -118,3 +118,19 @@ Note: The python virtual environment will be located at hilt-demo, which is diff
 </p>
 </details>
 <br/>
+
+
+<details>
+<summary><b>Turtorial:</b></summary>
+<p>
+Click the log in button on the top right cornor to log in.
+Then, create a new project by clicking the create project button.
+Upon successful creation of project, you will be automaticly redirected to the page ask for corpus import. Import your custom corpus into the website via the click/drag to upload. The JSON file format is listed here.
+A custom model is also able to be uploaded via the upload new model page.
+To begin annotating the data, click on the debug tab.
+Click on the appropriate start annotating button to start annotating the correct instance/task.
+To re-evaluate the model performace, click on the evaluation tab in the debug tab.
+To export your explanation generated data, go back to the main page, click on the export data tab, then you can download a JSON formated data to your local machine.
+</p>
+</details>
+<br/>
