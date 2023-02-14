@@ -39,28 +39,7 @@
                             />
                         </el-select>
                     </el-form-item>
-
                 </el-form>
-
-                <!-- <div>
-                    <h4 style="margin-top: 4em;">Attribution scores</h4>
-                    <div>
-                        <span><span
-                                style="display: inline-block; width: 8em; text-align: left; font-style: italic;">Original</span>:
-                            All muslims are terrorists and need to be deported from this country</span>
-                    </div>
-                    <div>
-                        <span> <span
-                                style="display: inline-block; width: 8rem; text-align: left; font-style: italic;">Debugged
-                                Text</span>: All muslims are terrorists and need to be deported from this country</span>
-                    </div>
-                </div> -->
-
-                <!-- <div v-if="exampleInputsForm.sentence_id !== ''">
-                    test: {{ getDocText }}
-                </div> -->
-
-                
 
                 <el-row
                     style="width: 100%"
@@ -240,9 +219,12 @@ export default {
     },
     methods: {
         updateDetailedDoc(id) {
-            console.log('changed to', id)
-            this.detailedDocumentStore.fetchDocument(id)
-            this.detailedSentence = [this.detailedDocumentStore.getDocument];
+            const promise = []
+            promise.push(this.detailedDocumentStore.fetchDocument(id));
+            Promise.all(promise).then(() => {
+                this.detailedSentence = [this.detailedDocumentStore.getDocument];
+
+            });
         },
         getModelDetails() {
             ModelsApi.list(
@@ -275,7 +257,6 @@ export default {
             });
         },
         getColors(labelID) {
-            console.log(labelID);
             const label = this.getLabelByID(labelID);
             return ColorSets[label.color_set].colors;
         },
