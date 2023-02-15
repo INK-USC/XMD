@@ -223,7 +223,6 @@ export default {
             promise.push(this.detailedDocumentStore.fetchDocument(id));
             Promise.all(promise).then(() => {
                 this.detailedSentence = [this.detailedDocumentStore.getDocument];
-
             });
         },
         getModelDetails() {
