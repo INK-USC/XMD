@@ -1,10 +1,17 @@
-# HILT-DEMO
+# XMD: An End-to-End Framework for Interactive Explanation-Based Debugging of NLP Models
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg?style=flat-square)](http://makeapullrequest.com)
+[![arXiv](https://img.shields.io/badge/arXiv-2210.16978-b31b1b.svg)](https://arxiv.org/abs/2210.16978)
 
-TODO: Add project details
+This repo provides the model, code & data of our paper: [XMD: An End-to-End Framework for Interactive Explanation-Based Debugging of NLP Models](https://arxiv.org/abs/2210.16978).
+[[PDF]](https://arxiv.org/pdf/2210.16978.pdf)
 
----
+## Overview
 
-# Getting Started:
+NLP models are susceptible to learning spurious biases (i.e., bugs) that work on some datasets but do not properly reflect the underlying task. Explanation-based model debugging aims to resolve spurious biases by showing human users explanations of model behavior, asking users to give feedback on the behavior, then using the feedback to update the model. While existing model debugging methods have shown promise, their prototype-level implementations provide limited practical utility.
+
+Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
+
+## Getting Started:
 
 - This project is intended to be deployed on modern linux environments.
 - Install Python 3, verify install status by using `python3 --version` to check. python may be installed under different aliases, use the appropriate one on your system.
