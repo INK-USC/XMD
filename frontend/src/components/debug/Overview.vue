@@ -82,6 +82,7 @@ export default {
   created() {
     const promises = [];
     promises.push(this.globalDictionaryStore.fetchDictionary());
+    promises.push(this.documentStore.fetchDocuments());
     promises.push(this.wordStore.resetState());
 
     Promise.all(promises).then(() => {

@@ -50,6 +50,7 @@ export const useLocalDictionaryStore = defineStore({
             // docsRow.push(item);
           }
           this.documents = docs;
+          console.log(docs)
           //   this.documentsRow = docsRow;
         }
       );
@@ -59,7 +60,7 @@ export const useLocalDictionaryStore = defineStore({
       return DictonaryApi.create(projectStore.getProjectInfo.id, data).then(
         () => {
           this.fetchDictionary(docID);
-          console.log(`added local word ${data.word}`)
+          // console.log(`added local word ${data.word}`)
 
           //   this.words[data.word] = this.wordRows.length;
           //   this.wordRows.push(res);
@@ -70,7 +71,7 @@ export const useLocalDictionaryStore = defineStore({
       const projectStore = useProjectStore();
       return DictonaryApi.delete(projectStore.getProjectInfo.id, dictID).then(
         () => {
-          console.log(`deleted local word`)
+          // console.log(`deleted local word`)
           return this.fetchDictionary();
         }
       );

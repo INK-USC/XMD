@@ -54,15 +54,17 @@ export const useDocumentStore = defineStore({
       const projectStore = useProjectStore();
       return DocumentsApi.delete(projectStore.getProjectInfo.id, document.id);
     },
-    markAnnotated() {
+    markAnnotated(annotated) {
       const projectStore = useProjectStore();
       if (!this.documents[this.curDocIndex].id) return null;
       console.log(projectStore.getProjectInfo.id, this.documents[this.curDocIndex].id)
       return DocumentsApi.markAnnotated(
+        annotated,
         projectStore.getProjectInfo.id,
-        this.documents[this.curDocIndex].id
+        this.documents[this.curDocIndex].id,
+        this.documents[this.curDocIndex].text
       ).then(() => {
-        this.document[this.curDocIndex].annotated = true;
+        this.documents[this.curDocIndex].annotated = true;
       });
     },
   },

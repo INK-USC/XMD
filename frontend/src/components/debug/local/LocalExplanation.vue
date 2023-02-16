@@ -17,14 +17,14 @@
       </div>
     </el-row>
     <el-row style="width: 100%">
-      <el-progress
+      <!-- <el-progress
         style="width: 100%"
         :percentage="annotationCompletionPercentage"
         :format="getProgressBarLabel"
         type="line"
         :stroke-width="30"
         text-inside
-      />
+      /> -->
       <div style="width: 100%">
         <span class="demonstration" v-if="topK > 0">Top {{ topK }} words</span>
         <span class="demonstration" v-if="topK == 0">All words</span>
@@ -274,7 +274,10 @@ export default {
   },
   methods: {
     wordDelete(dictID) {
-      this.localDictionaryStore.deleteWord(dictID);
+      console.log('vue delete word')
+      this.localDictionaryStore.deleteWord(dictID).then(
+        this.updateAnnotation()
+      );
     },
     wordClick(annID, wordID, type) {
       const docID = this.detailedDocumentStore.getDocument.id;
@@ -289,7 +292,9 @@ export default {
             word: wordID,
             annotation: annID,
             modification_type: type,
-          });
+          }).then( () =>
+            this.updateAnnotation()
+          );
         }
       } else {
         if (type == -1) {
@@ -334,6 +339,9 @@ export default {
     },
     // go to prev document
     goToPrevDoc() {
+      // Update Annotation
+      this.updateAnnotation();
+
       const curDocIndex = this.documentStore.getdocumentInfo.curDocIndex - 1;
       if (curDocIndex == -1) {
         this.documentStore
@@ -357,6 +365,9 @@ export default {
     },
     // go to next document
     goToNextDoc() {
+      // Update Annotation
+      this.updateAnnotation();
+      
       const curDocIndex = this.documentStore.getdocumentInfo.curDocIndex + 1;
       if (this.documentStore.getDocuments.length == curDocIndex) {
         this.documentStore
@@ -390,6 +401,18 @@ export default {
           this.goToNextDoc();
         }
       });
+    },
+    updateAnnotation() {
+      const docID = this.detailedDocumentStore.getDocument.id;
+      const words = this.localDictionaryStore.getByDocumentID(docID);
+      if (words !== undefined) {
+        console.log("Marking Annotated");
+        this.documentStore.markAnnotated(true)
+      } else {
+        console.log("Unmarking Annotated");
+        this.documentStore.markAnnotated(false)
+      };
+
     },
     trainDebugModel() {
       DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)

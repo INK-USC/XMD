@@ -11,7 +11,7 @@
         <el-icon>
           <Management />
         </el-icon>
-        <span>Overview</span>
+        <span>Debug Overview</span>
       </el-menu-item>
       <!-- <el-menu-item index="/debug/dictionary" @click="() => this.$router.push({ name: 'DebugDictionary' })">
         <el-icon>
