@@ -37,17 +37,11 @@ def map_dataset_label(belongs_to: str) -> BelongsToLabel:
 
 def create_annotations(annotations, all_annotation_labels, max_color_set, project, current_doc, word_docs):
     for annotation in annotations:
-        # check label
-        if annotation['label'] not in all_annotation_labels:
-            max_color_set += 1
-            new_label = Label(text=annotation["label"], project=project, color_set=max_color_set)
-            new_label.save()
-            all_annotation_labels[annotation["label"]] = new_label
-
         # create base annotation
         cur_annotation = Annotation(task=project.task,
                                     document=current_doc,
-                                    label=all_annotation_labels[annotation["label"]])
+                                    label=all_annotation_labels[str(current_doc.ground_truth)])
+
         cur_annotation.save()
 
         # Task extended annotation
@@ -103,7 +97,7 @@ def create_docs_from_json(project, data_file):
                 raise ImportFileError("Document dictionaries do not have the 'text' or 'words' key")
 
             metadata = extract_metadata_json(entry)
-            annotations = entry.get("annotations", [])
+            annotations = entry.get("annotations", [{}])
             belongs_to = map_dataset_label(entry.get("belongs_to", ""))
             cur_doc = Document(text=text, metadata=metadata, project=project, belongs_to=belongs_to)
             ground_truth = entry.get("label", None)

@@ -109,7 +109,7 @@ def add_annotation_scores(data, project: Project):
             wordannotationscore = WordAnnotationScore.objects.filter(word=word.id).first()
             if not wordannotationscore: # create row if word dosent exist in WordAnnotationScore table
                 print('creating new obj')
-                wordannotationscore = WordAnnotationScore(score=score, annotation=Annotation.objects.filter(document=document).id, word=word.id) 
+                wordannotationscore = WordAnnotationScore(score=score, annotation=Annotation.objects.filter(document=document)[0], word=word)
             else: # else update score
                 wordannotationscore.score = score
             print(wordannotationscore) 
