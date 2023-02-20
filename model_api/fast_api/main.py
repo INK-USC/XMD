@@ -68,14 +68,14 @@ def generate_attr_pipeline(project_id, dataset, arch):
     model = AutoModelForSequenceClassification.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
 
-    num_classes = config.type_vocab_size
+    num_classes = len(config.id2label)
     attr_algo = 'input-x-gradient'
-    # dataset_type = 'hatexplain'
 
     if config.model_type == "bert":
         task_encoder = model.bert
     elif config.model_type == "roberta":
         task_encoder = model.roberta
+
     # TODO: need to add all the model types. (maybe in dictionary format)
 
     task_head = model.classifier
@@ -114,7 +114,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
 
     def forward_func(input_embeds, attention_mask):
         enc = task_encoder(inputs_embeds=input_embeds,
-                           attention_mask=attention_mask).pooler_output
+                           attention_mask=attention_mask)[0]
         logits = task_head(enc)
         return logits
 
@@ -135,7 +135,6 @@ def generate_attr_pipeline(project_id, dataset, arch):
     attrs = [["{0:0.2f}".format(attr) for attr in lst] for lst in attrs]
     end = time.time()
     print(f'time elapsed: {end - start}')
-
     print(attrs)
 
     # format attrs
