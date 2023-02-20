@@ -81,7 +81,7 @@ class GenerateExplanations(APIView):
         text, labels, document_ids = [], [], []
         for data in Document.objects.filter(project=project):
             text.append(data.text)
-            labels.append(data.ground_truth.id)
+            labels.append(data.ground_truth.text)
             document_ids.append(str(data.id))
 
         print(text, labels)

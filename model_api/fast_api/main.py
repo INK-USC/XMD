@@ -68,7 +68,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
     model = AutoModelForSequenceClassification.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
 
-    num_classes = len(config.id2label)
+    num_classes = len(config.label2id)
     attr_algo = 'input-x-gradient'
 
     if config.model_type == "bert":
@@ -135,23 +135,40 @@ def generate_attr_pipeline(project_id, dataset, arch):
     attrs = [["{0:0.2f}".format(attr) for attr in lst] for lst in attrs]
     end = time.time()
     print(f'time elapsed: {end - start}')
-    print(attrs)
 
     # format attrs
     document_ids = dataset.metadata.document_ids
     format_attrs = []
 
+
+    manual_labels = {}
+    for i, x in enumerate(sorted(list(set(labels)))):
+        manual_labels[x] = i
+    print(manual_labels)
+
     for i, arr in enumerate(text):
-        format_attrs.append(
-            {
-                "id": i,
-                "tokens": text[i].split(" "),
-                "label": labels[i],
-                "prediction": 1,
-                "before_reg_explanation": attrs[2*i + labels[i] - 1],
-                "document_id": document_ids[i]
-            }
-        )
+        if labels[i] in config.label2id:
+            format_attrs.append(
+                {
+                    "id": i,
+                    "tokens": text[i].split(" "),
+                    "label": labels[i],
+                    "prediction": 1,
+                    "before_reg_explanation": attrs[2*i + config.label2id[labels[i]] - 1],
+                    "document_id": document_ids[i]
+                }
+            )
+        else:
+            format_attrs.append(
+                {
+                    "id": i,
+                    "tokens": text[i].split(" "),
+                    "label": labels[i],
+                    "prediction": 1,
+                    "before_reg_explanation": attrs[2*i + manual_labels[labels[i]] - 1],
+                    "document_id": document_ids[i]
+                }
+            )
 
     return_json = jsonable_encoder(format_attrs)
     print(return_json)
