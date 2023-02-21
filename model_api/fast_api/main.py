@@ -90,7 +90,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
     text, labels = dataset.text, dataset.labels
     data = tokenizer(text, padding=True)
     input_ids, attention_mask = data['input_ids'], data['attention_mask']
-    original_input_ids = torch.tensor(input_ids)
+    original_input_ids = input_ids
     input_ids = torch.tensor(input_ids)
 
     attention_mask = torch.tensor(attention_mask)
@@ -152,11 +152,15 @@ def generate_attr_pipeline(project_id, dataset, arch):
     print(manual_labels)
 
     for i, arr in enumerate(text):
+        start_index = original_input_ids[i].index(tokenizer.cls_token_id)
+        end_index = original_input_ids[i].index(tokenizer.sep_token_id)
+        tokens = tokenizer.batch_decode(torch.tensor(original_input_ids[i][start_index+1:end_index]).unsqueeze(1))
+
         if labels[i] in config.label2id:
             format_attrs.append(
                 {
                     "id": i,
-                    "tokens": tokenizer.batch_decode(original_input_ids[i].unsqueeze(1)),
+                    "tokens": tokens,
                     "label": labels[i],
                     "prediction": 1,
                     "before_reg_explanation": attrs[2*i + config.label2id[labels[i]] - 1],
@@ -167,7 +171,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
             format_attrs.append(
                 {
                     "id": i,
-                    "tokens": tokenizer.batch_decode(original_input_ids[i].unsqueeze(1)),
+                    "tokens": tokens,
                     "label": labels[i],
                     "prediction": 1,
                     "before_reg_explanation": attrs[2*i + manual_labels[labels[i]] - 1],
