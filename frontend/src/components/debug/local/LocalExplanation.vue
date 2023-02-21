@@ -54,16 +54,16 @@
               }}
             </el-tag>
           </el-row>
-          <el-row style="line-height: 2; margin-top: 10px">
-            <span
-              style="padding: 3px; font-size: 18px"
-              v-for="wordData in this.detailedDocumentStore.getDocument.words"
-              :key="wordData.id"
-            >
-              {{ wordData.text }}
-            </span>
-          </el-row>
-          <el-divider />
+<!--          <el-row style="line-height: 2; margin-top: 10px">-->
+<!--            <span-->
+<!--              style="padding: 3px; font-size: 18px"-->
+<!--              v-for="wordData in this.detailedDocumentStore.getDocument.words"-->
+<!--              :key="wordData.id"-->
+<!--            >-->
+<!--              {{ wordData.text }}-->
+<!--            </span>-->
+<!--          </el-row>-->
+<!--          <el-divider />-->
           <el-row style="line-height: 2; margin-top: 10px">
             <span style="font-size: 18px">
               {{ this.detailedDocumentStore.getDocument.text }}

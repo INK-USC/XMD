@@ -105,6 +105,9 @@ def add_annotation_scores(data, project: Project):
         document_id = uuid.UUID(sentence['document_id'])
         document = Document.objects.filter(id=document_id)[0]
         for idx, (word_str, score) in enumerate(zip(sentence['tokens'], sentence['before_reg_explanation'])):
+            cur_word = Word(document=document, text=word_str, order=idx)
+            cur_word.save()
+
             word = Word.objects.filter(document=document, order=idx)[0]
             wordannotationscore = WordAnnotationScore.objects.filter(word=word.id).first()
             if not wordannotationscore: # create row if word dosent exist in WordAnnotationScore table
@@ -112,7 +115,7 @@ def add_annotation_scores(data, project: Project):
                 wordannotationscore = WordAnnotationScore(score=score, annotation=Annotation.objects.filter(document=document)[0], word=word)
             else: # else update score
                 wordannotationscore.score = score
-            print(wordannotationscore) 
+            print(wordannotationscore)
             wordannotationscore.save(())
         # 2
         document.annotated = True
