@@ -121,17 +121,17 @@ export default {
   created() {
     this.documentStore.resetState();
   },
-  computed: {
-    percentageCompleted() {
-      const info = this.documentStore.getdocumentInfo;
-      if (!info) {
-        return 0;
-      }
-      const completed = info.annotatedDocCount;
-      const all = info.totalDocCount;
-      const percent = (completed / all) * 100;
-      return percent ? percent : 0;
-    },
-  },
+  // computed: {
+  //   percentageCompleted() {
+  //     const info = this.documentStore.getdocumentInfo;
+  //     if (!info) {
+  //       return 0;
+  //     }
+  //     const completed = info.annotatedDocCount;
+  //     const all = info.totalDocCount;
+  //     const percent = (completed / all) * 100;
+  //     return percent ? percent : 0;
+  //   },
+  // },
 };
 </script>

@@ -55,7 +55,7 @@
             </el-tag>
           </el-row>
           <el-row style="line-height: 2; margin-top: 10px">
-            <div>
+            <!-- <div> -->
               <span
                 style="padding: 3px; font-size: 18px"
                 v-for="wordData in this.detailedDocumentStore.getDocument.words"
@@ -63,7 +63,7 @@
               >
                 {{ wordData.text }}
               </span>
-            </div>
+            <!-- </div> -->
           </el-row>
           <el-divider />
           <!-- <el-row>
@@ -95,7 +95,7 @@
               </div> -->
             </el-row>
             <el-row style="line-height: 2; margin-top: 10px">
-              <div>
+              <!-- <div> -->
                 <span
                   v-for="wordData in this.detailedDocumentStore.getDocument
                     .words"
@@ -145,7 +145,7 @@
                     </template>
                   </el-popover>
                 </span>
-              </div>
+              <!-- </div> -->
             </el-row>
           </el-row>
         </el-col>

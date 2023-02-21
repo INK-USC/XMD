@@ -246,7 +246,7 @@ export default {
                 const blob = new Blob([res.data], { type: 'application/zip' })
                 const link = document.createElement('a')
                 link.href = URL.createObjectURL(blob)
-                link.download = 'model'
+                link.download = 'model.zip'
                 link.click()
                 URL.revokeObjectURL(link.href)
                 this.downloading=false

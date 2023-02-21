@@ -7,13 +7,19 @@
       </el-menu-item>
     </el-menu>
 
-    <el-table :data="documentStore.getDocuments">
+    <el-table :data="Array.from(docs)">
       <el-table-column width="40">
         <template #default="scope">
           <span v-if="scope.row.annotated">
             <el-icon><Check /></el-icon>
           </span>
-          <div v-else>{{ scope.$index + 1 }}</div>
+          <div v-else>
+            {{
+              documentStore.getdocumentInfo.pageSize *
+                (documentStore.getdocumentInfo.curPage - 1) +
+              scope.$index + 1
+            }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="text">
@@ -21,8 +27,8 @@
           <el-link
             v-snip="{ lines: 3 }"
             @click="goToDocument(scope.$index, scope.row)"
-            >{{ scope.row.text }}</el-link
-          >
+            >{{ scope.row.text }}
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -64,6 +70,11 @@ export default {
       localDictionaryStore,
     };
   },
+  data() {
+    return {
+      docs: [],
+    };
+  },
   created() {
     const promises = [];
     promises.push(this.labelStore.fetchLabels());
@@ -82,11 +93,16 @@ export default {
           this.documentStore.getdocumentInfo.curDocIndex
         ].id
       );
+      this.docs = this.documentStore.getDocuments;
+      console.log(`updating docs data`);
     });
   },
   methods: {
     pageChanged(pageNum) {
-      this.documentStore.updateCurPage(pageNum).then(() => {
+      this.documentStore.updateCurPage(pageNum).then((res) => {
+        this.docs = res.results.results;
+        console.log(`updating docs data`);
+        
         this.detailedDocumentStore.fetchDocument(
           this.documentStore.getDocuments[
             this.documentStore.getdocumentInfo.curDocIndex

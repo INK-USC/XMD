@@ -39,7 +39,7 @@ class LocalExplanationDictionaryList(generics.ListCreateAPIView):
     pagination_class = LargeResultsSetPagination
 
     def get_queryset(self):
-        q = self.queryset
+        q = self.queryset.filter(project=self.kwargs['project_id'])
         if 'doc_id' in self.request.query_params:
             q = q.filter(annotation__document=self.request.query_params['doc_id'])
         return q

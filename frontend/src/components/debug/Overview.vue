@@ -58,6 +58,7 @@ import { ElNotification } from 'element-plus'
 import { useProjectStore } from "@/stores/project";
 import { useDocumentStore } from "@/stores/document";
 import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
+import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { useWordStore } from "@/stores/word";
 import DebugTrainingAPI from "@/utilities/network/debugTraining"
 import DocumentsApi from "@/utilities/network/document";
@@ -71,17 +72,20 @@ export default {
     const projectStore = useProjectStore();
     const documentStore = useDocumentStore();
     const globalDictionaryStore = useGlobalDictionaryStore();
+    const localDictionaryStore = useLocalDictionaryStore();
     const wordStore = useWordStore();
     return {
       projectStore,
       documentStore,
       globalDictionaryStore,
+      localDictionaryStore,
       wordStore,
     };
   },
   created() {
     const promises = [];
     promises.push(this.globalDictionaryStore.fetchDictionary());
+    promises.push(this.localDictionaryStore.fetchDictionary());
     promises.push(this.documentStore.fetchDocuments());
     promises.push(this.wordStore.resetState());
 
@@ -93,12 +97,12 @@ export default {
     // get the string for progress bar
     getInstanceProgressBarLabel() {
       let documentInfo = this.documentStore.getdocumentInfo;
-      return `${documentInfo.annotatedDocCount} / ${documentInfo.totalDocCount} documents annotated`;
+      return `${this.localDictionaryStore.getLocalInfo.annotatedDocCount} / ${documentInfo.totalDocCount} sentences annotated`;
     },
     getTaskProgressBarLabel() {
       // this.globalDictionaryStore.fetchDictionary();
       // this.wordStore.fetchDocuments();
-      return `${this.globalDictionaryStore.getRows.length} / ${this.wordStore.getWordInfo.totalWordCount} documents annotated`;
+      return `${this.globalDictionaryStore.getRows.length} / ${this.wordStore.getWordInfo.totalWordCount} words annotated`;
     },
     fetchDebugScores(docID) {
       return DocumentsApi.detailedDocument(
@@ -150,11 +154,12 @@ export default {
     // get the percentage of the annotation progress
     instanceAnnotationCompletionPercentage() {
       let documentInfo = this.documentStore.getdocumentInfo;
+      let localDictInfo = this.localDictionaryStore.getLocalInfo;
       if (documentInfo.totalDocCount == 0) {
         return 0;
       } else {
         let percentage =
-          (100 * documentInfo.annotatedDocCount) / documentInfo.totalDocCount;
+          (100 * localDictInfo.annotatedDocCount) / documentInfo.totalDocCount;
         return percentage;
       }
     },

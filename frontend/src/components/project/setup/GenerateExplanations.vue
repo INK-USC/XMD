@@ -179,7 +179,7 @@ export default {
       });
     },
     waitForCompletion() {
-      let max_iter = 20;
+      let max_iter = 60;
       let timer = setInterval(() => ExplanationsApi.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {

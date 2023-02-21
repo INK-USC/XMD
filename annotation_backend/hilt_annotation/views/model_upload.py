@@ -39,14 +39,11 @@ class ModelDownload(APIView):
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type="application/zip")
-                    response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+                    response['Content-Disposition'] = 'attachment; filename="model.zip"' # + os.path.basename(file_path)
                     return response
         except Exception as e:
             print(f'exception {e}')
             return Response(exception=e)
 
-    # def post(self, request, *args, **kwargs):
-    #     print(request.POST)
-    #     return Response({"success": "your file has been received"}, status=status.HTTP_202_ACCEPTED)
 
 
