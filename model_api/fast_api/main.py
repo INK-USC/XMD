@@ -20,7 +20,7 @@ from transformers import (
     Trainer
 )
 from captum.attr import IntegratedGradients, GradientShap, InputXGradient, Saliency, DeepLift
-# from debug.dataset import DebugDataset
+from debug.dataset import DebugDataset
 
 from config import attr_algos, baseline_required, dataset_info
 from fast_api_util_functions import _send_update
@@ -213,7 +213,7 @@ def train_debug_pipeline(project_id, dataset, arch):
     tokenizer = AutoTokenizer.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
 
-    # train_dataset = DebugDataset(dataset, tokenizer)
+    dataset = DebugDataset(dataset, tokenizer, 128)
 
 
 

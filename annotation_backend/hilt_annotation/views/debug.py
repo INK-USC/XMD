@@ -70,7 +70,7 @@ class TrainingDebugModel(APIView):
             instance = {
                 'document_id': str(document.id),
                 'tokens': tokens,
-                'label': document.ground_truth.id,
+                'label': document.ground_truth.text,
                 'before_expl_reg': score_before,
                 'local_after_expl_reg': local_score_after,
                 'global_after_expl_reg': global_score_after
