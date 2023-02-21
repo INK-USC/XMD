@@ -55,15 +55,19 @@
             </el-tag>
           </el-row>
           <el-row style="line-height: 2; margin-top: 10px">
-            <!-- <div> -->
-              <span
-                style="padding: 3px; font-size: 18px"
-                v-for="wordData in this.detailedDocumentStore.getDocument.words"
-                :key="wordData.id"
-              >
-                {{ wordData.text }}
-              </span>
-            <!-- </div> -->
+            <span
+              style="padding: 3px; font-size: 18px"
+              v-for="wordData in this.detailedDocumentStore.getDocument.words"
+              :key="wordData.id"
+            >
+              {{ wordData.text }}
+            </span>
+          </el-row>
+          <el-divider />
+          <el-row style="line-height: 2; margin-top: 10px">
+            <span style="font-size: 18px">
+              {{ this.detailedDocumentStore.getDocument.text }}
+            </span>
           </el-row>
           <el-divider />
           <!-- <el-row>
@@ -95,57 +99,55 @@
               </div> -->
             </el-row>
             <el-row style="line-height: 2; margin-top: 10px">
-              <!-- <div> -->
-                <span
-                  v-for="wordData in this.detailedDocumentStore.getDocument
-                    .words"
-                  :key="wordData.id"
-                  :style="
-                    getWordStyle(
-                      wordData.scores[annotation.id],
-                      annotation.label
-                    )
-                  "
-                >
-                  <el-popover trigger="hover" width="200px">
-                    <p>
-                      {{
-                        wordData.text +
-                        ": " +
-                        wordData.scores[annotation.id].score
-                      }}
-                    </p>
-                    <div style="text-align: right; margin: 0">
-                      <el-button
-                        size="small"
-                        type="success"
-                        @click="wordClick(annotation.id, wordData.id, 0)"
-                      >
-                        add
-                      </el-button>
-                      <el-button
-                        size="small"
-                        type="primary"
-                        @click="wordClick(annotation.id, wordData.id, 1)"
-                      >
-                        remove
-                      </el-button>
-                      <el-button
-                        size="small"
-                        type="info"
-                        @click="wordClick(annotation.id, wordData.id, -1)"
-                      >
-                        reset
-                      </el-button>
-                    </div>
-                    <template #reference>
-                      <span>
-                        {{ wordData.text }}
-                      </span>
-                    </template>
-                  </el-popover>
-                </span>
-              <!-- </div> -->
+              <span
+                v-for="wordData in this.detailedDocumentStore.getDocument
+                  .words"
+                :key="wordData.id"
+                :style="
+                  getWordStyle(
+                    wordData.scores[annotation.id],
+                    annotation.label
+                  )
+                "
+              >
+                <el-popover trigger="hover" width="200px">
+                  <p>
+                    {{
+                      wordData.text +
+                      ": " +
+                      wordData.scores[annotation.id].score
+                    }}
+                  </p>
+                  <div style="text-align: right; margin: 0">
+                    <el-button
+                      size="small"
+                      type="success"
+                      @click="wordClick(annotation.id, wordData.id, 0)"
+                    >
+                      add
+                    </el-button>
+                    <el-button
+                      size="small"
+                      type="primary"
+                      @click="wordClick(annotation.id, wordData.id, 1)"
+                    >
+                      remove
+                    </el-button>
+                    <el-button
+                      size="small"
+                      type="info"
+                      @click="wordClick(annotation.id, wordData.id, -1)"
+                    >
+                      reset
+                    </el-button>
+                  </div>
+                  <template #reference>
+                    <span>
+                      {{ wordData.text }}
+                    </span>
+                  </template>
+                </el-popover>
+              </span>
             </el-row>
           </el-row>
         </el-col>
