@@ -7,6 +7,7 @@ export const useLocalDictionaryStore = defineStore({
   id: "dictionary_local",
   state: () => ({
     documents: {},
+    annotatedDocCount: 0,
     // documentsRow: [],
   }),
   getters: {
@@ -23,6 +24,9 @@ export const useLocalDictionaryStore = defineStore({
         return word[annID];
       };
     },
+    getLocalInfo: (state) => {
+      return state;
+    },
     // getRows: (state) => {
     //   return state.wordRows;
     // },
@@ -34,11 +38,13 @@ export const useLocalDictionaryStore = defineStore({
         (res) => {
           const results = res.results;
           const docs = {};
+          let annDocCount = 0
           //   const docsRow = [];
           for (let item of results) {
             const docID = item["word"]["document"];
             if (!(docID in docs)) {
               docs[docID] = {};
+              annDocCount += 1
             }
             const wordID = item["word"]["id"];
             if (!(wordID in docs[docID])) {
@@ -50,7 +56,8 @@ export const useLocalDictionaryStore = defineStore({
             // docsRow.push(item);
           }
           this.documents = docs;
-          console.log(docs)
+          this.annotatedDocCount = annDocCount;
+          console.log(`dictionaryLocal -> fetchDictionary: annotatedDocCount ${annDocCount}`)
           //   this.documentsRow = docsRow;
         }
       );

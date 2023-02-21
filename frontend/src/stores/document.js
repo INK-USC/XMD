@@ -42,6 +42,7 @@ export const useDocumentStore = defineStore({
         this.totalDocCount = res.count;
         this.annotatedDocCount = res.results.annotatedCount;
         this.maxPage = Math.ceil(this.totalDocCount / this.pageSize);
+        console.log(res.results.results)
         return res;
       });
     },
