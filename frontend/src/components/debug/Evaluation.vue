@@ -243,7 +243,9 @@ export default {
                 this.model.model_id
             ).then(res => {
                 // console.log(res.data)
-                const blob = new Blob([res.data], { type: 'application/zip' })
+                console.log(res.length);
+                const blob = new Blob([this.str2bytes(res)], { type: 'application/zip' })
+                console.log(blob.size);
                 const link = document.createElement('a')
                 link.href = URL.createObjectURL(blob)
                 link.download = 'model.zip'
@@ -254,6 +256,13 @@ export default {
                 console.log(err);
                 this.downloading=false
             });
+        },
+        str2bytes(str) {
+            var bytes = new Uint8Array(str.length);
+            for (var i=0; i<str.length; i++) {
+                bytes[i] = str.charCodeAt(i);
+            }
+            return bytes;
         },
         getColors(labelID) {
             const label = this.getLabelByID(labelID);
