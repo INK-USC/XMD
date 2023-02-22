@@ -1,6 +1,6 @@
 import uuid
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from rest_framework.views import APIView, Response, status
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import FileSystemStorage
@@ -37,13 +37,12 @@ class ModelDownload(APIView):
             file_path = os.path.join(settings.MEDIA_ROOT, path)
             print('total file path:', file_path)
             if os.path.exists(file_path):
-                with open(file_path, 'rb') as fh:
-                    response = HttpResponse(fh.read(), content_type="application/zip")
-                    response['Content-Disposition'] = 'attachment; filename="model.zip"' # + os.path.basename(file_path)
-                    return response
+                print('>>>>>>>>>>>>>>>>>>>>>>>sending file')
+                # with open(file_path, 'rb') as fh:
+                    # response = HttpResponse(fh.read(), content_type="application/zip")
+                    # response['Content-Disposition'] = 'attachment; filename="model.zip"' # + os.path.basename(file_path)
+                response = FileResponse(open(file_path, 'rb'), as_attachment=True)
+                return response
         except Exception as e:
             print(f'exception {e}')
             return Response(exception=e)
-
-
-

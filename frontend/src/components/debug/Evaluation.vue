@@ -64,7 +64,6 @@
                         </el-row>
 
                         <el-row style="line-height: 2; margin-top: 10px">
-                            <div>
                             <span
                                 v-for="wordData in document.words"
                                 :key="wordData.id"
@@ -81,7 +80,6 @@
                                     </template>
                                 </el-popover>
                             </span>
-                            </div>
                         </el-row>
                     </el-row>
                     <el-divider />
@@ -102,7 +100,6 @@
                         </el-row>
 
                         <el-row 
-                        v-if="model.model_id"
                         style="line-height: 2; margin-top: 10px">
                             <span
                                 v-for="wordData in document.words"
@@ -121,6 +118,25 @@
                                 </el-popover>
                             </span>
                         </el-row>
+                        <!-- <el-row 
+                        v-if="model.model_id"
+                        style="line-height: 2; margin-top: 10px">
+                            <span
+                                v-for="wordData in calculateAttrsForDoc(detailedSentence.text).res"
+                                :style="getWordStyle({'score': wordData.score}, annotation.label)"
+                            >
+                                <el-popover
+                                :content=" wordData.text + ': ' + 0 "
+                                trigger="hover"
+                                >
+                                    <template #reference>
+                                        <span>
+                                        {{ wordData.text }}
+                                        </span>
+                                    </template>
+                                </el-popover>
+                            </span>
+                        </el-row> -->
                     </el-row>
                     <el-divider />
                 </el-row>
@@ -147,6 +163,8 @@ import { useWordStore } from "@/stores/word"
 import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
+import * as fs from 'fs'
+import { saveAs } from 'file-saver'
 
 export default {
     name: "DebugEvaluation",
@@ -244,15 +262,23 @@ export default {
                 this.projectStore.getProjectInfo.id,
                 this.model.model_id
             ).then(res => {
-                // console.log(res.data)
                 console.log(res.length);
-                const blob = new Blob([this.str2bytes(res)], { type: 'application/zip' })
-                console.log(blob.size);
-                const link = document.createElement('a')
-                link.href = URL.createObjectURL(blob)
-                link.download = 'model.zip'
-                link.click()
-                URL.revokeObjectURL(link.href)
+                const blob = new Blob([res], { type: 'application/zip' })
+                // console.log(blob.size);
+                // const link = document.createElement('a')
+                console.log("Blob ", blob)
+
+                // const blob = new Blob([res.data])
+                // const link = document.createElement('a')
+                // link.href = URL.createObjectURL(blob)
+                // link.download = 'model.pdf'
+                // link.click()
+                // URL.revokeObjectURL(link.href)
+                // console.log('beginning save file')
+                // fs.writeFileSync('/Users/kiran/Downloads/test.pdf', res.data )
+                // console.log('saved file')
+
+                saveAs(blob, 'test.zip')
                 this.downloading=false
             }).catch((err) => {
                 console.log(err);
