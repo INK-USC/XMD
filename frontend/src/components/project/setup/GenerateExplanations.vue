@@ -2,7 +2,7 @@
   <el-card style="width: 100%;">
     <h3>
       Generate Explanations Page
-      <el-popover content="help text" trigger="hover" :width="400">
+      <el-popover content="Generate model attribution scores using Captum (https://captum.ai/tutorials/)" trigger="hover" :width="400">
         <template #reference>
           <el-icon style="height: 100%; margin-left: 0.5rem">
             <QuestionFilled />
@@ -14,10 +14,17 @@
     <el-tabs type="border-card">
       <el-tab-pane label="Huggingface">
         <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
-          <el-form-item label="huggingface string" prop="str">
+          <el-form-item label="huggingface model name" prop="str">
             <el-col :span="6">
               <el-input v-model="huggingfaceForm.str" />
             </el-col>
+            <el-popover content="Search your model from Huggingface model hub (https://huggingface.co/models)" trigger="hover" :width="400">
+              <template #reference>
+                <el-icon style="height: 100%; margin-left: 0.5rem">
+                  <QuestionFilled />
+                </el-icon>
+              </template>
+            </el-popover>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="huggingfaceSubmit" :loading="loadingExplanations">Generate
@@ -33,6 +40,13 @@
               <el-option v-for="item in customModelForm.modelList" :key="item.id" :label="item.name"
                 :value="[item.id, item.model]" />
             </el-select>
+            <el-popover content="Select your custom model. You can upload your model in project setup." trigger="hover" :width="400">
+              <template #reference>
+                <el-icon style="height: 100%; margin-left: 0.5rem">
+                  <QuestionFilled />
+                </el-icon>
+              </template>
+            </el-popover>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="customModelSubmit" :loading="loadingExplanations">Generate
@@ -75,7 +89,7 @@ export default {
         str: "",
         rules: {
           str: {
-            required: true, message: 'Please input huggingface string', trigger: 'blur'
+            required: true, message: 'Please input huggingface model name', trigger: 'blur'
           },
         },
       },
