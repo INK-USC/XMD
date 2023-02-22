@@ -4,7 +4,8 @@
 *.pyc
 __pycache__
 db.sqlite3
-media
+*/media/models/*
+!*/media/models/.gitkeep
 
 # Backup files # 
 *.bak 
@@ -13,8 +14,9 @@ media
 .idea/
 .vscode/
 
-
 # Jupyter Notebook 
 .ipynb_checkpoints 
 
 .frontend/yarn.lock
+
+.DS_Store

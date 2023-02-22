@@ -3,10 +3,10 @@
     <el-menu-item index="/">
       <el-image :src="Logo" style="width: 58px; height: 58px" />
     </el-menu-item>
-    <el-menu-item index="1">
-      <!-- <a href="http://inklab.usc.edu/" class="el-link" target="_blank">HILT</a> -->
-      HILT
-    </el-menu-item>
+<!--    <el-menu-item index="1">-->
+<!--      &lt;!&ndash; <a href="http://inklab.usc.edu/" class="el-link" target="_blank">HILT</a> &ndash;&gt;-->
+<!--      HILT-->
+<!--    </el-menu-item>-->
     <el-menu-item index="/projects" v-if="userStore.isLoggedIn">
       Projects
     </el-menu-item>

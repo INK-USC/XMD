@@ -1,19 +1,20 @@
 <template>
   <el-row style="width: 100%">
     <el-row style="width: 100%">
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
+      <div style=" display: flex; align-items: center; justify-content: space-between;">
         <h1 style="text-align: center">
-          Annotate page ({{ TaskTypes[this.projectStore.task] }})
+          Annotate page (Task Explanation)
+          <el-popover content="Attribution scores refer to how much the word positively correlates to the ground truth label." trigger="hover" :width="400">
+            <template #reference>
+              <el-icon style="height: 100%; margin-left: 0.5rem">
+                <QuestionFilled />
+              </el-icon>
+            </template>
+          </el-popover>
         </h1>
         <!-- <div>
-        <AnnotateHelp />
-      </div> -->
+          <AnnotateHelp />
+        </div> -->
       </div>
     </el-row>
 
@@ -27,8 +28,7 @@
           @click="goToPrevWord()"
           :disabled="
             this.wordStore.getWordInfo.curWordIndex === 0 &&
-            this.wordStore.getWordInfo.curPage === 1
-          "
+            this.wordStore.getWordInfo.curPage === 1"
         >
           <el-icon><ArrowLeft /></el-icon>
           Prev
@@ -37,11 +37,8 @@
           type="primary"
           @click="goToNextWord()"
           :disabled="
-            this.wordStore.getWordInfo.curWordIndex ===
-              this.wordStore.getWordInfo.words.length - 1 &&
-            this.wordStore.getWordInfo.curPage ===
-              this.wordStore.getWordInfo.maxPage
-          "
+            this.wordStore.getWordInfo.curWordIndex === this.wordStore.getWordInfo.words.length - 1 && 
+            this.wordStore.getWordInfo.curPage === this.wordStore.getWordInfo.maxPage"
         >
           Next <el-icon><ArrowRight /></el-icon>
         </el-button>
@@ -58,19 +55,15 @@
               size="small"
               type="success"
               @click="addWord(0)"
-              v-if="
-                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
-              "
-            >
+              v-if="!globalDictionaryStore.containsWord(wordStore.getCurrWord())"
+              >
               add
             </el-button>
             <el-button
               size="small"
               type="primary"
               @click="addWord(1)"
-              v-if="
-                !globalDictionaryStore.containsWord(wordStore.getCurrWord())
-              "
+              v-if="!globalDictionaryStore.containsWord(wordStore.getCurrWord())"
             >
               remove
             </el-button>
@@ -82,6 +75,13 @@
             >
               reset
             </el-button>
+            <el-popover content="If you think positively correlated words (red-colored) should not be correlated to the ground truth label prediction, delete those words! If you think weakly correlated words should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
+                <template #reference>
+                  <el-icon style="height: 100%; margin-left: 0.5rem">
+                    <QuestionFilled />
+                  </el-icon>
+                </template>
+              </el-popover>
           </div>
         </div>
       </template>
@@ -128,23 +128,16 @@
               <span
                 v-for="wordData in document.words"
                 :key="wordData.id"
-                :style="
-                  getWordStyle(wordData.scores[annotation.id], annotation.label)
-                "
+                :style="getWordStyle(wordData.scores[annotation.id], annotation.label)"
               >
                 <el-popover
-                  :content="
-                    wordData.text + ': ' + wordData.scores[annotation.id].score
-                  "
+                  :content=" wordData.text + ': ' + wordData.scores[annotation.id].score "
                   trigger="hover"
                 >
                   <template #reference>
                     <span
                       :style="
-                        wordData.text === this.wordStore.getCurrWord()
-                          ? { border: '2px solid black' }
-                          : {}
-                      "
+                        wordData.text === this.wordStore.getCurrWord() ? { border: '2px solid black' } : {}"
                     >
                       {{ wordData.text }}
                     </span>
@@ -161,6 +154,7 @@
 </template>
 
 <script>
+import { QuestionFilled} from "@element-plus/icons-vue";
 import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 
 import { useWordStore } from "@/stores/word";
@@ -174,6 +168,7 @@ export default {
   components: {
     ArrowLeft,
     ArrowRight,
+    QuestionFilled,
   },
   setup() {
     const labelStore = useLabelStore();
@@ -202,34 +197,27 @@ export default {
         this.getLabelByID(this.documents[0].ground_truth).id
       );
     },
-    getColors(labelID) {
-      const label = this.getLabelByID(labelID);
-      return ColorSets[label.color_set].colors;
-    },
     getWordStyle(scoreAnn, labelID) {
       const style = {
         padding: "3px 3px 3px 3px",
         margin: "3px 3px 3px 3px",
         fontSize: "18px",
       };
-      // if (this.topK > 0 && scoreAnn.order >= this.topK) {
-      //   return style;
-      // }
       const score = scoreAnn.score;
-      const colors = this.getColors(labelID);
+      const colors = ColorSets[1].colors;
       let index = -1;
-      if (score <= 0) {
+      if (score <= 0.1) {
         return style;
-      } else if (score <= 0.33) {
-        index = 0;
-      } else if (score <= 0.66) {
-        index = 1;
-      } else if (score <= 1.0) {
-        index = 2;
+      } else if (score <= 0.5) {
+          index = 0;
+      } else if (score <= 0.75) {
+          index = 1;
+      } else if (score <= 1) {
+          index = 2;
       }
       return {
-        ...style,
-        ...colors[index],
+          ...style,
+          ...colors[index],
       };
     },
     // go to prev word

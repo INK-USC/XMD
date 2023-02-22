@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; justify-content: center">
-    <el-col :span="6" v-loading="isLoading">
+    <el-col :span="6" v-loading="isLoading" style="margin-top: 2em;">
       <el-alert
         title="Invalid username/password"
         type="error"
@@ -11,14 +11,18 @@
         <el-form-item label="Username" prop="username" class="bold-label">
           <el-input v-model="loginForm.username">
             <template #prefix>
-              <el-icon><UserFilled /></el-icon>
+              <div style="align-content: center">
+                <el-icon><UserFilled /></el-icon>
+              </div>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="Password" prop="password" class="bold-label">
           <el-input type="password" v-model="loginForm.password">
             <template #prefix>
-              <el-icon><Lock /></el-icon>
+              <div style="align-content: center">
+                <el-icon><Lock /></el-icon>
+              </div>
             </template>
           </el-input>
         </el-form-item>
@@ -37,6 +41,9 @@
         </el-form-item>
       </el-form>
     </el-col>
+  </div>
+  <div style="display: flex; justify-content: center">
+    <p>test ID: test / password: test</p>
   </div>
 </template>
 

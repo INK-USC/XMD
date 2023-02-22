@@ -48,9 +48,11 @@ export const useGlobalDictionaryStore = defineStore({
       }).then((res) => {
         this.words[word] = this.wordRows.length;
         this.wordRows.push(res);
+        console.log(`added global word ${word}`)
       });
     },
     deleteWord(word) {
+      console.log(`deleted global word ${word}`)
       const projectStore = useProjectStore();
       return DictonaryApi.delete(
         projectStore.getProjectInfo.id,

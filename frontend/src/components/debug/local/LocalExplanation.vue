@@ -9,7 +9,14 @@
         "
       >
         <h1 style="text-align: center">
-          Annotate page ({{ TaskTypes[this.projectStore.task] }})
+          Annotate page (Instance Explanation)
+          <el-popover content="Attribution scores refer to how much the word positively correlates to the ground truth label." trigger="hover" :width="400">
+            <template #reference>
+              <el-icon style="height: 100%; margin-left: 0.5rem">
+                <QuestionFilled />
+              </el-icon>
+            </template>
+          </el-popover>
         </h1>
         <!-- <div>
         <AnnotateHelp />
@@ -17,14 +24,14 @@
       </div>
     </el-row>
     <el-row style="width: 100%">
-      <el-progress
+      <!-- <el-progress
         style="width: 100%"
         :percentage="annotationCompletionPercentage"
         :format="getProgressBarLabel"
         type="line"
         :stroke-width="30"
         text-inside
-      />
+      /> -->
       <div style="width: 100%">
         <span class="demonstration" v-if="topK > 0">Top {{ topK }} words</span>
         <span class="demonstration" v-if="topK == 0">All words</span>
@@ -54,16 +61,20 @@
               }}
             </el-tag>
           </el-row>
+<!--          <el-row style="line-height: 2; margin-top: 10px">-->
+<!--            <span-->
+<!--              style="padding: 3px; font-size: 18px"-->
+<!--              v-for="wordData in this.detailedDocumentStore.getDocument.words"-->
+<!--              :key="wordData.id"-->
+<!--            >-->
+<!--              {{ wordData.text }}-->
+<!--            </span>-->
+<!--          </el-row>-->
+<!--          <el-divider />-->
           <el-row style="line-height: 2; margin-top: 10px">
-            <div>
-              <span
-                style="padding: 3px; font-size: 18px"
-                v-for="wordData in this.detailedDocumentStore.getDocument.words"
-                :key="wordData.id"
-              >
-                {{ wordData.text }}
-              </span>
-            </div>
+            <span style="font-size: 18px">
+              {{ this.detailedDocumentStore.getDocument.text }}
+            </span>
           </el-row>
           <el-divider />
           <!-- <el-row>
@@ -79,6 +90,13 @@
               <!-- TODO: Task based -->
               <el-tag style="margin-right: 10px">Model Output</el-tag>
               <el-tag>Label: {{ getLabelByID(annotation.label).text }}</el-tag>
+              <el-popover content="If you think positively correlated words (red-colored) should not be correlated to the ground truth label prediction, delete those words! If you think weakly correlated words should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
+                <template #reference>
+                  <el-icon style="height: 100%; margin-left: 0.5rem">
+                    <QuestionFilled />
+                  </el-icon>
+                </template>
+              </el-popover>
               <!-- <div
                 style="margin-left: 5px; padding: 5px; border: 2px solid black"
               >
@@ -95,57 +113,55 @@
               </div> -->
             </el-row>
             <el-row style="line-height: 2; margin-top: 10px">
-              <div>
-                <span
-                  v-for="wordData in this.detailedDocumentStore.getDocument
-                    .words"
-                  :key="wordData.id"
-                  :style="
-                    getWordStyle(
-                      wordData.scores[annotation.id],
-                      annotation.label
-                    )
-                  "
-                >
-                  <el-popover trigger="hover" width="200px">
-                    <p>
-                      {{
-                        wordData.text +
-                        ": " +
-                        wordData.scores[annotation.id].score
-                      }}
-                    </p>
-                    <div style="text-align: right; margin: 0">
-                      <el-button
-                        size="small"
-                        type="success"
-                        @click="wordClick(annotation.id, wordData.id, 0)"
-                      >
-                        add
-                      </el-button>
-                      <el-button
-                        size="small"
-                        type="primary"
-                        @click="wordClick(annotation.id, wordData.id, 1)"
-                      >
-                        remove
-                      </el-button>
-                      <el-button
-                        size="small"
-                        type="info"
-                        @click="wordClick(annotation.id, wordData.id, -1)"
-                      >
-                        reset
-                      </el-button>
-                    </div>
-                    <template #reference>
-                      <span>
-                        {{ wordData.text }}
-                      </span>
-                    </template>
-                  </el-popover>
-                </span>
-              </div>
+              <span
+                v-for="wordData in this.detailedDocumentStore.getDocument
+                  .words"
+                :key="wordData.id"
+                :style="
+                  getWordStyle(
+                    wordData.scores[annotation.id],
+                    annotation.label
+                  )
+                "
+              >
+                <el-popover trigger="hover" width="200px">
+                  <p>
+                    {{
+                      wordData.text +
+                      ": " +
+                      wordData.scores[annotation.id].score
+                    }}
+                  </p>
+                  <div style="text-align: right; margin: 0">
+                    <el-button
+                      size="small"
+                      type="success"
+                      @click="wordClick(annotation.id, wordData.id, 0)"
+                    >
+                      add
+                    </el-button>
+                    <el-button
+                      size="small"
+                      type="primary"
+                      @click="wordClick(annotation.id, wordData.id, 1)"
+                    >
+                      remove
+                    </el-button>
+                    <el-button
+                      size="small"
+                      type="info"
+                      @click="wordClick(annotation.id, wordData.id, -1)"
+                    >
+                      reset
+                    </el-button>
+                  </div>
+                  <template #reference>
+                    <span>
+                      {{ wordData.text }}
+                    </span>
+                  </template>
+                </el-popover>
+              </span>
             </el-row>
           </el-row>
         </el-col>
@@ -223,9 +239,18 @@
       </el-col>
     </el-row>
   </el-row>
+
+  <el-row>
+    <el-button
+      type="primary"
+      @click="trainDebugModel()">
+      Submit
+    </el-button>
+  </el-row>
 </template>
 
 <script>
+import { QuestionFilled} from "@element-plus/icons-vue";
 import { ArrowLeft, ArrowRight, Delete } from "@element-plus/icons-vue";
 
 import { useDocumentStore } from "@/stores/document";
@@ -234,6 +259,7 @@ import { useProjectStore } from "@/stores/project";
 import { useLabelStore } from "@/stores/label";
 import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { TaskTypes, ColorSets } from "@/utilities/constants";
+import DebugTrainingAPI from "@/utilities/network/debugTraining"
 
 export default {
   name: "LocalExplanations",
@@ -241,6 +267,7 @@ export default {
     ArrowLeft,
     ArrowRight,
     Delete,
+    QuestionFilled,
   },
   setup() {
     const documentStore = useDocumentStore();
@@ -265,7 +292,10 @@ export default {
   },
   methods: {
     wordDelete(dictID) {
-      this.localDictionaryStore.deleteWord(dictID);
+      console.log('vue delete word')
+      this.localDictionaryStore.deleteWord(dictID).then(
+        this.updateAnnotation()
+      );
     },
     wordClick(annID, wordID, type) {
       const docID = this.detailedDocumentStore.getDocument.id;
@@ -280,17 +310,15 @@ export default {
             word: wordID,
             annotation: annID,
             modification_type: type,
-          });
+          }).then( () =>
+            this.updateAnnotation()
+          );
         }
       } else {
         if (type == -1) {
           this.wordDelete(dictID["id"]);
         }
       }
-    },
-    getColors(labelID) {
-      const label = this.getLabelByID(labelID);
-      return ColorSets[label.color_set].colors;
     },
     getWordStyle(scoreAnn, labelID) {
       const style = {
@@ -302,20 +330,20 @@ export default {
         return style;
       }
       const score = scoreAnn.score;
-      const colors = this.getColors(labelID);
+      const colors = ColorSets[1].colors;
       let index = -1;
-      if (score <= 0) {
+      if (score <= 0.1) {
         return style;
-      } else if (score <= 0.33) {
-        index = 0;
-      } else if (score <= 0.66) {
-        index = 1;
-      } else if (score <= 1.0) {
-        index = 2;
+      } else if (score <= 0.5) {
+          index = 0;
+      } else if (score <= 0.75) {
+          index = 1;
+      } else if (score <= 1) {
+          index = 2;
       }
       return {
-        ...style,
-        ...colors[index],
+          ...style,
+          ...colors[index],
       };
     },
     // get the string for progress bar
@@ -325,6 +353,9 @@ export default {
     },
     // go to prev document
     goToPrevDoc() {
+      // Update Annotation
+      this.updateAnnotation();
+
       const curDocIndex = this.documentStore.getdocumentInfo.curDocIndex - 1;
       if (curDocIndex == -1) {
         this.documentStore
@@ -348,6 +379,9 @@ export default {
     },
     // go to next document
     goToNextDoc() {
+      // Update Annotation
+      this.updateAnnotation();
+      
       const curDocIndex = this.documentStore.getdocumentInfo.curDocIndex + 1;
       if (this.documentStore.getDocuments.length == curDocIndex) {
         this.documentStore
@@ -381,6 +415,22 @@ export default {
           this.goToNextDoc();
         }
       });
+    },
+    updateAnnotation() {
+      const docID = this.detailedDocumentStore.getDocument.id;
+      const words = this.localDictionaryStore.getByDocumentID(docID);
+      if (words !== undefined) {
+        console.log("Marking Annotated");
+        this.documentStore.markAnnotated(true)
+      } else {
+        console.log("Unmarking Annotated");
+        this.documentStore.markAnnotated(false)
+      };
+
+    },
+    trainDebugModel() {
+      DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)
+
     },
   },
   computed: {

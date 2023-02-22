@@ -14,6 +14,8 @@ class DocumentList(generics.ListAPIView):
     search_fields = ('text',)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     filterset_fields = ['annotated']
+    pagination_class = LargeResultsSetPagination
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

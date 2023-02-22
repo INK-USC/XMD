@@ -35,19 +35,13 @@ def map_dataset_label(belongs_to: str) -> BelongsToLabel:
     return BelongsToLabel.TRAIN
 
 
-def create_annotations(annotations, all_annotation_labels, max_color_set, project, current_doc, word_docs):
+def create_annotations(annotations, all_annotation_labels, max_color_set, project, current_doc):
     for annotation in annotations:
-        # check label
-        if annotation['label'] not in all_annotation_labels:
-            max_color_set += 1
-            new_label = Label(text=annotation["label"], project=project, color_set=max_color_set)
-            new_label.save()
-            all_annotation_labels[annotation["label"]] = new_label
-
         # create base annotation
         cur_annotation = Annotation(task=project.task,
                                     document=current_doc,
-                                    label=all_annotation_labels[annotation["label"]])
+                                    label=all_annotation_labels[str(current_doc.ground_truth)])
+
         cur_annotation.save()
 
         # Task extended annotation
@@ -62,16 +56,6 @@ def create_annotations(annotations, all_annotation_labels, max_color_set, projec
                                                          obj_start_offset=annotation["obj_start_offset"],
                                                          obj_end_offset=annotation["obj_end_offset"])
             ex_annotation.save()
-
-        if 'scores' in annotation:
-            scores = annotation["scores"]
-            print(scores)
-            if len(scores) != len(word_docs):
-                raise ImportFileError("Length of words and scores don't match")
-
-            for word, score in zip(word_docs, scores):
-                word_ann = WordAnnotationScore(annotation=cur_annotation, word=word, score=score)
-                word_ann.save()
 
     return max_color_set
 
@@ -97,12 +81,12 @@ def create_docs_from_json(project, data_file):
         for entry in data:
             try:
                 text = entry["text"]
-                words = entry["words"]
+                # words = entry["words"]
             except:
                 raise ImportFileError("Document dictionaries do not have the 'text' or 'words' key")
 
             metadata = extract_metadata_json(entry)
-            annotations = entry.get("annotations", [])
+            annotations = entry.get("annotations", [{}])
             belongs_to = map_dataset_label(entry.get("belongs_to", ""))
             cur_doc = Document(text=text, metadata=metadata, project=project, belongs_to=belongs_to)
             ground_truth = entry.get("label", None)
@@ -114,19 +98,13 @@ def create_docs_from_json(project, data_file):
                     all_annotation_labels[ground_truth] = new_label
                 cur_doc.ground_truth = all_annotation_labels[ground_truth]
             cur_doc.save()
-            word_docs = list()
-            for index, word in enumerate(words):
-                cur_word = Word(document=cur_doc, text=word, order=index)
-                cur_word.save()
-                word_docs.append(cur_word)
 
             max_color_set = create_annotations(
                 annotations,
                 all_annotation_labels,
                 max_color_set,
                 project,
-                cur_doc,
-                word_docs
+                cur_doc
             )
 
 

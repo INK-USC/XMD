@@ -30,4 +30,18 @@ urlpatterns = [
          name="dict-local-rud"),
     # Export data
     path('export/json/<int:project_id>/', views.DownloadData.as_view(), name="docs-export-json"),
+    # Models
+    path('projects/<int:project_id>/models/', views.ModelList.as_view(), name="models-list"),
+    path('projects/<int:project_id>/models/upload/', views.ModelZipUpload.as_view(), name="models-upload"),
+    path('projects/<int:project_id>/models/<str:pk>/', views.ModelDetail.as_view(), name="models-rud"),
+    path('projects/<int:project_id>/model/download/', views.ModelDownload.as_view(), name="models-download"),
+    # Explanations
+    path('projects/<int:project_id>/explanations/', views.GenerateExplanations.as_view(), name="generate-explanations"),
+    path('projects/<int:project_id>/explanations/single', views.GenerateSingleExplanations.as_view(), name="generate-explanations-single"),
+    path('projects/<int:project_id>/update/generate_expl_metadata/', views.ExplAttrUpdate.as_view(), name="generate-expl-update"),
+    path('projects/<int:project_id>/update/model_status/', views.ExplAttrGenerationStatus.as_view(), name="generate-expl-status"),
+    # Debug Model
+    path('projects/<int:project_id>/debug/training/', views.TrainingDebugModel.as_view(), name="training-debug-model"),
+    path('projects/<int:project_id>/update/training_debug_model_metadata/', views.TrainingDebugModelUpdate.as_view(), name="training-debug-model-update"),
+    path('projects/<int:project_id>/update/training_debug_model_status/', views.TrainingDebugModelStatus.as_view(), name="training-debug-model-status"),
 ]

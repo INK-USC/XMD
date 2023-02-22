@@ -8,6 +8,7 @@ import ProjectSetup from "@/views/ProjectSetup.vue";
 import Document from "@/components/project/setup/Document.vue";
 import DocumentList from "@/components/project/setup/DocumentList.vue";
 import DocumentUpload from "@/components/project/setup/DocumentUpload.vue";
+import ModelUpload from "@/components/project/setup/ModelUpload.vue"
 import LabelModification from "@/components/project/setup/LabelModification.vue";
 import GenerateExplanations from "@/components/project/setup/GenerateExplanations.vue";
 import ExportData from "@/components/project/setup/ExportData.vue";
@@ -18,6 +19,7 @@ import DebugOverview from "@/components/debug/Overview.vue";
 import DebugLocal from "@/components/debug/local/LocalExplanation.vue";
 import DebugGlobal from "@/components/debug/global/GlobalExplanation.vue";
 import DebugDictionary from "@/components/debug/Dictionary.vue";
+import DebugEvaluation from "@/components/debug/Evaluation.vue";
 
 // Login & Logout
 import Login from "@/views/Login.vue";
@@ -63,6 +65,11 @@ const router = createRouter({
               name: "DocumentList",
               component: DocumentList,
             },
+            {
+              path: "model",
+              name: "ModelUpload",
+              component: ModelUpload,
+            }
           ],
         },
         {
@@ -106,6 +113,11 @@ const router = createRouter({
           name: "DebugGlobal",
           component: DebugGlobal,
         },
+        {
+          path: "evaluation",
+          name: "DebugEvaluation",
+          component: DebugEvaluation,
+        },
       ],
     },
   ],
@@ -115,6 +127,8 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   if (!userStore.isLoggedIn && to.name !== "Login" && to.name !== "Home") {
     next("/login");
+  } else if (to.name == "Login") {
+    next();
   } else {
     next();
   }

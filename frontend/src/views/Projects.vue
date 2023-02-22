@@ -19,7 +19,7 @@
     </div>
 
     <el-row>
-      <el-col :span="12" :offset="6">
+      <el-col :span="16" :offset="4">
         <el-table
           :data="projects"
           stripe
@@ -43,6 +43,7 @@
             sortable
             :filters="this.filters"
             :filter-method="filterTask"
+            width="180"
           />
           <el-table-column
             prop="updated_at"
@@ -50,7 +51,7 @@
             :formatter="dateFormat"
             sortable
           />
-          <el-table-column label="Operations">
+          <el-table-column label="Operations" width="180">
             <template #default="scope">
               <el-button
                 size="small"
@@ -132,7 +133,7 @@ export default {
       this.dialogVisible = true;
     },
     handleDelete(index, row) {
-      ProjectsApi.list(row.id).then(() => {
+      ProjectsApi.delete(row.id).then(() => {
         this.fetchProjects();
       });
     },

@@ -3,11 +3,12 @@
     <div style="text-align: center">
       <div>
         <h1>All Uploaded Documents</h1>
-        <el-progress
+        <!-- <el-progress
           type="circle"
+          width=180 
           :percentage="percentageCompleted"
           :format="percentageText"
-        />
+        /> -->
       </div>
       <el-input
         v-model="searchQuery"
@@ -34,9 +35,9 @@
       stripe
     >
       <el-table-column type="index" :index="indexMethod" />
-      <el-table-column label="Text">
+      <el-table-column prop="text" label="Text">
         <template #default="scope">
-          <p v-snip="{ lines: 3 }">{{ scope.row.text }}</p>
+          {{ scope.row.text }}
         </template>
       </el-table-column>
       <el-table-column label="Operations">
@@ -68,7 +69,7 @@
 </template>
 
 <script>
-import { Search, Delete } from "@element-plus/icons-vue";
+import { Search, Delete, QuestionFilled } from "@element-plus/icons-vue";
 import { useDocumentStore } from "@/stores/document";
 
 // show all the document for this project
@@ -77,6 +78,7 @@ export default {
   components: {
     Search,
     Delete,
+    QuestionFilled,
   },
   setup() {
     const documentStore = useDocumentStore();
@@ -111,17 +113,27 @@ export default {
   created() {
     this.documentStore.resetState();
   },
-  computed: {
-    percentageCompleted() {
-      const info = this.documentStore.getdocumentInfo;
-      if (!info) {
-        return 0;
-      }
-      const completed = info.annotatedDocCount;
-      const all = info.totalDocCount;
-      const percent = (completed / all) * 100;
-      return percent ? percent : 0;
-    },
-  },
+  // filters: {
+  //   truncate(text, length) {
+  //       console.log(text.length)
+  //       if (text.length > length) {
+  //           return text.substring(0, length) + '...';
+  //       } else {
+  //           return text;
+  //       }
+  //   }
+  // }
+  // computed: {
+  //   percentageCompleted() {
+  //     const info = this.documentStore.getdocumentInfo;
+  //     if (!info) {
+  //       return 0;
+  //     }
+  //     const completed = info.annotatedDocCount;
+  //     const all = info.totalDocCount;
+  //     const percent = (completed / all) * 100;
+  //     return percent ? percent : 0;
+  //   },
+  // },
 };
 </script>

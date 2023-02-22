@@ -24,7 +24,7 @@
                 "
               >
                 <code>
-{
+<!-- {
   "data" : [
     {
       "text" : "Louis Armstrong the great trumpet player lived in Corona.",
@@ -40,6 +40,21 @@
     </template>
         }
       ]
+    },
+    ...
+  ]
+} -->
+{
+  "data" : [
+    {
+      "text" : "Louis Armstrong the great trumpet player lived in Corona.",
+    <template v-if="this.projectStore.task===1">
+      "label": "Label-Name-1"
+    </template><template v-if="this.projectStore.task===2">
+      "label": "Label-Name-1",
+      "start_offset": 0,
+      "end_offset": 5,
+    </template>
     },
     ...
   ]
@@ -114,7 +129,7 @@ export default {
         this.fileForm.fileType
       )
         .then(() => {
-          this.$router.push({ name: "Labels" });
+          this.$router.push({ name: "GenerateExplanations" });
         })
         .catch((err) => {
           console.log(err);

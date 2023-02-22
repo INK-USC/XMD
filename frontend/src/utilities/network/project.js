@@ -4,6 +4,9 @@ export default {
   list() {
     return api.get("hilt/projects/");
   },
+  get(projectID) {
+    return api.get(`hilt/projects/${projectID}/`)
+  },
   create(project) {
     return api.post("hilt/projects/", project);
   },
