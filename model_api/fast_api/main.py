@@ -220,10 +220,12 @@ def train_debug_pipeline(project_id, dataset, arch):
     dataset = DebugDataset(dataset, tokenizer, 128)
 
     trial_index = 1
-    output_dir = f'annotation_backend/media/debug_models/trial{trial_index}'
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(root_dir, f'annotation_backend/media/debug_models/trial{trial_index}')
+    print(output_dir)
 
     training_args = TrainingArguments(
-        output_dir = output_dir
+        output_dir=output_dir
     )
     print(training_args)
 
