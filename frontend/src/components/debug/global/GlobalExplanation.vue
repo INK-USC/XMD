@@ -3,7 +3,14 @@
     <el-row style="width: 100%">
       <div style=" display: flex; align-items: center; justify-content: space-between;">
         <h1 style="text-align: center">
-          Annotate page ({{ TaskTypes[this.projectStore.task] }})
+          Annotate page (Task Explanation)
+          <el-popover content="Green colors (positive attribute scores) refer to positively correlates to the ground truth label and red colors (negative attribute scores) refer to negatively correlates to the ground truth label." trigger="hover" :width="400">
+            <template #reference>
+              <el-icon style="height: 100%; margin-left: 0.5rem">
+                <QuestionFilled />
+              </el-icon>
+            </template>
+          </el-popover>
         </h1>
         <!-- <div>
           <AnnotateHelp />
@@ -68,6 +75,13 @@
             >
               reset
             </el-button>
+            <el-popover content="If you think green colored words (positively correlated words) should not be correlated to the ground truth label prediction, delete those words! If you think red colored words (negatively correlated words) should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
+                <template #reference>
+                  <el-icon style="height: 100%; margin-left: 0.5rem">
+                    <QuestionFilled />
+                  </el-icon>
+                </template>
+              </el-popover>
           </div>
         </div>
       </template>
@@ -140,6 +154,7 @@
 </template>
 
 <script>
+import { QuestionFilled} from "@element-plus/icons-vue";
 import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 
 import { useWordStore } from "@/stores/word";
@@ -153,6 +168,7 @@ export default {
   components: {
     ArrowLeft,
     ArrowRight,
+    QuestionFilled,
   },
   setup() {
     const labelStore = useLabelStore();
@@ -181,34 +197,33 @@ export default {
         this.getLabelByID(this.documents[0].ground_truth).id
       );
     },
-    getColors(labelID) {
-      const label = this.getLabelByID(labelID);
-      return ColorSets[label.color_set].colors;
-    },
     getWordStyle(scoreAnn, labelID) {
       const style = {
         padding: "3px 3px 3px 3px",
         margin: "3px 3px 3px 3px",
         fontSize: "18px",
       };
-      // if (this.topK > 0 && scoreAnn.order >= this.topK) {
-      //   return style;
-      // }
       const score = scoreAnn.score;
-      const colors = this.getColors(labelID);
+      let colors = ColorSets[0].colors;
       let index = -1;
-      if (score <= 0) {
+      if (score <= -0.10){
+          colors = ColorSets[1].colors;
+          index = 2;
+      } else if (score <= -0.03){
+          colors = ColorSets[1].colors;
+          index = 1;
+      } else if (score <= 0.03) {
         return style;
-      } else if (score <= 0.33) {
-        index = 0;
-      } else if (score <= 0.66) {
-        index = 1;
+      } else if (score <= 0.10) {
+          colors = ColorSets[3].colors;
+          index = 1;
       } else if (score <= 1.0) {
-        index = 2;
+          colors = ColorSets[3].colors;
+          index = 2;
       }
       return {
-        ...style,
-        ...colors[index],
+          ...style,
+          ...colors[index],
       };
     },
     // go to prev word

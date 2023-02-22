@@ -9,7 +9,14 @@
         "
       >
         <h1 style="text-align: center">
-          Annotate page ({{ TaskTypes[this.projectStore.task] }})
+          Annotate page (Instance Explanation)
+          <el-popover content="Green colors (positive attribute scores) refer to positively correlates to the ground truth label and red colors (negative attribute scores) refer to negatively correlates to the ground truth label." trigger="hover" :width="400">
+            <template #reference>
+              <el-icon style="height: 100%; margin-left: 0.5rem">
+                <QuestionFilled />
+              </el-icon>
+            </template>
+          </el-popover>
         </h1>
         <!-- <div>
         <AnnotateHelp />
@@ -83,6 +90,13 @@
               <!-- TODO: Task based -->
               <el-tag style="margin-right: 10px">Model Output</el-tag>
               <el-tag>Label: {{ getLabelByID(annotation.label).text }}</el-tag>
+              <el-popover content="If you think green colored words (positively correlated words) should not be correlated to the ground truth label prediction, delete those words! If you think red colored words (negatively correlated words) should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
+                <template #reference>
+                  <el-icon style="height: 100%; margin-left: 0.5rem">
+                    <QuestionFilled />
+                  </el-icon>
+                </template>
+              </el-popover>
               <!-- <div
                 style="margin-left: 5px; padding: 5px; border: 2px solid black"
               >
@@ -236,6 +250,7 @@
 </template>
 
 <script>
+import { QuestionFilled} from "@element-plus/icons-vue";
 import { ArrowLeft, ArrowRight, Delete } from "@element-plus/icons-vue";
 
 import { useDocumentStore } from "@/stores/document";
@@ -252,6 +267,7 @@ export default {
     ArrowLeft,
     ArrowRight,
     Delete,
+    QuestionFilled,
   },
   setup() {
     const documentStore = useDocumentStore();
@@ -304,10 +320,6 @@ export default {
         }
       }
     },
-    getColors(labelID) {
-      const label = this.getLabelByID(labelID);
-      return ColorSets[label.color_set].colors;
-    },
     getWordStyle(scoreAnn, labelID) {
       const style = {
         padding: "3px 3px 3px 3px",
@@ -318,20 +330,26 @@ export default {
         return style;
       }
       const score = scoreAnn.score;
-      const colors = this.getColors(labelID);
+      let colors = ColorSets[0].colors;
       let index = -1;
-      if (score <= 0) {
+      if (score <= -0.10){
+          colors = ColorSets[1].colors;
+          index = 2;
+      } else if (score <= -0.03){
+          colors = ColorSets[1].colors;
+          index = 1;
+      } else if (score <= 0.03) {
         return style;
-      } else if (score <= 0.33) {
-        index = 0;
-      } else if (score <= 0.66) {
-        index = 1;
+      } else if (score <= 0.10) {
+          colors = ColorSets[3].colors;
+          index = 1;
       } else if (score <= 1.0) {
-        index = 2;
+          colors = ColorSets[3].colors;
+          index = 2;
       }
       return {
-        ...style,
-        ...colors[index],
+          ...style,
+          ...colors[index],
       };
     },
     // get the string for progress bar

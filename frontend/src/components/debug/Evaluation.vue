@@ -57,9 +57,6 @@
                             <el-tag style="margin-left: 10px" v-if="'ground_truth' in document">
                             Ground truth: {{ getLabelByID(document.ground_truth).text }}
                             </el-tag>
-                            <el-tag style="margin-left: 10px">
-                            Prediction: {{ getLabelByID(annotation.label).text }}
-                            </el-tag>
                         </el-row>
 
                         <el-row style="width: 100%; margin-top: 10px;">
@@ -269,10 +266,7 @@ export default {
             }
             return bytes;
         },
-        getColors(labelID) {
-            const label = this.getLabelByID(labelID);
-            return ColorSets[label.color_set].colors;
-        },
+
         getWordStyle(scoreAnn = 0, labelID) {
             const style = {
                 padding: "3px 3px 3px 3px",
@@ -280,15 +274,21 @@ export default {
                 fontSize: "18px",
             };
             const score = scoreAnn.score;
-            const colors = this.getColors(labelID);
+            let colors = ColorSets[0].colors;
             let index = -1;
-            if (score <= 0) {
-                return style;
-            } else if (score <= 0.33) {
-                index = 0;
-            } else if (score <= 0.66) {
+            if (score <= -0.10){
+                colors = ColorSets[1].colors;
+                index = 2;
+            } else if (score <= -0.03){
+                colors = ColorSets[1].colors;
+                index = 1;
+            } else if (score <= 0.03) {
+              return style;
+            } else if (score <= 0.10) {
+                colors = ColorSets[3].colors;
                 index = 1;
             } else if (score <= 1.0) {
+                colors = ColorSets[3].colors;
                 index = 2;
             }
             return {
