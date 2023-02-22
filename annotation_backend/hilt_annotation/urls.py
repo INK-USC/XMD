@@ -37,6 +37,7 @@ urlpatterns = [
     path('projects/<int:project_id>/model/download/', views.ModelDownload.as_view(), name="models-download"),
     # Explanations
     path('projects/<int:project_id>/explanations/', views.GenerateExplanations.as_view(), name="generate-explanations"),
+    path('projects/<int:project_id>/explanations/fastapi', views.GenerateSingleExplanations.as_view(), name="generate-explanations"),
     path('projects/<int:project_id>/update/generate_expl_metadata/', views.ExplAttrUpdate.as_view(), name="generate-expl-update"),
     path('projects/<int:project_id>/update/model_status/', views.ExplAttrGenerationStatus.as_view(), name="generate-expl-update"),
     # Debug Model

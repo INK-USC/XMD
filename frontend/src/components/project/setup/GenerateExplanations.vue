@@ -198,7 +198,7 @@ export default {
           max_iter -= 1
           console.log(max_iter)
         }
-      }), 1000)
+      }), 2*1000)
 
     }
   },

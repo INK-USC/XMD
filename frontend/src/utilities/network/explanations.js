@@ -22,4 +22,17 @@ export default {
   didFinishGeneration(projectID) {
     return api.get(`hilt/projects/${projectID}/update/model_status/`)
   },
+  getAttributeScoresForDoc(projectID, text, model_id) {
+    console.log('inside network/getAttributeScoresForDoc function')
+    const formData = new FormData();
+    formData.append("model_id", model_id)
+    formData.append("text", text)
+    console.log(formData)
+    return api.post(`hilt/projects/${projectID}/explanations/fastapi`, formData, {
+      headers: {
+        ...api.defaults.headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 };

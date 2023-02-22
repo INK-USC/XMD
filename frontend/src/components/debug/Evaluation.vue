@@ -145,6 +145,7 @@ import { useProjectStore } from "@/stores/project";
 import { useWordStore } from "@/stores/word"
 import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
+import ExplanationsApi from "@/utilities/network/explanations"
 
 export default {
     name: "DebugEvaluation",
@@ -291,7 +292,16 @@ export default {
                 ...colors[index],
             };
         },
-    }
+    },
+    calculateAttrsForDoc(text) {
+        return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, this.model.model_id)
+        .then( res => {
+            return res
+        })
+
+        
+    },
+
 };
 
 

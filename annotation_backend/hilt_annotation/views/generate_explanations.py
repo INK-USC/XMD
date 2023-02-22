@@ -76,6 +76,54 @@ class GenerateExplanations(APIView):
             return Response(exception=e)
 
 
+class GenerateSingleExplanations(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            project = get_object_or_404(Project, pk=kwargs.get('project_id'))
+            model_id = request.POST['model_id']
+            model_obj = get_object_or_404(HiltModel, pk=model_id)
+            model_path = model_obj.model.name
+            model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
+
+             # filekeeping
+            unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'debug_tmp')
+            os.makedirs(unzip_path, exist_ok=True)
+            if len(os.listdir(unzip_path))!=0:
+                for f in os.listdir(unzip_path):
+                    shutil.rmtree(os.path.join(unzip_path, f))
+
+            #   unzip
+            with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
+                zip_ref.extractall(unzip_path)
+            unzip_path_folder = os.path.join(unzip_path, os.listdir(unzip_path)[0])
+
+            full_path = unzip_path_folder
+            print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path_folder}')
+            dataset = [request.POST['text']]
+
+            # MAKE FASTAPI CALL
+            print('FastAPI call')
+            req_url = "http://localhost:9000/generate/expl/single"
+            req_json = {
+                "project_id": str(project.id),
+                "dataset": dataset,
+                "model_path": full_path
+                }
+            res = requests.post(req_url, json=req_json)
+
+            if res.status_code == 201:
+                print('project model changed status to running')
+                return Response({'success': res.data}, status.HTTP_202_ACCEPTED) # check and return correct data
+            else:
+                return Response(data=res.text, status=500)
+
+
+
+        except Exception as e:
+            print(e)
+            return Response(exception=e)
+
+
 
     def _generate_dataset_for_captum_call(self, project: Project):
         text, labels, document_ids = [], [], []
@@ -104,6 +152,8 @@ def add_annotation_scores(data, project: Project):
     for sentence in data:
         document_id = uuid.UUID(sentence['document_id'])
         document = Document.objects.filter(id=document_id)[0]
+        # delete words and wordannotationscores
+        delete_words_and_annotations(project)
         for idx, (word_str, score) in enumerate(zip(sentence['tokens'], sentence['before_reg_explanation'])):
             cur_word = Word(document=document, text=word_str, order=idx)
             cur_word.save()
@@ -124,6 +174,16 @@ def add_annotation_scores(data, project: Project):
         project.explanations_status = 'finished'
         project.save()
         print('project model changed status to finished')
+
+
+def delete_words_and_annotations(project: Project):
+    words = Word.objects.filter(project=project)
+    for word in words:
+        wordannotationscore = WordAnnotationScore.objects.filter(word=word.id)
+        wordannotationscore.delete()
+    words.delete()
+    print('deleted words and annotations')
+    print('words:', Word.objects.filter(project=project))
 
 class ExplAttrUpdate(APIView):
     permission_classes = ()
