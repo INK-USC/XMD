@@ -28,12 +28,12 @@
           </el-icon>
           Upload Custom Model
         </el-menu-item>
-        <el-menu-item index="/project/labels">
-          <el-icon>
-            <StarFilled />
-          </el-icon>
-          <span>Labels</span>
-        </el-menu-item>
+<!--        <el-menu-item index="/project/labels">-->
+<!--          <el-icon>-->
+<!--            <StarFilled />-->
+<!--          </el-icon>-->
+<!--          <span>Labels</span>-->
+<!--        </el-menu-item>-->
       </el-sub-menu>
 
       <el-menu-item index="/project/generate-explanations">

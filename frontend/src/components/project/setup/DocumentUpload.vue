@@ -129,7 +129,7 @@ export default {
         this.fileForm.fileType
       )
         .then(() => {
-          this.$router.push({ name: "ModelUpload" });
+          this.$router.push({ name: "GenerateExplanations" });
         })
         .catch((err) => {
           console.log(err);

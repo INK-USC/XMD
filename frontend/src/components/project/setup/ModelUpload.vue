@@ -40,7 +40,10 @@
           <template #header>
             <h3>Upload new model <span style="color: #909399">(Optional)</span></h3>
           </template>
-
+          <div>
+            We expect model architecture be compatible to <a href="https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSequenceClassification">Huggingface sequence classification model</a>
+          </div>
+          <div><br></div>
           
           <el-form :model="this.fileForm" ref="modelUploadForm" style="text-align: center">
             <el-form-item>

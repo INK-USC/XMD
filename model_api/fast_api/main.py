@@ -24,8 +24,7 @@ from transformers import (
 from captum.attr import IntegratedGradients, GradientShap, InputXGradient, Saliency, DeepLift
 from debug.dataset import DebugDataset
 from debug.model import DebugModel
-
-from config import attr_algos, baseline_required, dataset_info
+import numpy as np
 from fast_api_util_functions import _send_update_generate_explanation, _send_update_debug_model
 
 app = FastAPI()
@@ -180,27 +179,20 @@ def generate_attr_pipeline(project_id, dataset, arch):
         tokens = tokenizer.batch_decode(torch.tensor(original_input_ids[i][start_index+1:end_index]).unsqueeze(1))
 
         if labels[i] in config.label2id:
-            format_attrs.append(
-                {
-                    "id": i,
-                    "tokens": tokens,
-                    "label": labels[i],
-                    "prediction": 1,
-                    "before_reg_explanation": attrs[2*i + config.label2id[labels[i]] - 1],
-                    "document_id": document_ids[i]
-                }
-            )
+            attribution_scores = attrs[2*i + config.label2id[labels[i]] - 1][start_index+1:end_index]
         else:
-            format_attrs.append(
-                {
-                    "id": i,
-                    "tokens": tokens,
-                    "label": labels[i],
-                    "prediction": 1,
-                    "before_reg_explanation": attrs[2*i + manual_labels[labels[i]] - 1],
-                    "document_id": document_ids[i]
-                }
-            )
+            attribution_scores = attrs[2*i + manual_labels[labels[i]] - 1][start_index+1:end_index]
+
+        format_attrs.append(
+            {
+                "id": i,
+                "tokens": tokens,
+                "label": labels[i],
+                "prediction": 1,
+                "before_reg_explanation": attribution_scores,
+                "document_id": document_ids[i]
+            }
+        )
 
     return_json = jsonable_encoder(format_attrs)
     print(return_json)
@@ -242,12 +234,10 @@ def train_debug_pipeline(project_id, dataset, arch):
     trial_index = 1
     root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     output_dir = os.path.join(root_dir, f'annotation_backend/media/debug_models/trial{trial_index}')
-    print(output_dir)
 
     training_args = TrainingArguments(
         output_dir=output_dir
     )
-    print(training_args)
 
     trainer = Trainer(
         model=debug_model,
@@ -258,14 +248,15 @@ def train_debug_pipeline(project_id, dataset, arch):
 
     trainer.train()
     trainer.save_model()
+    tokenizer.save_pretrained(output_dir)
 
     format_attrs = {"save_model_path": output_dir}
     return_json = jsonable_encoder(format_attrs)
-    print(return_json)
-
     resp = _send_update_debug_model(project_id, return_json)
-    print(resp)
 
+    end = time.time()
+    print(f'time elapsed: {end - start}')
+    
     return resp
 
 

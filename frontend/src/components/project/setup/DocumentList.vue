@@ -2,15 +2,7 @@
   <div>
     <div style="text-align: center">
       <div>
-        <h1>All Uploaded Documents
-          <el-popover content="help text" trigger="hover" :width="400">
-            <template #reference>
-              <el-icon style="height: 100%; margin-left: 0.5rem">
-                <QuestionFilled />
-              </el-icon>
-            </template>
-          </el-popover>
-        </h1>
+        <h1>All Uploaded Documents</h1>
         <!-- <el-progress
           type="circle"
           width=180 
