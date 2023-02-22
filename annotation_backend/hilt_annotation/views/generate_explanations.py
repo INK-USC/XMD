@@ -80,6 +80,23 @@ class GenerateExplanations(APIView):
             print(e)
             return Response(exception=e)
 
+    def _generate_dataset_for_captum_call(self, project: Project):
+        text, labels, document_ids = [], [], []
+        for data in Document.objects.filter(project=project):
+            text.append(data.text)
+            labels.append(data.ground_truth.text)
+            document_ids.append(str(data.id))
+
+        print(text, labels)
+
+        return {
+            'text': text,
+            'labels': labels,
+            'metadata': {
+                'document_ids': document_ids
+            } 
+        }
+
 
 class GenerateSingleExplanations(APIView):
     def post(self, request, *args, **kwargs):
@@ -132,24 +149,6 @@ class GenerateSingleExplanations(APIView):
             return Response(exception=e)
 
 
-
-    def _generate_dataset_for_captum_call(self, project: Project):
-        text, labels, document_ids = [], [], []
-        for data in Document.objects.filter(project=project):
-            text.append(data.text)
-            labels.append(data.ground_truth.text)
-            document_ids.append(str(data.id))
-
-        print(text, labels)
-
-        return {
-            'text': text,
-            'labels': labels,
-            'metadata': {
-                'document_ids': document_ids
-            } 
-        }
-
 def add_annotation_scores(data, project: Project):
     '''Tables updated:
         1. WordAnnotationScore -> score
@@ -161,7 +160,7 @@ def add_annotation_scores(data, project: Project):
         document_id = uuid.UUID(sentence['document_id'])
         document = Document.objects.filter(id=document_id)[0]
         # delete words and wordannotationscores
-        delete_words_and_annotations(project)
+        delete_words_and_annotations(document)
         for idx, (word_str, score) in enumerate(zip(sentence['tokens'], sentence['before_reg_explanation'])):
             cur_word = Word(document=document, text=word_str, order=idx)
             cur_word.save()
@@ -184,14 +183,14 @@ def add_annotation_scores(data, project: Project):
     print('project model changed status to finished')
 
 
-def delete_words_and_annotations(project: Project):
-    words = Word.objects.filter(project=project)
+def delete_words_and_annotations(document: Document):
+    words = Word.objects.filter(document=document)
     for word in words:
         wordannotationscore = WordAnnotationScore.objects.filter(word=word.id)
         wordannotationscore.delete()
     words.delete()
     print('deleted words and annotations')
-    print('words:', Word.objects.filter(project=project))
+    print('words:', Word.objects.filter(document=document))
 
 class ExplAttrUpdate(APIView):
     permission_classes = ()
