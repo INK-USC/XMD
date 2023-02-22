@@ -1,7 +1,7 @@
 <template>
   <h3>
     Debug Overview Page
-    <el-popover content="Overview of Human Debugging Phase./n Perform task and instance annotation to start debugging phase" trigger="hover" :width="400">
+    <el-popover content="Overview of Human Debugging Phase. Perform task and instance annotation to start debugging phase" trigger="hover" :width="400">
       <template #reference>
         <el-icon style="height: 100%; margin-left: 0.5rem">
           <QuestionFilled />
@@ -17,7 +17,15 @@
   </el-button> <br />
 
   <el-row style="width: 100%; margin-top: 3em;">
-    <span style="padding-right: 1em;">Instance Explanation</span>
+    <span style="padding-right: 1em;">Instance Explanation
+    <el-popover content="Select words to debug for each instance" trigger="hover" :width="400">
+      <template #reference>
+        <el-icon style="height: 100%; margin-left: 0.5rem">
+          <QuestionFilled />
+        </el-icon>
+      </template>
+    </el-popover>
+    </span>
     <el-button
       size="small"
       @click="() => this.$router.push({ name: 'DebugLocal' })">
@@ -34,7 +42,15 @@
 
   </el-row>
   <el-row style="width: 100%; margin-top: 3em;">
-    <span style="padding-right: 1em;">Task Explanation</span>
+    <span style="padding-right: 1em;">Task Explanation
+    <el-popover content="Select words to debug for all instances" trigger="hover" :width="400">
+      <template #reference>
+        <el-icon style="height: 100%; margin-left: 0.5rem">
+          <QuestionFilled />
+        </el-icon>
+      </template>
+    </el-popover>
+    </span>
     <el-button
       size="small"
       @click="() => this.$router.push({ name: 'DebugGlobal' })">
