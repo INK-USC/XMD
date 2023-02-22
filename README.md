@@ -13,7 +13,6 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 
 ## Getting Started:
 
-=======
 - This project is intended to be deployed on modern linux environments.
 - Install Python 3, verify install status by using `python3 --version` to check. python may be installed under different aliases, use the appropriate one on your system.
 
