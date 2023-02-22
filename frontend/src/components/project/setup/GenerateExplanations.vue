@@ -12,6 +12,20 @@
     </h3>
 
     <el-tabs type="border-card">
+      <el-tab-pane label="Huggingface">
+        <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
+          <el-form-item label="huggingface string" prop="str">
+            <el-col :span="6">
+              <el-input v-model="huggingfaceForm.str" />
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="huggingfaceSubmit" :loading="loadingExplanations">Generate
+              Explanations</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+
       <el-tab-pane label="Custom Model">
         <el-form :model="customModelForm" ref="customModelForm" :rules="customModelForm.rules" label-position="top">
           <el-form-item label="Custom Model" prop="select">
@@ -26,23 +40,9 @@
           </el-form-item>
         </el-form>
 
-        <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"
-          description="will update once the task in done" center show-icon :closable="false" />
+<!--        <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"-->
+<!--          description="will update once the task in done" center show-icon :closable="false" />-->
         <!-- generate explanations button -->
-      </el-tab-pane>
-
-      <el-tab-pane label="Huggingface">
-        <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
-          <el-form-item label="huggingface string" prop="str">
-            <el-col :span="6">
-              <el-input v-model="huggingfaceForm.str" />
-            </el-col>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="huggingfaceSubmit" :loading="loadingExplanations">Generate
-              Explanations</el-button>
-          </el-form-item>
-        </el-form>
       </el-tab-pane>
     </el-tabs>
 
