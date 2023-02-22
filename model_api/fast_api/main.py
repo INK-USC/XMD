@@ -163,8 +163,9 @@ def generate_attr_pipeline(project_id, dataset, arch):
     assert not torch.any(torch.isnan(attrs))
 
     attrs.reshape(batch_size, num_classes, seq_length)
+    attrs = attrs * 100
     attrs = attrs.detach().cpu().tolist()
-    attrs = [["{0:0.2f}".format(attr) for attr in lst] for lst in attrs]
+
     end = time.time()
     print(f'time elapsed: {end - start}')
 
@@ -186,6 +187,10 @@ def generate_attr_pipeline(project_id, dataset, arch):
             attribution_scores = attrs[2*i + config.label2id[labels[i]] - 1][start_index+1:end_index]
         else:
             attribution_scores = attrs[2*i + manual_labels[labels[i]] - 1][start_index+1:end_index]
+
+        attribution_scores = np.exp(attribution_scores) / np.sum(np.exp(attribution_scores), axis=0)
+        print(attribution_scores)
+        attribution_scores = ["{0:0.2f}".format(attr) for attr in attribution_scores]
 
         format_attrs.append(
             {
