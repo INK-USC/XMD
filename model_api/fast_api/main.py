@@ -83,8 +83,12 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     # Generate Attribution score
 
     # return {
-    #   'tokens',
-    #   'scores'
+    #    'res': [ 
+    #         { 
+    #         'text': 'text', 
+    #         'score': 'score' 
+    #         }, ... 
+    #     ]
     # }
 
 # Generate attributes for Explanation Generation task
