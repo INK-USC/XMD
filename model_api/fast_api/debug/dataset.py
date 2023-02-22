@@ -23,14 +23,18 @@ class DebugDataset(Dataset):
   def __getitem__(self, index):
     input_ids = self.features[index]["input_ids"]
     attention_mask = self.features[index]["attention_mask"]
-    rationale = self.features[index]["rationale"]
+    before_reg_rationale = self.features[index]["before_reg_rationale"]
+    after_reg_rationale = self.features[index]["after_reg_rationale"]
     has_rationale = self.features[index]["has_rationale"]
+    labels = self.features[index]["labels"]
 
     return {
       "input_ids": input_ids,
       "attention_mask": attention_mask,
-      "rationale": rationale,
-      "has_rationale": has_rationale
+      "before_reg_rationale": before_reg_rationale,
+      "after_reg_rationale": after_reg_rationale,
+      "has_rationale": has_rationale,
+      "labels": labels
     }
 
   def convert_examples_to_features(
@@ -44,8 +48,9 @@ class DebugDataset(Dataset):
     for example in examples:
       assert len(example.tokens) == len(example.before_expl_reg) == len(example.local_after_expl_reg) == len(example.global_after_expl_reg)
       input_ids = tokenizer.encode(example.tokens, is_pretokenized=True)
-      rationale = [float(0)] + [float(x) for x in example.local_after_expl_reg] + [float(0)]
-      assert len(input_ids) == len(rationale)
+      before_reg_rationale = [float(0)] + [float(x) for x in example.before_expl_reg] + [float(0)]
+      after_reg_rationale = [float(0)] + [float(x) for x in example.local_after_expl_reg] + [float(0)]
+      assert len(input_ids) == len(after_reg_rationale)
 
       num_tokens = len(input_ids)
       num_pad_tokens = self.max_sequence_length - num_tokens
@@ -53,15 +58,18 @@ class DebugDataset(Dataset):
 
       input_ids += [tokenizer.pad_token_id] * num_pad_tokens
       attention_mask = [1] * num_tokens + [0] * num_pad_tokens
-      rationale += [0] * num_pad_tokens
-      has_rationale = int(sum(rationale) > 0)
+      after_reg_rationale += [0] * num_pad_tokens
+      before_reg_rationale += [0] * num_pad_tokens
+      has_rationale = int(sum(after_reg_rationale) > 0)
 
       features.append(
         {
           "input_ids": input_ids,
           "attention_mask": attention_mask,
-          "rationale": rationale,
-          "has_rationale": has_rationale
+          "before_reg_rationale": before_reg_rationale,
+          "after_reg_rationale": after_reg_rationale,
+          "has_rationale": has_rationale,
+          "labels": example.label
         }
       )
 

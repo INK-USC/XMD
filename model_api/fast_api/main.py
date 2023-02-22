@@ -17,10 +17,13 @@ from transformers import (
     AutoModel,
     AutoModelForSequenceClassification,
     AutoTokenizer,
-    Trainer
+    Trainer,
+    TrainingArguments,
+    HfArgumentParser,
 )
 from captum.attr import IntegratedGradients, GradientShap, InputXGradient, Saliency, DeepLift
 from debug.dataset import DebugDataset
+from debug.model import DebugModel
 
 from config import attr_algos, baseline_required, dataset_info
 from fast_api_util_functions import _send_update
@@ -213,20 +216,23 @@ def train_debug_pipeline(project_id, dataset, arch):
     tokenizer = AutoTokenizer.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
 
+    debug_model = DebugModel(model, config)
     dataset = DebugDataset(dataset, tokenizer, 128)
 
+    training_args = TrainingArguments(
+        output_dir = './temp'
+    )
+    print(training_args)
 
+    trainer = Trainer(
+        model=debug_model,
+        args=training_args,
+        train_dataset=dataset,
+        eval_dataset=dataset,
+    )
 
-    # trainer = Trainer(
-    #     model=model,
-    #     args=training_args,
-    #     train_dataset=train_dataset,
-    #     eval_dataset=val_dataset,
-    #     compute_metrics=compute_metrics,
-    # )
-    #
-    # trainer.train()
-    # trainer.save_model()
+    trainer.train()
+    trainer.save_model()
 
 
     resp = None
