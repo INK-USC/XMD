@@ -77,6 +77,19 @@ class ExplanationGenerationPayload(BaseModel):
             }
         }
 
+class ExplanationGenerationSinglePayload(BaseModel):
+    dataset: str
+    model_path: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+
+                "dataset": "There is a big difference between muslims and terrorists",
+                "model_path": "bert-base-cased"
+            }
+        }
+
 
 class DebugData(BaseModel):
     document_id: str

@@ -7,5 +7,5 @@ from .debugging import GlobalExplanationDictionaryDetail, GlobalExplanationDicti
 from .export_data import DownloadData
 from .model_upload import ModelZipUpload, ModelDownload
 from .model import ModelList, ModelDetail
-from .generate_explanations import GenerateExplanations, ExplAttrUpdate, ExplAttrGenerationStatus
+from .generate_explanations import GenerateExplanations, ExplAttrUpdate, ExplAttrGenerationStatus, GenerateSingleExplanations
 from .debug import TrainingDebugModel, TrainingDebugModelUpdate, TrainingDebugModelStatus
