@@ -26,7 +26,7 @@ from debug.dataset import DebugDataset
 from debug.model import DebugModel
 
 from config import attr_algos, baseline_required, dataset_info
-from fast_api_util_functions import _send_update
+from fast_api_util_functions import _send_update_generate_explanation, _send_update_debug_model
 
 app = FastAPI()
 
@@ -206,7 +206,7 @@ def generate_attr_pipeline(project_id, dataset, arch):
     print(return_json)
 
     # send update back to django
-    resp = _send_update(project_id, return_json)
+    resp = _send_update_generate_explanation(project_id, return_json)
     print(resp)
     return resp
 
@@ -239,8 +239,13 @@ def train_debug_pipeline(project_id, dataset, arch):
     debug_model = DebugModel(model, config)
     dataset = DebugDataset(dataset, tokenizer, 128)
 
+    trial_index = 1
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(root_dir, f'annotation_backend/media/debug_models/trial{trial_index}')
+    print(output_dir)
+
     training_args = TrainingArguments(
-        output_dir = './temp'
+        output_dir=output_dir
     )
     print(training_args)
 
@@ -254,13 +259,13 @@ def train_debug_pipeline(project_id, dataset, arch):
     trainer.train()
     trainer.save_model()
 
+    format_attrs = {"save_model_path": output_dir}
+    return_json = jsonable_encoder(format_attrs)
+    print(return_json)
 
-    resp = None
-    # return_json = jsonable_encoder(format_attrs)
-    # print(return_json)
-    #
-    # # send update back to django
-    # resp = _send_update(project_id, return_json)
-    # print(resp)
+    resp = _send_update_debug_model(project_id, return_json)
+    print(resp)
 
     return resp
+
+
