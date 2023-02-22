@@ -35,9 +35,9 @@
       stripe
     >
       <el-table-column type="index" :index="indexMethod" />
-      <el-table-column label="Text">
+      <el-table-column prop="text" label="Text">
         <template #default="scope">
-          <p v-snip="{ lines: 3 }">{{ scope.row.text }}</p>
+          {{ scope.row.text }}
         </template>
       </el-table-column>
       <el-table-column label="Operations">
@@ -113,6 +113,16 @@ export default {
   created() {
     this.documentStore.resetState();
   },
+  // filters: {
+  //   truncate(text, length) {
+  //       console.log(text.length)
+  //       if (text.length > length) {
+  //           return text.substring(0, length) + '...';
+  //       } else {
+  //           return text;
+  //       }
+  //   }
+  // }
   // computed: {
   //   percentageCompleted() {
   //     const info = this.documentStore.getdocumentInfo;

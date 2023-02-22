@@ -25,9 +25,8 @@
       <el-table-column prop="text">
         <template #default="scope">
           <el-link
-            v-snip="{ lines: 3 }"
             @click="goToDocument(scope.$index, scope.row)"
-            >{{ scope.row.text }}
+            >{{ this.truncate(scope.row.text, 100) }}
           </el-link>
         </template>
       </el-table-column>
@@ -115,6 +114,13 @@ export default {
       this.detailedDocumentStore.fetchDocument(docInfo.id);
       this.localDictionaryStore.fetchDictionary(docInfo.id);
     },
+    truncate(text, length) {
+          if (text.length > length) {
+              return text.substring(0, length) + '...';
+          } else {
+              return text;
+          }
+      },
   },
 };
 </script>
