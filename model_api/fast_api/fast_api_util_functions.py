@@ -15,8 +15,5 @@ def _send_update_generate_explanation(project_id, data):
 
 def _send_update_debug_model(project_id, data):
     end_point = const.HILT_URL + f"projects/{project_id}/update/training_debug_model_metadata/"
-    params = {
-        'project_id': project_id,
-    }
-    response = requests.post(end_point, json=data, params=params)
+    response = requests.post(end_point, json=data)
     return response.status_code

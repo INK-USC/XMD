@@ -184,14 +184,13 @@ export default {
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {
           console.log('finished')
-          this.loadingExplanations = true
+          this.loadingExplanations = false
           this.$notify.success({
             title: "Success",
             message: "Model Execution had been completed",
             duration: 0,
           })
           clearInterval(timer)
-          // push to next page?
           this.$router.push({ name: 'DebugOverview' });
         } else {
           console.log('Waiting for model finish message.')

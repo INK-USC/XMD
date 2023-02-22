@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
 from rest_framework.views import APIView, Response, status
-from ..models import Project, Document, Word, WordAnnotationScore, LocalExplanationDictionary, GlobalExplanationDictionary
+from ..models import Project, Document, Word, WordAnnotationScore, LocalExplanationDictionary, GlobalExplanationDictionary, HiltModel
 import requests
 
 class TrainingDebugModel(APIView):
@@ -20,7 +20,7 @@ class TrainingDebugModel(APIView):
             # parse debug data into json format as needed by fastapi
             pretrained_model_name_or_path = project.explanations_model
             dataset_json = self._generate_json_for_debugging(project)
-            print(dataset_json)
+            # print(dataset_json)
 
             # call fastapi
             print('FastAPI call')
@@ -31,11 +31,12 @@ class TrainingDebugModel(APIView):
                 "dataset": dataset_json,
                 "pretrained_model_name_or_path": pretrained_model_name_or_path
                 }
-            print('req_json', req_json)
+            # print('req_json', req_json)
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
                 project.debugging_status = 'running'
+                project.save()
                 return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
             else:
                 return Response(data=res.text, status=500)
@@ -81,11 +82,28 @@ class TrainingDebugModel(APIView):
 
 ## Views for fastapi status update
 
-def add_debug_annotation_scores_and_model():
+def _save_debug_model(data, project):
     """
     Create new model and annotation score entries in DB after training debugged model in FastAPI
     """
-    pass
+    print(data)
+
+    # get model_path
+    model_path = data['save_model_path']
+
+    # zip model
+    
+
+    # # save zip model in DB
+    # model_file = 'model_zip' # update
+    # name =  str(project.id) + '_' + model_file.name
+    # model_file.name  = name
+    # cur_model = HiltModel(name=name, project=project, model=model_file, debug=True)
+    # cur_model.save()
+    return
+
+
+
 
 class TrainingDebugModelUpdate(APIView):
     permission_classes = ()
@@ -95,10 +113,11 @@ class TrainingDebugModelUpdate(APIView):
         Get update after FAST API is done generating attributions
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id'))
-        add_debug_annotation_scores_and_model(request.data, project) # parse FastAPI payload and save in DB
+        _save_debug_model(request.data, project) # parse FastAPI payload and save in DB
         project.debugging_status = 'finished'
         project.save()
 
+        return Response({"success": "model received"}, status=status.HTTP_202_ACCEPTED)
 class TrainingDebugModelStatus(APIView):
     def get(self, request, *args, **kwargs):
         """

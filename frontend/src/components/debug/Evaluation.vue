@@ -104,8 +104,9 @@
                             <el-tag type="warning">After Debug Training</el-tag>
                         </el-row>
 
-                        <el-row style="line-height: 2; margin-top: 10px">
-                            <div>
+                        <el-row 
+                        v-if="model.model_id"
+                        style="line-height: 2; margin-top: 10px">
                             <span
                                 v-for="wordData in document.words"
                                 :key="wordData.id"
@@ -122,7 +123,6 @@
                                     </template>
                                 </el-popover>
                             </span>
-                            </div>
                         </el-row>
                     </el-row>
                     <el-divider />
@@ -132,7 +132,7 @@
                 
                 
             </el-row>
-            <div>
+            <div v-if="model.model_id">
                 {{ calculateAttrsForDoc(documentStore.getDocuments[0].text) }}
             </div>
         </el-card>

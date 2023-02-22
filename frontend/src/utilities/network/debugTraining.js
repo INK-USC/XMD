@@ -9,5 +9,8 @@ export default {
         },
       }
     );
-  }
+  },
+  didFinishGeneration(projectID) {
+    return api.get(`hilt/projects/${projectID}/update/training_debug_model_status/`)
+  },
 };

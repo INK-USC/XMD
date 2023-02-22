@@ -119,6 +119,7 @@ export default {
       })
     },
     trainDebugModel() {
+      // this.loadingExplanations = true
       DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)
         .then(res => {
           console.log('Here');
@@ -147,7 +148,27 @@ export default {
       this.fetchDebugScores(this.documentStore.getDocuments[1].id)
     },
     waitForCompletion() {
-      return
+      let max_iter = 10;
+      let timer = setInterval(() => DebugTrainingAPI.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
+        console.log(res)
+        if (max_iter < 0 || res.status == 'finished') {
+          console.log('finished')
+          // this.loadingExplanations = false
+          this.$notify.success({
+            title: "Success",
+            message: "Model Execution had been completed",
+            duration: 0,
+          })
+          clearInterval(timer)
+          // push to next page?
+          this.$router.push({ name: 'DebugEvaluation' });
+        } else {
+          console.log('Waiting for model finish message.')
+          max_iter -= 1
+          console.log(max_iter)
+        }
+      }), 10*1000)
+
     },
   },
   computed: {
