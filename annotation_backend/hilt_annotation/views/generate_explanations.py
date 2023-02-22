@@ -15,6 +15,11 @@ from ..serializers import DocumentSerializer, LabelSerializer, WordGroupedSerial
 from ..models import Project, HiltModel, Document, WordAnnotationScore, Word, Annotation
 
 
+class ImportFileError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
 class GenerateExplanations(APIView):
     def post(self, request, *args, **kwargs):
         """
@@ -82,6 +87,8 @@ class GenerateSingleExplanations(APIView):
             project = get_object_or_404(Project, pk=kwargs.get('project_id'))
             model_id = request.POST['model_id']
             model_obj = get_object_or_404(HiltModel, pk=model_id)
+            if not model_obj: raise ImportFileError("model_id is not valid")
+            
             model_path = model_obj.model.name
             model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
 
@@ -99,24 +106,25 @@ class GenerateSingleExplanations(APIView):
 
             full_path = unzip_path_folder
             print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path_folder}')
-            dataset = [request.POST['text']]
+            dataset = request.POST['text']
 
             # MAKE FASTAPI CALL
             print('FastAPI call')
             req_url = "http://localhost:9000/generate/expl/single"
             req_json = {
-                "project_id": str(project.id),
                 "dataset": dataset,
                 "model_path": full_path
                 }
+            print('req_json:', req_json)
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
-                print('project model changed status to running')
-                return Response({'success': res.data}, status.HTTP_202_ACCEPTED) # check and return correct data
+                return Response({'success': res.content}, status.HTTP_202_ACCEPTED) # check and return correct data
             else:
                 return Response(data=res.text, status=500)
 
+            # print('Inside GenerateSingleExplanations', request.POST)
+            # return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
 
 
         except Exception as e:

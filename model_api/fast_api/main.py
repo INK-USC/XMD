@@ -67,6 +67,26 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     background_tasks.add_task(
         generate_attr_pipeline, project_id, dataset, pretrained_model_name_or_path)
 
+@app.post("/generate/expl/single", status_code=status.HTTP_201_CREATED)
+async def start_expl_generation(explanation_generation_payload: schema.ExplanationGenerationSinglePayload):
+    """
+        Endpoint hit by XMD tool's django api to initiate captum process
+
+        input params: explanation_generation_payload
+
+        output params: None
+
+    """
+    print("Inside /generate/expl/single")
+
+    # Unload Payload (model, text)
+
+    # Generate Attribution score
+
+    # return {
+    #   'tokens',
+    #   'scores'
+    # }
 
 # Generate attributes for Explanation Generation task
 def generate_attr_pipeline(project_id, dataset, arch):

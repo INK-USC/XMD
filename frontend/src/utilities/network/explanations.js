@@ -25,10 +25,10 @@ export default {
   getAttributeScoresForDoc(projectID, text, model_id) {
     console.log('inside network/getAttributeScoresForDoc function')
     const formData = new FormData();
-    formData.append("model_id", model_id)
     formData.append("text", text)
+    formData.append("model_id", model_id)
     console.log(formData)
-    return api.post(`hilt/projects/${projectID}/explanations/fastapi`, formData, {
+    return api.post(`hilt/projects/${projectID}/explanations/single`, formData, {
       headers: {
         ...api.defaults.headers,
         "Content-Type": "multipart/form-data",

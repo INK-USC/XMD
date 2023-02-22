@@ -127,10 +127,14 @@
                     </el-row>
                     <el-divider />
                 </el-row>
+
                 
-
-
+                
+                
             </el-row>
+            <div>
+                {{ calculateAttrsForDoc(documentStore.getDocuments[0].text) }}
+            </div>
         </el-card>
     </el-row>
 </template>
@@ -292,14 +296,13 @@ export default {
                 ...colors[index],
             };
         },
-    },
-    calculateAttrsForDoc(text) {
-        return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, this.model.model_id)
-        .then( res => {
-            return res
-        })
-
-        
+        calculateAttrsForDoc(text) {
+            return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, this.model.model_id)
+            .then( res => {
+                console.log(res)
+                return 'TESTING'
+            })
+        },
     },
 
 };
