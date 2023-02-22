@@ -157,7 +157,6 @@ def add_annotation_scores(data, project: Project):
         for idx, (word_str, score) in enumerate(zip(sentence['tokens'], sentence['before_reg_explanation'])):
             cur_word = Word(document=document, text=word_str, order=idx)
             cur_word.save()
-
             word = Word.objects.filter(document=document, order=idx)[0]
             wordannotationscore = WordAnnotationScore.objects.filter(word=word.id).first()
             if not wordannotationscore: # create row if word dosent exist in WordAnnotationScore table
@@ -167,13 +166,14 @@ def add_annotation_scores(data, project: Project):
                 wordannotationscore.score = score
             print(wordannotationscore)
             wordannotationscore.save(())
+
         # 2
         document.annotated = True
         document.save()
         # 3
-        project.explanations_status = 'finished'
-        project.save()
-        print('project model changed status to finished')
+    project.explanations_status = 'finished'
+    project.save()
+    print('project model changed status to finished')
 
 
 def delete_words_and_annotations(project: Project):
