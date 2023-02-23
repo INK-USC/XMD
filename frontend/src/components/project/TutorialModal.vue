@@ -1,14 +1,22 @@
 <template>
   <el-dialog
-    :title="'Tutorial'"
+    :title="'Create Projects'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
-    <div>
-
+    <div class="container">
+      <div class="row">
+          <br><br>
+            <p class="text" style="text-align: justify">
+              Create a project to start with. <br>
+              You can choose between classifying sequences and extracting relationships. <br>
+              (Currently only supports sequence classification.)
+            </p>
+      </div>
     </div>
+
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="() => $emit('update:dialogVisible', false)">
