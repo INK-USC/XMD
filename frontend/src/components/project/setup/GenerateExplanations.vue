@@ -16,7 +16,7 @@
         <el-form :model="huggingfaceForm" ref="huggingfaceForm" :rules="huggingfaceForm.rules" label-position="top">
           <el-form-item label="huggingface model name" prop="str">
             <el-col :span="6">
-              <el-input v-model="huggingfaceForm.str" />
+              <el-input v-model="huggingfaceForm.str" placeholder="cardiffnlp/bertweet-base-hate"/>
             </el-col>
             <el-popover content="Search your model from Huggingface model hub (https://huggingface.co/models)" trigger="hover" :width="400">
               <template #reference>
@@ -27,8 +27,9 @@
             </el-popover>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="huggingfaceSubmit" :loading="loadingExplanations">Generate
-              Explanations</el-button>
+            <el-button type="primary" @click="huggingfaceSubmit" :loading="loadingExplanations">
+              Generate Explanations
+            </el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
