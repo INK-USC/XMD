@@ -4,7 +4,7 @@
       <div style=" display: flex; align-items: center; justify-content: space-between;">
         <h1 style="text-align: center">
           Annotate page (Task Explanation)
-          <el-popover content="Green colors (positive attribute scores) refer to positively correlates to the ground truth label and red colors (negative attribute scores) refer to negatively correlates to the ground truth label." trigger="hover" :width="400">
+          <el-popover content="Attribution scores refer to how much the word positively correlates to the ground truth label." trigger="hover" :width="400">
             <template #reference>
               <el-icon style="height: 100%; margin-left: 0.5rem">
                 <QuestionFilled />
@@ -75,7 +75,7 @@
             >
               reset
             </el-button>
-            <el-popover content="If you think green colored words (positively correlated words) should not be correlated to the ground truth label prediction, delete those words! If you think red colored words (negatively correlated words) should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
+            <el-popover content="If you think positively correlated words (red-colored) should not be correlated to the ground truth label prediction, delete those words! If you think weakly correlated words should be correlated to the ground truth label, add those words!" trigger="hover" :width="400">
                 <template #reference>
                   <el-icon style="height: 100%; margin-left: 0.5rem">
                     <QuestionFilled />
@@ -204,21 +204,15 @@ export default {
         fontSize: "18px",
       };
       const score = scoreAnn.score;
-      let colors = ColorSets[0].colors;
+      const colors = ColorSets[1].colors;
       let index = -1;
-      if (score <= -0.10){
-          colors = ColorSets[1].colors;
-          index = 2;
-      } else if (score <= -0.03){
-          colors = ColorSets[1].colors;
-          index = 1;
-      } else if (score <= 0.03) {
+      if (score <= 0.1) {
         return style;
-      } else if (score <= 0.10) {
-          colors = ColorSets[3].colors;
+      } else if (score <= 0.5) {
+          index = 0;
+      } else if (score <= 0.75) {
           index = 1;
-      } else if (score <= 1.0) {
-          colors = ColorSets[3].colors;
+      } else if (score <= 1) {
           index = 2;
       }
       return {

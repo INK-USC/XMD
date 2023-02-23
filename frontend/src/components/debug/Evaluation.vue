@@ -300,21 +300,15 @@ export default {
                 fontSize: "18px",
             };
             const score = scoreAnn.score;
-            let colors = ColorSets[0].colors;
+            const colors = ColorSets[1].colors;
             let index = -1;
-            if (score <= -0.10){
-                colors = ColorSets[1].colors;
-                index = 2;
-            } else if (score <= -0.03){
-                colors = ColorSets[1].colors;
-                index = 1;
-            } else if (score <= 0.03) {
+            if (score <= 0.1) {
               return style;
-            } else if (score <= 0.10) {
-                colors = ColorSets[3].colors;
+            } else if (score <= 0.5) {
+                index = 0;
+            } else if (score <= 0.75) {
                 index = 1;
-            } else if (score <= 1.0) {
-                colors = ColorSets[3].colors;
+            } else if (score <= 1) {
                 index = 2;
             }
             return {

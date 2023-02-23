@@ -1,15 +1,10 @@
-import json
 import os
-import sys
-import warnings
-import requests
 import time
 import torch
 from fastapi import FastAPI, BackgroundTasks
 from fastapi import status
 from fastapi.encoders import jsonable_encoder
 
-import fast_api_util_functions as util_f
 import json_schema as schema
 
 from transformers import (
@@ -57,12 +52,9 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
 
     """
     project_id = explanation_generation_payload.project_id
-    from_local = explanation_generation_payload.from_local
     dataset = explanation_generation_payload.dataset
     pretrained_model_name_or_path = explanation_generation_payload.pretrained_model_name_or_path
-    # config = AutoConfig.from_pretrained(pretrained_model_name_or_path)
 
-    print(from_local, dataset, pretrained_model_name_or_path)
     background_tasks.add_task(
         generate_attr_pipeline, project_id, dataset, pretrained_model_name_or_path)
 
@@ -77,11 +69,19 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
 
     """
     print("Inside /generate/expl/single")
-
+    print(explanation_generation_payload)
     # Unload Payload (model, text)
+    text = explanation_generation_payload.dataset
+    arch = explanation_generation_payload.model_path
 
+    model = AutoModelForSequenceClassification.from_pretrained(arch)
+    tokenizer = AutoTokenizer.from_pretrained(arch)
+    config = AutoConfig.from_pretrained(arch)
+
+    original_input_ids, attrs = generate_attr(text, model, tokenizer, config)
+    print(original_input_ids)
+    print(attrs)
     # Generate Attribution score
-
     # return {
     #    'res': [ 
     #         { 
@@ -91,29 +91,17 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     #     ]
     # }
 
-# Generate attributes for Explanation Generation task
-def generate_attr_pipeline(project_id, dataset, arch):
-    """
-    Captum API call to get attribution scores
-    """
-    start = time.time()
-    model = AutoModelForSequenceClassification.from_pretrained(arch)
-    config = AutoConfig.from_pretrained(arch)
-
+def generate_attr(text, model, tokenizer, config):
     num_classes = len(config.label2id)
     attr_algo = 'input-x-gradient'
 
+    # TODO: need to add all the model types. (maybe in dictionary format)
     if config.model_type == "bert":
         task_encoder = model.bert
     elif config.model_type == "roberta":
         task_encoder = model.roberta
 
-    # TODO: need to add all the model types. (maybe in dictionary format)
-
     task_head = model.classifier
-    tokenizer = AutoTokenizer.from_pretrained(arch)  # Tokenizer Initialize
-
-    text, labels = dataset.text, dataset.labels
     data = tokenizer(text, padding=True)
     input_ids, attention_mask = data['input_ids'], data['attention_mask']
     original_input_ids = input_ids
@@ -163,8 +151,23 @@ def generate_attr_pipeline(project_id, dataset, arch):
     assert not torch.any(torch.isnan(attrs))
 
     attrs.reshape(batch_size, num_classes, seq_length)
+    attrs = attrs * 100
     attrs = attrs.detach().cpu().tolist()
-    attrs = [["{0:0.2f}".format(attr) for attr in lst] for lst in attrs]
+    return original_input_ids, attrs
+
+# Generate attributes for Explanation Generation task
+def generate_attr_pipeline(project_id, dataset, arch):
+    """
+    Captum API call to get attribution scores
+    """
+    start = time.time()
+
+    model = AutoModelForSequenceClassification.from_pretrained(arch)
+    tokenizer = AutoTokenizer.from_pretrained(arch)
+    config = AutoConfig.from_pretrained(arch)
+    text, labels = dataset.text, dataset.labels
+    original_input_ids, attrs = generate_attr(text, model, tokenizer, config)
+
     end = time.time()
     print(f'time elapsed: {end - start}')
 
@@ -187,6 +190,9 @@ def generate_attr_pipeline(project_id, dataset, arch):
         else:
             attribution_scores = attrs[2*i + manual_labels[labels[i]] - 1][start_index+1:end_index]
 
+        attribution_scores = np.exp(attribution_scores) / np.sum(np.exp(attribution_scores), axis=0)
+        attribution_scores = ["{0:0.2f}".format(attr) for attr in attribution_scores]
+
         format_attrs.append(
             {
                 "id": i,
@@ -199,7 +205,8 @@ def generate_attr_pipeline(project_id, dataset, arch):
         )
 
     return_json = jsonable_encoder(format_attrs)
-    print(return_json)
+    for x in return_json[:3]:
+        print(x)
 
     # send update back to django
     resp = _send_update_generate_explanation(project_id, return_json)
