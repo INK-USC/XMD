@@ -91,3 +91,14 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 </p>
 </details>
 <br/>
+
+## Citation
+If you find our work helpful, please cite the following:
+```bib
+@article{lee2022xmd,
+  title={XMD: An End-to-End Framework for Interactive Explanation-Based Debugging of NLP Models},
+  author={Lee, Dong-Ho and Kadakia, Akshen and Joshi, Brihi and Chan, Aaron and Liu, Ziyi and Narahari, Kiran and Shibuya, Takashi and Mitani, Ryosuke and Sekiya, Toshiyuki and Pujara, Jay and Ren, Xiang},
+  journal={arXiv preprint arXiv:2210.16978},
+  year={2022}
+}
+```
