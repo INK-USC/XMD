@@ -176,7 +176,7 @@ export default {
             duration: 0,
           })
           clearInterval(timer)
-          // this.$router.push({ name: 'DebugEvaluation' });
+          this.$router.push({ name: 'DebugEvaluation' });
         } else {
           console.log('Waiting for model finish message.')
           max_iter -= 1
