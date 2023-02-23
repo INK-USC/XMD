@@ -133,7 +133,7 @@ class GenerateSingleExplanations(APIView):
             req_json = {
                 "text": text,
                 "label": label,
-                "model_path": full_path
+                "model_path": unzip_path
                 }
 
             print('req_json:', req_json)
