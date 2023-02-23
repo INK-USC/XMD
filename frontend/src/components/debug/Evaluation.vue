@@ -46,7 +46,6 @@
                     v-for="(document, docIndex) in detailedSentence"
                     :key="document.id"
                 >
-        
                     <el-row
                     style="width: 100%"
                     v-for="annotation in document.annotations"
@@ -98,35 +97,16 @@
                         <el-row style="width: 100%">
                             <el-tag type="warning">After Debug Training</el-tag>
                         </el-row>
-
-                        <!-- <el-row 
-                        style="line-height: 2; margin-top: 10px">
-                            <span
-                                v-for="wordData in document.words"
-                                :key="wordData.id"
-                                :style="getWordStyle(wordData.word_debug_annotation_score?.[annotation.id], annotation.label)"
-                            >
-                                <el-popover
-                                :content=" wordData.text + ': ' + 0 "
-                                trigger="hover"
-                                >
-                                    <template #reference>
-                                        <span>
-                                        {{ wordData.text }}
-                                        </span>
-                                    </template>
-                                </el-popover>
-                            </span>
-                        </el-row> -->
                         <el-row 
                         v-if="model.model_id"
+                        v-loading="loadingAnnotations"
                         style="line-height: 2; margin-top: 10px">
                             <span
-                                v-for="wordData in calculateAttrsForDoc(detailedSentence[0].text, getLabelByID(detailedSentence[0].ground_truth).text).res"
+                                v-for="wordData in debugTrainingSentence"
                                 :style="getWordStyle({'score': wordData.score}, annotation.label)"
                             >
                                 <el-popover
-                                :content=" wordData.text + ': ' + 0 "
+                                :content=" wordData.text + ': ' + wordData.score "
                                 trigger="hover"
                                 >
                                     <template #reference>
@@ -136,14 +116,12 @@
                                     </template>
                                 </el-popover>
                             </span>
+                            <span>&nbsp;</span>
                         </el-row>
                     </el-row>
                     <el-divider />
                 </el-row>
             </el-row>
-            <!-- <div v-if="model.model_id!= ''">
-                {{ calculateAttrsForDoc(documentStore.getDocuments[0].text, getLabelByID(documentStore.getDocuments[0].ground_truth).text) }}
-            </div> -->
         </el-card>
     </el-row>
 </template>
@@ -159,7 +137,6 @@ import { useWordStore } from "@/stores/word"
 import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
-import * as fs from 'fs'
 import { saveAs } from 'file-saver'
 
 export default {
@@ -218,7 +195,9 @@ export default {
                 model_id: "",
                 model_name: ""
             },
-            detailedSentence : []
+            detailedSentence : [],
+            debugTrainingSentence: [],
+            loadingAnnotations: false
         }
     },
     computed: {
@@ -235,10 +214,21 @@ export default {
     },
     methods: {
         updateDetailedDoc(id) {
+            this.loadingAnnotations = true
             const promise = []
             promise.push(this.detailedDocumentStore.fetchDocument(id));
             Promise.all(promise).then(() => {
                 this.detailedSentence = [this.detailedDocumentStore.getDocument];
+                this.calculateAttrsForDoc(this.detailedSentence[0].text, this.getLabelByID(this.detailedSentence[0].ground_truth).text)
+                    .then((res) => { 
+                        this.debugTrainingSentence = JSON.parse(res).res
+                        console.log(JSON.parse(res).res)
+                        this.loadingAnnotations = false
+                    }).catch(e => {
+                        console.log(e)
+                        this.loadingAnnotations = false
+
+                    })
             });
         },
         getModelDetails() {
@@ -260,20 +250,6 @@ export default {
             ).then(res => {
                 console.log(res.length);
                 const blob = new Blob([res], { type: 'application/zip' })
-                // console.log(blob.size);
-                // const link = document.createElement('a')
-                console.log("Blob ", blob)
-
-                // const blob = new Blob([res.data])
-                // const link = document.createElement('a')
-                // link.href = URL.createObjectURL(blob)
-                // link.download = 'model.pdf'
-                // link.click()
-                // URL.revokeObjectURL(link.href)
-                // console.log('beginning save file')
-                // fs.writeFileSync('/Users/kiran/Downloads/test.pdf', res.data )
-                // console.log('saved file')
-
                 saveAs(blob, 'test.zip')
                 this.downloading=false
             }).catch((err) => {

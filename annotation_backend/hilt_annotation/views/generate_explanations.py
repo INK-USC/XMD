@@ -107,22 +107,23 @@ class GenerateSingleExplanations(APIView):
             model_obj = get_object_or_404(HiltModel, pk=model_id)
             if not model_obj: raise ImportFileError("model_id is not valid")
 
-            # ??? If model is already unzipped, skip these steps
+
             model_path = model_obj.model.name
             model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
             # file keeping
             unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'debug_tmp')
             os.makedirs(unzip_path, exist_ok=True)
 
-            if len(os.listdir(unzip_path)) != 0:
-                shutil.rmtree(os.path.join(unzip_path))
+            #*# If model is already unzipped, skip these steps
+            if len(os.listdir(unzip_path)) == 0:
+                
+                if len(os.listdir(unzip_path)) != 0:
+                    shutil.rmtree(os.path.join(unzip_path))
 
-            # unzip
-            with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
-                zip_ref.extractall(unzip_path)
+                # unzip
+                with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
+                    zip_ref.extractall(unzip_path)
 
-            print('zipfile name after zipped', os.listdir(unzip_path)[0])
-            full_path = os.path.join(unzip_path, os.listdir(unzip_path)[0])
             print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path}')
             text = request.POST['text']
             label = request.POST['label']
