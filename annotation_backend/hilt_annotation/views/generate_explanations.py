@@ -107,15 +107,20 @@ class GenerateSingleExplanations(APIView):
             print('model_id', model_id)
             model_obj = get_object_or_404(HiltModel, pk=model_id)
             if not model_obj: raise ImportFileError("model_id is not valid")
+
+            # ??? If model is already unzipped, skip these steps
             
+            print('---------1----------')
             model_path = model_obj.model.name
             model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
+            print('---------2----------')
              # filekeeping
             unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'debug_tmp')
             os.makedirs(unzip_path, exist_ok=True)
             if len(os.listdir(unzip_path))!=0:
                 for f in os.listdir(unzip_path):
                     shutil.rmtree(os.path.join(unzip_path, f))
+            print('---------3----------')
 
             #   unzip
             print('model_path', model_path)
@@ -124,10 +129,12 @@ class GenerateSingleExplanations(APIView):
             with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
                 zip_ref.extractall(unzip_path)
             unzip_path_folder = os.path.join(unzip_path, os.listdir(unzip_path)[0])
+            print('---------4----------')
 
             full_path = unzip_path_folder
             print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path_folder}')
             dataset = request.POST['text']
+            print('---------5----------')
 
             # MAKE FASTAPI CALL
             print('FastAPI call')

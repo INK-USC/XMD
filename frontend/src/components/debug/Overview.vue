@@ -164,7 +164,7 @@ export default {
       this.fetchDebugScores(this.documentStore.getDocuments[1].id)
     },
     waitForCompletion() {
-      let max_iter = 1;
+      let max_iter = 60;
       let timer = setInterval(() => DebugTrainingAPI.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {
@@ -182,7 +182,7 @@ export default {
           max_iter -= 1
           console.log(max_iter)
         }
-      }), 1*1000)
+      }), 10*1000)
 
     },
   },
