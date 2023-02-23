@@ -92,15 +92,18 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     attribution_scores = np.exp(attribution_scores) / np.sum(np.exp(attribution_scores), axis=0)
     attribution_scores = ["{0:0.2f}".format(attr) for attr in attribution_scores]
 
+    res_list = []
+    for token, score in zip(tokens, attribution_scores):
+        res_list.append({
+            'text': token,
+            'score': score
+        })
+
     format_attrs = {
-       'res': [
-            {
-            'text': tokens,
-            'score': attribution_scores
-            }
-        ]
+       'res': res_list
     }
     return_json = jsonable_encoder(format_attrs)
+    print(return_json)
 
     # Generate Attribution score
     return return_json

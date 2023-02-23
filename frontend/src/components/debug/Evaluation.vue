@@ -99,7 +99,7 @@
                             <el-tag type="warning">After Debug Training</el-tag>
                         </el-row>
 
-                        <el-row 
+                        <!-- <el-row 
                         style="line-height: 2; margin-top: 10px">
                             <span
                                 v-for="wordData in document.words"
@@ -117,14 +117,33 @@
                                     </template>
                                 </el-popover>
                             </span>
+                        </el-row> -->
+                        <el-row 
+                        v-if="model.model_id"
+                        style="line-height: 2; margin-top: 10px">
+                            <span
+                                v-for="wordData in calculateAttrsForDoc(detailedSentence.text, getLabelByID(documentStore.getDocuments[0].ground_truth).text).res"
+                                :style="getWordStyle({'score': wordData.score}, annotation.label)"
+                            >
+                                <el-popover
+                                :content=" wordData.text + ': ' + 0 "
+                                trigger="hover"
+                                >
+                                    <template #reference>
+                                        <span>
+                                        {{ wordData.text }}
+                                        </span>
+                                    </template>
+                                </el-popover>
+                            </span>
                         </el-row>
                     </el-row>
                     <el-divider />
                 </el-row>
             </el-row>
-            <div v-if="model.model_id!= ''">
+            <!-- <div v-if="model.model_id!= ''">
                 {{ calculateAttrsForDoc(documentStore.getDocuments[0].text, getLabelByID(documentStore.getDocuments[0].ground_truth).text) }}
-            </div>
+            </div> -->
         </el-card>
     </el-row>
 </template>

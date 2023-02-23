@@ -121,7 +121,8 @@ class GenerateSingleExplanations(APIView):
             with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
                 zip_ref.extractall(unzip_path)
 
-            full_path = unzip_path
+            print('zipfile name after zipped', os.listdir(unzip_path)[0])
+            full_path = os.path.join(unzip_path, os.listdir(unzip_path)[0])
             print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path}')
             text = request.POST['text']
             label = request.POST['label']
