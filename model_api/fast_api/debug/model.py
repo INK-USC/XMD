@@ -1,13 +1,14 @@
-from transformers import PreTrainedModel
+from transformers import AutoModelForSequenceClassification, PreTrainedModel
 from typing import Optional, Tuple, Union
 from transformers.modeling_outputs import SequenceClassifierOutput
 from debug.loss import calc_pos_expl_loss
 import torch
 
 class DebugModel(PreTrainedModel):
-    def __init__(self, classification_model, config):
-        super(DebugModel, self).__init__(config)
-        self.classification_model = classification_model
+    def __init__(self, config):
+        super().__init__(config)
+        self.classification_model = AutoModelForSequenceClassification.from_config(config)
+        self.config = config
 
     def forward(
         self,
