@@ -40,6 +40,17 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 <br/>
 
 <details>
+<summary><b>Setup Frontend</b></summary>
+<p>
+    
+- Follow Vue.js frontend installation instructions [here](frontend/README.md)
+
+</p>
+</details>
+
+<br/>
+
+<details>
 <summary><b>Setup Backend</b></summary>
 <p>
 
@@ -67,26 +78,27 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 
 </p>
 </details>
+
 <br/>
+
 <details>
-<summary><b>Setup Frontend</b></summary>
+<summary><b>Setup Model API</b></summary>
 <p>
     
-- Follow Vue.js frontend installation instructions [here](frontend/README.md)
+- Follow Vue.js frontend installation instructions [here](model_api/fast_api/README.md)
 
 </p>
 </details>
+
 <br/>
 
 <details>
 <summary><b>Directory overview</b></summary>
 <p>
 
-- `annotation_backend/`
-    - `annotation_backend/` - django application
-    - `hilt_annotation/` - django application
-    - `sample_data/` - sample datasets for testing
+- `annotation_backend/` - Django application
 - `frontend/` - Vue.js frontend project directory
+- `model_api/` - Model API
 
 </p>
 </details>
