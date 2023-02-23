@@ -101,14 +101,15 @@ class GenerateExplanations(APIView):
 class GenerateSingleExplanations(APIView):
     def post(self, request, *args, **kwargs):
         try:
+            print('request.POST', request.POST)
             project = get_object_or_404(Project, pk=kwargs.get('project_id'))
             model_id = request.POST['model_id']
+            print('model_id', model_id)
             model_obj = get_object_or_404(HiltModel, pk=model_id)
             if not model_obj: raise ImportFileError("model_id is not valid")
             
             model_path = model_obj.model.name
             model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
-
              # filekeeping
             unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'debug_tmp')
             os.makedirs(unzip_path, exist_ok=True)
@@ -117,6 +118,9 @@ class GenerateSingleExplanations(APIView):
                     shutil.rmtree(os.path.join(unzip_path, f))
 
             #   unzip
+            print('model_path', model_path)
+            print('model_abs_path', model_abs_path)
+            print('unzip_path', unzip_path)
             with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
                 zip_ref.extractall(unzip_path)
             unzip_path_folder = os.path.join(unzip_path, os.listdir(unzip_path)[0])
@@ -136,7 +140,7 @@ class GenerateSingleExplanations(APIView):
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
-                return Response({'success': res.content}, status.HTTP_202_ACCEPTED) # check and return correct data
+                return Response({'res': res.content}, status.HTTP_202_ACCEPTED) # check and return correct data
             else:
                 return Response(data=res.text, status=500)
 

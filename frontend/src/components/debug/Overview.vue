@@ -164,7 +164,7 @@ export default {
       this.fetchDebugScores(this.documentStore.getDocuments[1].id)
     },
     waitForCompletion() {
-      let max_iter = 10;
+      let max_iter = 1;
       let timer = setInterval(() => DebugTrainingAPI.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {
@@ -176,14 +176,13 @@ export default {
             duration: 0,
           })
           clearInterval(timer)
-          // push to next page?
-          this.$router.push({ name: 'DebugEvaluation' });
+          // this.$router.push({ name: 'DebugEvaluation' });
         } else {
           console.log('Waiting for model finish message.')
           max_iter -= 1
           console.log(max_iter)
         }
-      }), 10*1000)
+      }), 1*1000)
 
     },
   },

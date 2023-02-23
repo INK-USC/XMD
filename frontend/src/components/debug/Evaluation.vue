@@ -145,7 +145,7 @@
                 
                 
             </el-row>
-            <div v-if="model.model_id">
+            <div v-if="model.model_id!= ''">
                 {{ calculateAttrsForDoc(documentStore.getDocuments[0].text) }}
             </div>
         </el-card>
@@ -326,7 +326,7 @@ export default {
             return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, this.model.model_id)
             .then( res => {
                 console.log(res)
-                return 'TESTING'
+                return res.res
             })
         },
     },
