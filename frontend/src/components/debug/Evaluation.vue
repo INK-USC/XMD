@@ -124,6 +124,9 @@
             </el-row>
         </el-card>
     </el-row>
+  <EvaluationTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
@@ -138,13 +141,16 @@ import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
 import { saveAs } from 'file-saver'
+import EvaluationTutorial from "@/components/project/tutorial/EvaluationTutorial.vue";
+
 
 export default {
     name: "DebugEvaluation",
     components: {
         Back,
         Check,
-        Download
+        Download,
+        EvaluationTutorial
     },
     setup() {
         const documentStore = useDocumentStore();
@@ -187,6 +193,7 @@ export default {
     },
     data() {
         return {
+            tutorialVisible: true,
             exampleInputsForm: {
                 sentence_id: ""
             },

@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="'Create Projects'"
+    :title="'Instance Explanation'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
@@ -10,9 +10,8 @@
       <div class="row">
           <br><br>
             <p class="text" style="text-align: justify">
-              Create a project to start with. <br>
-              You can choose between classifying sequences and extracting relationships. <br>
-              (Currently only supports sequence classification.)
+              Select words to debug for each instance. <br>
+              Attribution scores refer to how much the word positively correlates to the ground truth label. <br>
             </p>
       </div>
     </div>
@@ -31,7 +30,7 @@
 
 // the form when user create/edit a project
 export default {
-  name: "TutorialModal",
+  name: "LocalDebugTutorial",
   props: { dialogVisible: Boolean, existingInfo: Object },
   setup() {
   },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TutorialModal
+    <CreatePorjectTutorial
       v-model:dialog-visible="tutorialVisible"
     />
 
@@ -90,7 +90,7 @@
 import { DateTime } from "luxon";
 import { Edit, Delete } from "@element-plus/icons-vue";
 
-import TutorialModal from "@/components/project/TutorialModal.vue";
+import CreatePorjectTutorial from "@/components/project/tutorial/CreateProjectTutorial.vue";
 import CreateProjectModal from "@/components/project/CreateProjectModal.vue";
 import { TaskTypes } from "@/utilities/constants";
 import { useUserStore } from "@/stores/user";
@@ -101,7 +101,7 @@ import ProjectsApi from "@/utilities/network/project";
 export default {
   name: "ProjectsPage",
   components: {
-    TutorialModal,
+    CreatePorjectTutorial,
     CreateProjectModal,
     Edit,
     Delete,

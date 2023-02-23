@@ -62,6 +62,9 @@
     </el-tabs>
 
   </el-card>
+  <GenerateExplanationTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
@@ -70,12 +73,14 @@ import { useProjectStore } from "@/stores/project";
 import { ElNotification } from 'element-plus'
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
+import GenerateExplanationTutorial from "@/components/project/tutorial/GenerateExplanationTutorial.vue";
 
 export default {
   name: "GenerateExplanations",
   components: {
     Tools,
     QuestionFilled,
+    GenerateExplanationTutorial,
   },
   setup() {
     const projectStore = useProjectStore();
@@ -85,6 +90,7 @@ export default {
   },
   data() {
     return {
+      tutorialVisible: true,
       generating_explanations: false,
       huggingfaceForm: {
         str: "",
