@@ -72,7 +72,6 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     text = explanation_generation_payload.text
     label = explanation_generation_payload.label
     arch = explanation_generation_payload.model_path
-
     tokenizer = AutoTokenizer.from_pretrained(arch)
     config = AutoConfig.from_pretrained(arch)
     debug_model = DebugModel.from_pretrained(pretrained_model_name_or_path=arch, config=config)
@@ -83,12 +82,12 @@ async def start_expl_generation(explanation_generation_payload: schema.Explanati
     start_index = original_input_ids[0].index(tokenizer.cls_token_id)
     end_index = original_input_ids[0].index(tokenizer.sep_token_id)
     tokens = tokenizer.batch_decode(torch.tensor(original_input_ids[0][start_index + 1:end_index]).unsqueeze(1))
-
     if label in config.label2id:
         attribution_scores = attrs[config.label2id[label]][start_index + 1:end_index]
     else:
         attribution_scores = attrs[int(label)][start_index + 1:end_index]
 
+    attribution_scores = [score * 100 for score in attribution_scores]
     attribution_scores = np.exp(attribution_scores) / np.sum(np.exp(attribution_scores), axis=0)
     attribution_scores = ["{0:0.2f}".format(attr) for attr in attribution_scores]
 
@@ -166,7 +165,6 @@ def generate_attr(text, model, tokenizer, config):
     attrs = torch.sum(attrs, dim=-1)
     attrs = attrs * attention_mask
     assert not torch.any(torch.isnan(attrs))
-
     attrs.reshape(batch_size, num_classes, seq_length)
     attrs = attrs * 100
     attrs = attrs.detach().cpu().tolist()
