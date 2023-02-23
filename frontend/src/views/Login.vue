@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "",
-        password: "",
+        username: "test",
+        password: "test",
         rememberMe: false,
       },
       rules: {

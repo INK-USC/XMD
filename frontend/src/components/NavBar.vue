@@ -3,20 +3,17 @@
     <el-menu-item index="/">
       <el-image :src="Logo" style="width: 58px; height: 58px" />
     </el-menu-item>
-<!--    <el-menu-item index="1">-->
-<!--      &lt;!&ndash; <a href="http://inklab.usc.edu/" class="el-link" target="_blank">HILT</a> &ndash;&gt;-->
-<!--      HILT-->
-<!--    </el-menu-item>-->
+
     <el-menu-item index="/projects" v-if="userStore.isLoggedIn">
       Projects
     </el-menu-item>
-    <!-- <el-menu-item index="/models" v-if="userStore.isLoggedIn"> Models </el-menu-item> -->
 
     <el-menu-item
       :index="!userStore.isLoggedIn ? '/login' : '/logout'"
       class="dock-right"
+      style="width: 200px; height: 58px; display: flex; justify-content: center"
     >
-      <el-button @click="loginClicked($event)" jest="logBtn">
+      <el-button type="primary" @click="loginClicked($event)" jest="logBtn" style="width: 150px; display: flex; justify-content: center">
         {{ !this.userStore.isLoggedIn ? "Login" : "Logout" }}
       </el-button>
     </el-menu-item>

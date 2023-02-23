@@ -1,0 +1,45 @@
+<template>
+  <el-dialog
+    :title="'Model Debugging'"
+    v-model="dialogVisible"
+    v-on:update:visible="$emit('update:dialogVisible', $event)"
+    @close="$emit('update:dialogVisible', false)"
+    width="40%"
+  >
+    <div class="container">
+      <div class="row">
+          <br><br>
+            <p class="text" style="text-align: justify">
+              You will debug the model by selecting words to increase or decrease its importance score. <br>
+              You can select words for each instance (Instance Explanation) or words that apply to all instances (Task Explanation). <br>
+            </p>
+      </div>
+    </div>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="() => $emit('update:dialogVisible', false)">
+          Understand
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
+
+<script>
+
+// the form when user create/edit a project
+export default {
+  name: "DebugTutorial",
+  props: { dialogVisible: Boolean, existingInfo: Object },
+  setup() {
+  },
+  data() {
+    return {};
+  },
+  methods: {
+  },
+};
+</script>
+
+<style scoped></style>

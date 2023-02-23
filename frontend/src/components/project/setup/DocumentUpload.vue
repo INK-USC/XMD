@@ -21,41 +21,21 @@
                 "
               >
                 <code>
-<!-- {
-  "data" : [
-    {
-      "text" : "Louis Armstrong the great trumpet player lived in Corona.",
-      "words": ["Louis", "Armstrong", "the", "great", "trumpet", "player", "lived", "in", "Corona."],
-      "annotations": [
-        {
-    <template v-if="this.projectStore.task===1">
-          "label": "Label-Name-1"
-    </template><template v-if="this.projectStore.task===2">
-          "label": "Label-Name-1",
-          "start_offset": 0,
-          "end_offset": 5,
-    </template>
-        }
-      ]
-    },
-    ...
-  ]
-} -->
-{
-  "data" : [
-    {
-      "text" : "Louis Armstrong the great trumpet player lived in Corona.",
-    <template v-if="this.projectStore.task===1">
-      "label": "Label-Name-1"
-    </template><template v-if="this.projectStore.task===2">
-      "label": "Label-Name-1",
-      "start_offset": 0,
-      "end_offset": 5,
-    </template>
-    },
-    ...
-  ]
-}
+                  {
+                    "data" : [
+                      {
+                        "text" : "Louis Armstrong the great trumpet player lived in Corona.",
+                      <template v-if="this.projectStore.task===1">
+                        "label": "Label-Name-1"
+                      </template><template v-if="this.projectStore.task===2">
+                        "label": "Label-Name-1",
+                        "start_offset": 0,
+                        "end_offset": 5,
+                      </template>
+                      },
+                      ...
+                    ]
+                  }
               </code>
 							</pre>
               Each entry within <i>data</i> must have keys
@@ -94,17 +74,22 @@
       </el-card>
     </el-col>
   </el-row>
+  <UploadDocumentTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
 import { UploadFilled } from "@element-plus/icons-vue";
 import { useProjectStore } from "@/stores/project";
 import DocumentsApi from "@/utilities/network/document";
+import UploadDocumentTutorial from "@/components/project/tutorial/UploadDocumentTutorial.vue";
 
 // show user the correct format of their document to upload. and allow them to upload doc
 export default {
   name: "DocumentUpload",
   components: {
+    UploadDocumentTutorial,
     UploadFilled,
   },
   setup() {
@@ -115,6 +100,7 @@ export default {
   },
   data() {
     return {
+      tutorialVisible: true,
       fileForm: {
         fileType: "JSON",
       },

@@ -28,7 +28,7 @@ def calc_pos_expl_loss(attrs, rationale, attn_mask, criterion, has_rationale=Non
         assert not torch.any(torch.isnan(loss))
 
     elif criterion == 'mse' or criterion == 'l1' or criterion == 'huber':
-        attrs = F.sigmoid(attrs)
+        # attrs = F.sigmoid(attrs)
         loss = (DIST_CRITERION_DICT[criterion](attrs, rationale, reduction='none') * has_rationale_).sum()
         if num_tokens > 0:
             loss /= num_tokens

@@ -65,6 +65,9 @@
         text-inside
       />
   </el-row>
+  <DebugTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 
@@ -78,11 +81,14 @@ import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { useWordStore } from "@/stores/word";
 import DebugTrainingAPI from "@/utilities/network/debugTraining"
 import DocumentsApi from "@/utilities/network/document";
+import DebugTutorial from "@/components/project/tutorial/DebugTutorial.vue";
+
 
 export default {
   name: "DebugOverview",
   components: {
     QuestionFilled,
+    DebugTutorial,
   },
   setup() {
     const projectStore = useProjectStore();
@@ -96,6 +102,11 @@ export default {
       globalDictionaryStore,
       localDictionaryStore,
       wordStore,
+    };
+  },
+  data() {
+    return {
+      tutorialVisible: true,
     };
   },
   created() {
