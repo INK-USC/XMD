@@ -122,7 +122,7 @@
                         v-if="model.model_id"
                         style="line-height: 2; margin-top: 10px">
                             <span
-                                v-for="wordData in calculateAttrsForDoc(detailedSentence.text, getLabelByID(documentStore.getDocuments[0].ground_truth).text).res"
+                                v-for="wordData in calculateAttrsForDoc(detailedSentence[0].text, getLabelByID(detailedSentence[0].ground_truth).text).res"
                                 :style="getWordStyle({'score': wordData.score}, annotation.label)"
                             >
                                 <el-popover
