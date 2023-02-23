@@ -6,10 +6,7 @@
           <h3>Import your corpus below</h3>
         </template>
         <div>
-          <div>
-            In order to start the annotation process, a corpus <u>must</u> be
-            uploaded
-          </div>
+          <div>In order to start the annotation process, a corpus <u>must</u> be uploaded</div>
           <div>We accept datasets in the following formats:</div>
           <ul>
             <li>
@@ -69,6 +66,8 @@
               can be used to populate the document with label.
             </li>
           </ul>
+          <div>Document Example: <a href="https://github.com/INK-USC/XMD/blob/master/annotation_backend/sample_data/tweeteval_hate_sample_100.json">[Dataset]</a></div>
+          <br>
         </div>
 
         <el-form :model="this.fileForm" style="text-align: center">
