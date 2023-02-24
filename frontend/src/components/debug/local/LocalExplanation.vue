@@ -247,6 +247,9 @@
       Submit
     </el-button>
   </el-row>
+  <LocalDebugTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
@@ -260,6 +263,7 @@ import { useLabelStore } from "@/stores/label";
 import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { TaskTypes, ColorSets } from "@/utilities/constants";
 import DebugTrainingAPI from "@/utilities/network/debugTraining"
+import LocalDebugTutorial from "@/components/project/tutorial/LocalDebugTutorial.vue";
 
 export default {
   name: "LocalExplanations",
@@ -268,6 +272,7 @@ export default {
     ArrowRight,
     Delete,
     QuestionFilled,
+    LocalDebugTutorial,
   },
   setup() {
     const documentStore = useDocumentStore();
@@ -287,6 +292,7 @@ export default {
   },
   data() {
     return {
+      tutorialVisible: true,
       topK: 3,
     };
   },

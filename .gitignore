@@ -4,8 +4,10 @@
 *.pyc
 __pycache__
 db.sqlite3
+*/media/*
 */media/models/*
 !*/media/models/.gitkeep
+hf_local_models/*
 
 # Backup files # 
 *.bak 

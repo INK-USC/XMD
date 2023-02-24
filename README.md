@@ -40,6 +40,17 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 <br/>
 
 <details>
+<summary><b>Setup Frontend</b></summary>
+<p>
+    
+- Follow Vue.js frontend installation instructions [here](frontend/README.md)
+
+</p>
+</details>
+
+<br/>
+
+<details>
 <summary><b>Setup Backend</b></summary>
 <p>
 
@@ -67,27 +78,39 @@ Project website: [https://inklab.usc.edu/xmd](https://inklab.usc.edu/xmd)
 
 </p>
 </details>
+
 <br/>
+
 <details>
-<summary><b>Setup Frontend</b></summary>
+<summary><b>Setup Model API</b></summary>
 <p>
     
-- Follow Vue.js frontend installation instructions [here](frontend/README.md)
+- Follow Vue.js frontend installation instructions [here](model_api/fast_api/README.md)
 
 </p>
 </details>
+
 <br/>
 
 <details>
 <summary><b>Directory overview</b></summary>
 <p>
 
-- `annotation_backend/`
-    - `annotation_backend/` - django application
-    - `hilt_annotation/` - django application
-    - `sample_data/` - sample datasets for testing
+- `annotation_backend/` - Django application
 - `frontend/` - Vue.js frontend project directory
+- `model_api/` - Model API
 
 </p>
 </details>
 <br/>
+
+## Citation
+If you find our work helpful, please cite the following:
+```bib
+@article{lee2022xmd,
+  title={XMD: An End-to-End Framework for Interactive Explanation-Based Debugging of NLP Models},
+  author={Lee, Dong-Ho and Kadakia, Akshen and Joshi, Brihi and Chan, Aaron and Liu, Ziyi and Narahari, Kiran and Shibuya, Takashi and Mitani, Ryosuke and Sekiya, Toshiyuki and Pujara, Jay and Ren, Xiang},
+  journal={arXiv preprint arXiv:2210.16978},
+  year={2022}
+}
+```

@@ -1,5 +1,9 @@
 <template>
   <div>
+    <CreatePorjectTutorial
+      v-model:dialog-visible="tutorialVisible"
+    />
+
     <div style="text-align: center">
       <h1>Hello, {{ this.userStore.username }}</h1>
       <el-row>
@@ -86,6 +90,7 @@
 import { DateTime } from "luxon";
 import { Edit, Delete } from "@element-plus/icons-vue";
 
+import CreatePorjectTutorial from "@/components/project/tutorial/CreateProjectTutorial.vue";
 import CreateProjectModal from "@/components/project/CreateProjectModal.vue";
 import { TaskTypes } from "@/utilities/constants";
 import { useUserStore } from "@/stores/user";
@@ -96,6 +101,7 @@ import ProjectsApi from "@/utilities/network/project";
 export default {
   name: "ProjectsPage",
   components: {
+    CreatePorjectTutorial,
     CreateProjectModal,
     Edit,
     Delete,
@@ -117,7 +123,8 @@ export default {
     return {
       projects: [],
       dialogVisible: false,
-      selectedProject: null,
+      tutorialVisible: true,
+      selectedProject: null
     };
   },
   created: function () {

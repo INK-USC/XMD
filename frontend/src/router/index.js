@@ -126,7 +126,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   if (!userStore.isLoggedIn && to.name !== "Login" && to.name !== "Home") {
-    next("/login");
+    next("/");
   } else if (to.name == "Login") {
     next();
   } else {

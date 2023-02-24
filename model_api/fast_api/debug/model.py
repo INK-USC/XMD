@@ -1,13 +1,14 @@
-from transformers import PreTrainedModel
+from transformers import AutoModelForSequenceClassification, PreTrainedModel
 from typing import Optional, Tuple, Union
 from transformers.modeling_outputs import SequenceClassifierOutput
 from debug.loss import calc_pos_expl_loss
 import torch
 
 class DebugModel(PreTrainedModel):
-    def __init__(self, classification_model, config):
-        super(DebugModel, self).__init__(config)
-        self.classification_model = classification_model
+    def __init__(self, config):
+        super().__init__(config)
+        self.classification_model = AutoModelForSequenceClassification.from_config(config)
+        self.config = config
 
     def forward(
         self,
@@ -19,7 +20,8 @@ class DebugModel(PreTrainedModel):
         inputs_embeds: Optional[torch.Tensor] = None,
         labels: Optional[torch.Tensor] = None,
         before_reg_rationale: Optional[torch.Tensor] = None,
-        after_reg_rationale: Optional[torch.Tensor] = None,
+        after_local_reg_rationale: Optional[torch.Tensor] = None,
+        after_global_reg_rationale: Optional[torch.Tensor] = None,
         has_rationale: Optional[torch.Tensor] = None,
     ) -> Union[Tuple[torch.Tensor], SequenceClassifierOutput]:
 
@@ -35,16 +37,22 @@ class DebugModel(PreTrainedModel):
         )
 
         task_loss = output.loss
-        explanation_loss = calc_pos_expl_loss(
+        local_explanation_loss = calc_pos_expl_loss(
                                 attrs=before_reg_rationale,
-                                rationale=after_reg_rationale,
+                                rationale=after_local_reg_rationale,
                                 attn_mask=attention_mask,
                                 criterion='mse',
                                 has_rationale=has_rationale,
                             )
-
-        loss = task_loss + explanation_loss
-        print(task_loss, explanation_loss, loss)
+        global_explanation_loss = calc_pos_expl_loss(
+                                attrs=before_reg_rationale,
+                                rationale=after_global_reg_rationale,
+                                attn_mask=attention_mask,
+                                criterion='mse',
+                                has_rationale=has_rationale,
+                            )
+        loss = task_loss + local_explanation_loss + global_explanation_loss
+        print(f"total loss: {loss} / task loss: {task_loss} / local explanation loss: {local_explanation_loss} / global explanation loss: {global_explanation_loss}")
 
         return SequenceClassifierOutput(
             loss=loss,

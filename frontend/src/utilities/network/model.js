@@ -24,6 +24,7 @@ export default {
         ...api.defaults.headers,
         "Content-Type": "multipart/form-data",
       },
+      responseType: 'arraybuffer',
     });
   }
 };

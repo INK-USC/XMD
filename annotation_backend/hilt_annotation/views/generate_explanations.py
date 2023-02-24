@@ -101,48 +101,52 @@ class GenerateExplanations(APIView):
 class GenerateSingleExplanations(APIView):
     def post(self, request, *args, **kwargs):
         try:
+            print('request.POST', request.POST)
             project = get_object_or_404(Project, pk=kwargs.get('project_id'))
             model_id = request.POST['model_id']
             model_obj = get_object_or_404(HiltModel, pk=model_id)
             if not model_obj: raise ImportFileError("model_id is not valid")
-            
+
+
             model_path = model_obj.model.name
             model_abs_path = os.path.join(settings.MEDIA_ROOT, model_path)
-
-             # filekeeping
+            # file keeping
             unzip_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'debug_tmp')
             os.makedirs(unzip_path, exist_ok=True)
-            if len(os.listdir(unzip_path))!=0:
-                for f in os.listdir(unzip_path):
-                    shutil.rmtree(os.path.join(unzip_path, f))
 
-            #   unzip
-            with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
-                zip_ref.extractall(unzip_path)
-            unzip_path_folder = os.path.join(unzip_path, os.listdir(unzip_path)[0])
+            #*# If model is already unzipped, skip these steps
+            if len(os.listdir(unzip_path)) == 0:
+                
+                if len(os.listdir(unzip_path)) != 0:
+                    shutil.rmtree(os.path.join(unzip_path))
 
-            full_path = unzip_path_folder
-            print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path_folder}')
-            dataset = request.POST['text']
+                # unzip
+                with zipfile.ZipFile(model_abs_path, 'r') as zip_ref: #causing delay
+                    zip_ref.extractall(unzip_path)
+
+            print(f'model_id: {model_id} \nmodel__abs_path: {model_abs_path} \nmodel_unziped_folder_path{unzip_path}')
+            text = request.POST['text']
+            label = request.POST['label']
 
             # MAKE FASTAPI CALL
             print('FastAPI call')
             req_url = "http://localhost:9000/generate/expl/single"
             req_json = {
-                "dataset": dataset,
-                "model_path": full_path
+                "text": text,
+                "label": label,
+                "model_path": unzip_path
                 }
+
             print('req_json:', req_json)
             res = requests.post(req_url, json=req_json)
 
             if res.status_code == 201:
-                return Response({'success': res.content}, status.HTTP_202_ACCEPTED) # check and return correct data
+                return Response({'res': res.content}, status.HTTP_202_ACCEPTED) # check and return correct data
             else:
                 return Response(data=res.text, status=500)
 
             # print('Inside GenerateSingleExplanations', request.POST)
             # return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
-
 
         except Exception as e:
             print(e)

@@ -78,14 +78,15 @@ class ExplanationGenerationPayload(BaseModel):
         }
 
 class ExplanationGenerationSinglePayload(BaseModel):
-    dataset: str
+    text: str
+    label: str
     model_path: str
 
     class Config:
         schema_extra = {
             "example": {
-
-                "dataset": "There is a big difference between muslims and terrorists",
+                "text": "There is a big difference between muslims and terrorists",
+                "label": "0",
                 "model_path": "bert-base-cased"
             }
         }

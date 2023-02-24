@@ -1,4 +1,10 @@
+import io
+import os
+import shutil
+import zipfile
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.core.files import File
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters
 from rest_framework.views import APIView, Response, status
@@ -40,6 +46,10 @@ class TrainingDebugModel(APIView):
                 return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
             else:
                 return Response(data=res.text, status=500)
+
+            # ######## testing ########
+            # _save_debug_model({'save_model_path': '/Users/kiran/XDrive/INK/HILT-demo/annotation_backend/media/debug_models/trial1'}, project)
+            # return Response({'success': 'model started running'}, status.HTTP_202_ACCEPTED)
 
         except Exception as e:
             print(e)
@@ -87,21 +97,46 @@ def _save_debug_model(data, project):
     Create new model and annotation score entries in DB after training debugged model in FastAPI
     """
     print(data)
+    model_path = data['save_model_path'] # '/Users/kiran/XDrive/INK/HILT-demo/annotation_backend/media/debug_models/trial1'
 
-    # get model_path
-    model_path = data['save_model_path']
+    # create dir for zip location
+    zip_save_path = os.path.join(settings.MEDIA_ROOT, 'unziped_models', str(project.id), 'tmp')
+    print('zip_save_path', zip_save_path)
+    os.makedirs(zip_save_path, exist_ok=True)
+    if len(os.listdir(zip_save_path))!=0:
+        for f in os.listdir(zip_save_path):
+            f_abs_path = os.path.join(zip_save_path, f)
+            if os.path.isfile(f_abs_path):
+                os.remove(f_abs_path)
+            else:
+                shutil.rmtree(f_abs_path)
+        
+
+    name =  str(project.id) + '_' + 'debug_model'
+    name_with_ext = name + '.zip'
+
+    zip_full_path_without_ext = os.path.join(zip_save_path, name)
+    print('zip_full_path', zip_full_path_without_ext)
+    print('model_path', model_path)
+
+    # buffer = io.BytesIO()
 
     # zip model
-    
+    shutil.make_archive(zip_full_path_without_ext, 'zip', model_path)
+    print('zipped model')
 
+    zip_full_path = zip_full_path_without_ext + '.zip'
+    zip_destination_path = os.path.join(settings.MEDIA_ROOT, 'models', name_with_ext)
     # # save zip model in DB
-    # model_file = 'model_zip' # update
-    # name =  str(project.id) + '_' + model_file.name
-    # model_file.name  = name
-    # cur_model = HiltModel(name=name, project=project, model=model_file, debug=True)
-    # cur_model.save()
-    return
+    # move model in place 'media/models'
+    os.replace(zip_full_path, zip_destination_path)
 
+    # HiltModel save
+
+    cur_model = HiltModel(name=name, project=project, debug=True)
+    cur_model.model.name = os.path.join('models', name_with_ext)
+    cur_model.save()
+    print('model saved')
 
 
 

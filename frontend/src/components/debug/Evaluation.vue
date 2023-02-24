@@ -46,7 +46,6 @@
                     v-for="(document, docIndex) in detailedSentence"
                     :key="document.id"
                 >
-        
                     <el-row
                     style="width: 100%"
                     v-for="annotation in document.annotations"
@@ -64,7 +63,6 @@
                         </el-row>
 
                         <el-row style="line-height: 2; margin-top: 10px">
-                            <div>
                             <span
                                 v-for="wordData in document.words"
                                 :key="wordData.id"
@@ -81,7 +79,6 @@
                                     </template>
                                 </el-popover>
                             </span>
-                            </div>
                         </el-row>
                     </el-row>
                     <el-divider />
@@ -100,17 +97,16 @@
                         <el-row style="width: 100%">
                             <el-tag type="warning">After Debug Training</el-tag>
                         </el-row>
-
                         <el-row 
                         v-if="model.model_id"
+                        v-loading="loadingAnnotations"
                         style="line-height: 2; margin-top: 10px">
                             <span
-                                v-for="wordData in document.words"
-                                :key="wordData.id"
-                                :style="getWordStyle(wordData.word_debug_annotation_score?.[annotation.id], annotation.label)"
+                                v-for="wordData in debugTrainingSentence"
+                                :style="getWordStyle({'score': wordData.score}, annotation.label)"
                             >
                                 <el-popover
-                                :content=" wordData.text + ': ' + 0 "
+                                :content=" wordData.text + ': ' + wordData.score "
                                 trigger="hover"
                                 >
                                     <template #reference>
@@ -120,20 +116,17 @@
                                     </template>
                                 </el-popover>
                             </span>
+                            <span>&nbsp;</span>
                         </el-row>
                     </el-row>
                     <el-divider />
                 </el-row>
-
-                
-                
-                
             </el-row>
-            <div v-if="model.model_id">
-                {{ calculateAttrsForDoc(documentStore.getDocuments[0].text) }}
-            </div>
         </el-card>
     </el-row>
+  <EvaluationTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
@@ -147,13 +140,17 @@ import { useWordStore } from "@/stores/word"
 import { ColorSets } from "@/utilities/constants";
 import ModelsApi from "@/utilities/network/model";
 import ExplanationsApi from "@/utilities/network/explanations"
+import { saveAs } from 'file-saver'
+import EvaluationTutorial from "@/components/project/tutorial/EvaluationTutorial.vue";
+
 
 export default {
     name: "DebugEvaluation",
     components: {
         Back,
         Check,
-        Download
+        Download,
+        EvaluationTutorial
     },
     setup() {
         const documentStore = useDocumentStore();
@@ -196,6 +193,7 @@ export default {
     },
     data() {
         return {
+            tutorialVisible: true,
             exampleInputsForm: {
                 sentence_id: ""
             },
@@ -204,7 +202,9 @@ export default {
                 model_id: "",
                 model_name: ""
             },
-            detailedSentence : []
+            detailedSentence : [],
+            debugTrainingSentence: [],
+            loadingAnnotations: false
         }
     },
     computed: {
@@ -221,10 +221,21 @@ export default {
     },
     methods: {
         updateDetailedDoc(id) {
+            this.loadingAnnotations = true
             const promise = []
             promise.push(this.detailedDocumentStore.fetchDocument(id));
             Promise.all(promise).then(() => {
                 this.detailedSentence = [this.detailedDocumentStore.getDocument];
+                this.calculateAttrsForDoc(this.detailedSentence[0].text, this.getLabelByID(this.detailedSentence[0].ground_truth).text)
+                    .then((res) => { 
+                        this.debugTrainingSentence = JSON.parse(res).res
+                        console.log(JSON.parse(res).res)
+                        this.loadingAnnotations = false
+                    }).catch(e => {
+                        console.log(e)
+                        this.loadingAnnotations = false
+
+                    })
             });
         },
         getModelDetails() {
@@ -244,15 +255,9 @@ export default {
                 this.projectStore.getProjectInfo.id,
                 this.model.model_id
             ).then(res => {
-                // console.log(res.data)
                 console.log(res.length);
-                const blob = new Blob([this.str2bytes(res)], { type: 'application/zip' })
-                console.log(blob.size);
-                const link = document.createElement('a')
-                link.href = URL.createObjectURL(blob)
-                link.download = 'model.zip'
-                link.click()
-                URL.revokeObjectURL(link.href)
+                const blob = new Blob([res], { type: 'application/zip' })
+                saveAs(blob, 'test.zip')
                 this.downloading=false
             }).catch((err) => {
                 console.log(err);
@@ -290,11 +295,11 @@ export default {
                 ...colors[index],
             };
         },
-        calculateAttrsForDoc(text) {
-            return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, this.model.model_id)
+        calculateAttrsForDoc(text, label) {
+            return ExplanationsApi.getAttributeScoresForDoc(this.projectStore.getProjectInfo.id, text, label, this.model.model_id)
             .then( res => {
                 console.log(res)
-                return 'TESTING'
+                return res.res
             })
         },
     },

@@ -151,6 +151,9 @@
       </el-row>
     </el-card>
   </el-row>
+  <GlobalDebugTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
@@ -162,6 +165,7 @@ import { useProjectStore } from "@/stores/project";
 import { useLabelStore } from "@/stores/label";
 import { useGlobalDictionaryStore } from "@/stores/dictionaryGlobal";
 import { TaskTypes, ColorSets } from "@/utilities/constants";
+import GlobalDebugTutorial from "@/components/project/tutorial/GlobalDebugTutorial.vue";
 
 export default {
   name: "GlobalExplanations",
@@ -169,6 +173,7 @@ export default {
     ArrowLeft,
     ArrowRight,
     QuestionFilled,
+    GlobalDebugTutorial,
   },
   setup() {
     const labelStore = useLabelStore();
@@ -182,6 +187,11 @@ export default {
       projectStore,
       TaskTypes,
       getLabelByID: labelStore.getLabelByID,
+    };
+  },
+  data() {
+    return {
+      tutorialVisible: true,
     };
   },
   computed: {

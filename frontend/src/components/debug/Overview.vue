@@ -10,11 +10,22 @@
     </el-popover>
   </h3>
 
-  <el-button
+  <el-row>
+
+    <el-col :span="6">
+      <el-button
       type="primary"
       @click="trainDebugModel()">
       Start Debug Training
-  </el-button> <br />
+      </el-button> 
+    </el-col>
+
+    <el-col :span="6">
+      <el-progress v-if="loadingExplanations" type="dashboard" :percentage="Math.round(percentage)" :color="colors" />
+    </el-col>
+
+  </el-row>
+    <br />
 
   <el-row style="width: 100%; margin-top: 3em;">
     <span style="padding-right: 1em;">Instance Explanation
@@ -65,6 +76,9 @@
         text-inside
       />
   </el-row>
+  <DebugTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 
@@ -78,11 +92,14 @@ import { useLocalDictionaryStore } from "@/stores/dictionaryLocal";
 import { useWordStore } from "@/stores/word";
 import DebugTrainingAPI from "@/utilities/network/debugTraining"
 import DocumentsApi from "@/utilities/network/document";
+import DebugTutorial from "@/components/project/tutorial/DebugTutorial.vue";
+
 
 export default {
   name: "DebugOverview",
   components: {
     QuestionFilled,
+    DebugTutorial,
   },
   setup() {
     const projectStore = useProjectStore();
@@ -96,6 +113,20 @@ export default {
       globalDictionaryStore,
       localDictionaryStore,
       wordStore,
+    };
+  },
+  data() {
+    return {
+      tutorialVisible: true,
+      loadingExplanations: false,
+      percentage: 0,
+      colors: [
+        { color: '#f56c6c', percentage: 20 },
+        { color: '#e6a23c', percentage: 40 },
+        { color: '#5cb87a', percentage: 60 },
+        { color: '#1989fa', percentage: 80 },
+        { color: '#6f7ad3', percentage: 100 },
+      ]
     };
   },
   created() {
@@ -135,7 +166,7 @@ export default {
       })
     },
     trainDebugModel() {
-      // this.loadingExplanations = true
+      this.loadingExplanations = true
       DebugTrainingAPI.train(this.projectStore.getProjectInfo.id)
         .then(res => {
           console.log('Here');
@@ -148,7 +179,7 @@ export default {
             duration: 0,
           });
         }).catch(err => {
-          // this.loadingExplanations = false
+          this.loadingExplanations = false
           if (err.response && err.response.data) {
             this.$notify.error({
               title: "Model training failed",
@@ -164,19 +195,18 @@ export default {
       this.fetchDebugScores(this.documentStore.getDocuments[1].id)
     },
     waitForCompletion() {
-      let max_iter = 10;
+      let max_iter = 60;
       let timer = setInterval(() => DebugTrainingAPI.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
-        console.log(res)
+        this.percentage = this.percentage + 100/max_iter
         if (max_iter < 0 || res.status == 'finished') {
           console.log('finished')
-          // this.loadingExplanations = false
+          this.loadingExplanations = false
           this.$notify.success({
             title: "Success",
             message: "Model Execution had been completed",
             duration: 0,
           })
           clearInterval(timer)
-          // push to next page?
           this.$router.push({ name: 'DebugEvaluation' });
         } else {
           console.log('Waiting for model finish message.')
