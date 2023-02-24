@@ -124,27 +124,25 @@
             </div> -->
           </el-row>
           <el-row style="line-height: 2; margin-top: 10px">
-            <div>
-              <span
-                v-for="wordData in document.words"
-                :key="wordData.id"
-                :style="getWordStyle(wordData.scores[annotation.id], annotation.label)"
+            <span
+              v-for="wordData in document.words"
+              :key="wordData.id"
+              :style="getWordStyle(wordData.scores[annotation.id], annotation.label)"
+            >
+              <el-popover
+                :content=" wordData.text + ': ' + wordData.scores[annotation.id].score "
+                trigger="hover"
               >
-                <el-popover
-                  :content=" wordData.text + ': ' + wordData.scores[annotation.id].score "
-                  trigger="hover"
-                >
-                  <template #reference>
-                    <span
-                      :style="
-                        wordData.text === this.wordStore.getCurrWord() ? { border: '2px solid black' } : {}"
-                    >
-                      {{ wordData.text }}
-                    </span>
-                  </template>
-                </el-popover>
-              </span>
-            </div>
+                <template #reference>
+                  <span
+                    :style="
+                      wordData.text === this.wordStore.getCurrWord() ? { border: '2px solid black' } : {}"
+                  >
+                    {{ wordData.text }}
+                  </span>
+                </template>
+              </el-popover>
+            </span>
           </el-row>
         </el-row>
         <el-divider />
