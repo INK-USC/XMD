@@ -5,13 +5,17 @@
     @close="$emit('update:dialogVisible', false)"
     width="50%"
   >
-    <span slot="title" style="font-size: 18pt; font-weight:bold">Explanation Generation</span>
+    <span slot="title" style="font-size: 18pt; font-weight:bold">XMD Workflow</span>
     <div class="container">
       <div class="row" style="padding: 10px">
           <br><br>
             <p class="text" style="font-size: 15pt; text-align: justify">
-              Load the model trained on the train data from local or huggingface modelhub. <br>
-              Use that model to generate explanations for the train data. <br>
+              1. Upload your train data. <br>
+              2. Load your trained model. <br>
+              3. Generate explanations on your train data using the trained model. <br>
+              4. Select words to increase or decrease its importance score. <br>
+              5. Start debug the model. <br>
+              6. Download the debugged model and see how explanation is changed. <br>
             </p>
       </div>
     </div>
@@ -30,7 +34,7 @@
 
 // the form when user create/edit a project
 export default {
-  name: "GenerateExplanationTutorial",
+  name: "WorkflowTutorial",
   props: { dialogVisible: Boolean, existingInfo: Object },
   setup() {
   },

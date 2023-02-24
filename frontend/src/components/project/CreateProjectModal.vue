@@ -121,7 +121,7 @@ export default {
           httpRequest.then((res) => {
             this.projectStore.setProject(res);
             this.$emit("update:dialogVisible", false);
-            this.$router.push({ name: "DocumentUpload" });
+            this.$router.push({ name: "DocumentList" });
           });
         }
       });

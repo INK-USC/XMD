@@ -3,7 +3,7 @@
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
-    width="40%"
+    width="50%"
   >
     <span slot="title" style="font-size: 18pt; font-weight:bold">Upload Documents</span>
     <div class="container">

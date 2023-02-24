@@ -66,16 +66,21 @@
       style="text-align: center"
     />
   </div>
+  <WorkflowTutorial
+    v-model:dialog-visible="tutorialVisible"
+  />
 </template>
 
 <script>
 import { Search, Delete, QuestionFilled } from "@element-plus/icons-vue";
 import { useDocumentStore } from "@/stores/document";
+import WorkflowTutorial from "@/components/project/tutorial/WorkflowTutorial.vue";
 
 // show all the document for this project
 export default {
   name: "DocumentList",
   components: {
+    WorkflowTutorial,
     Search,
     Delete,
     QuestionFilled,
@@ -88,6 +93,7 @@ export default {
   },
   data() {
     return {
+      tutorialVisible: true,
       searchQuery: "",
     };
   },
