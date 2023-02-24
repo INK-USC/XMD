@@ -1,15 +1,15 @@
 <template>
   <el-dialog
-    :title="'Evaluation'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
+    <span slot="title" style="font-size: 18pt; font-weight:bold">Evaluation</span>
     <div class="container">
-      <div class="row">
+      <div class="row" style="padding: 10px">
           <br><br>
-            <p class="text" style="text-align: justify">
+            <p class="text" style="font-size: 15pt; text-align: justify">
               Now you have debugged model. <br>
               You can download the debug model. <br>
               Moreover, you can check how the explanations get changed after debugging!

@@ -1,15 +1,15 @@
 <template>
   <el-dialog
-    :title="'Create Projects'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
+    <span slot="title" style="font-size: 18pt; font-weight:bold">Create Projects</span>
     <div class="container">
-      <div class="row">
+      <div class="row" style="padding: 10px">
           <br><br>
-            <p class="text" style="text-align: justify">
+            <p class="text" style="font-size: 15pt; text-align: justify">
               Create a project to start with. <br>
               You can choose between classifying sequences and extracting relationships. <br>
               (Currently only supports sequence classification.)

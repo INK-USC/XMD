@@ -1,15 +1,15 @@
 <template>
   <el-dialog
-    :title="'Model Debugging'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
+    <span slot="title" style="font-size: 18pt; font-weight:bold">Model Debugging</span>
     <div class="container">
-      <div class="row">
+      <div class="row" style="padding: 10px">
           <br><br>
-            <p class="text" style="text-align: justify">
+            <p class="text" style="font-size: 15pt; text-align: justify">
               You will debug the model by selecting words to increase or decrease its importance score. <br>
               You can select words for each instance (Instance Explanation) or words that apply to all instances (Task Explanation). <br>
             </p>

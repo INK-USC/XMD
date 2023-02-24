@@ -1,15 +1,15 @@
 <template>
   <el-dialog
-    :title="'Instance Explanation'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
+    <span slot="title" style="font-size: 18pt; font-weight:bold">Instance Explanation</span>
     <div class="container">
-      <div class="row">
+      <div class="row" style="padding: 10px">
           <br><br>
-            <p class="text" style="text-align: justify">
+            <p class="text" style="font-size: 15pt; text-align: justify">
               Select words to debug for each instance. <br>
               Attribution scores refer to how much the word positively correlates to the ground truth label. <br>
             </p>

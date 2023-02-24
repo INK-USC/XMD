@@ -1,15 +1,15 @@
 <template>
   <el-dialog
-    :title="'Upload Documents'"
     v-model="dialogVisible"
     v-on:update:visible="$emit('update:dialogVisible', $event)"
     @close="$emit('update:dialogVisible', false)"
     width="40%"
   >
+    <span slot="title" style="font-size: 18pt; font-weight:bold">Upload Documents</span>
     <div class="container">
-      <div class="row">
+      <div class="row" style="padding: 10px">
           <br><br>
-            <p class="text" style="text-align: justify">
+            <p class="text" style="font-size: 15pt; text-align: justify">
               You need to first input the train data that your model is trained on. <br>
               Follow the instruction to upload the data. <br>
             </p>
