@@ -55,12 +55,16 @@
           </el-form-item>
         </el-form>
 
-<!--        <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"-->
-<!--          description="will update once the task in done" center show-icon :closable="false" />-->
-        <!-- generate explanations button -->
-      </el-tab-pane>
-    </el-tabs>
+        
+        <!--        <el-alert v-if="generating_explanations" title="Generating Explanations..." type="info"-->
+          <!--          description="will update once the task in done" center show-icon :closable="false" />-->
+          <!-- generate explanations button -->
+        </el-tab-pane>
+      </el-tabs>
 
+      <el-row justify="center" style="margin-top: 1em;">
+        <el-progress v-if="loadingExplanations" type="dashboard" :percentage="Math.round(percentage)" :color="colors" />
+    </el-row>
   </el-card>
   <GenerateExplanationTutorial
     v-model:dialog-visible="tutorialVisible"
@@ -110,6 +114,14 @@ export default {
         },
       },
       loadingExplanations: false,
+      percentage: 0,
+      colors: [
+        { color: '#f56c6c', percentage: 20 },
+        { color: '#e6a23c', percentage: 40 },
+        { color: '#5cb87a', percentage: 60 },
+        { color: '#1989fa', percentage: 80 },
+        { color: '#6f7ad3', percentage: 100 },
+      ]
     }
   },
   methods: {
@@ -202,6 +214,8 @@ export default {
     waitForCompletion() {
       let max_iter = 60;
       let timer = setInterval(() => ExplanationsApi.didFinishGeneration(this.projectStore.getProjectInfo.id).then((res) => {
+        this.percentage = this.percentage + 100/max_iter
+        console.log(this.percentage)
         console.log(res)
         if (max_iter < 0 || res.status == 'finished') {
           console.log('finished')
